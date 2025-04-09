@@ -1,17 +1,29 @@
-"use server"
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
-export async function getCustomers() {
-  try {
-    // Use the full URL to fetch the customers
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/customers`);
-    if (!response.ok) {
-      throw new Error("Failed to fetch customers");
-    }
-    const customers = await response.json();
-    customers.reverse();
-    return { success: true, customers };
-  } catch (error) {
-    console.error("Error fetching customers:", error);
-    return { success: false, error: error.message };
+export async function fetchProducts() {
+  const response = await fetch(`${baseUrl}/api/products`, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+    cache: "no-store", // ensure fresh data
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch products");
   }
+
+  return response.json();
+}
+
+export async function deleteProduct(productId) {
+  const response = await fetch(`${baseUrl}/api/products`, {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ _id: productId }), // 🔁 fixed key to _id
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to delete product");
+  }
+
+  return response.json();
 }

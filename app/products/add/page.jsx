@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 async function handleSubmit(e) {
   e.preventDefault();

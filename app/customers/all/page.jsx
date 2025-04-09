@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import {
   FaBullseye,
   FaEye,
@@ -8,20 +11,36 @@ import {
   FaTrash,
   FaUser,
 } from "react-icons/fa6";
+import { fetchCustomers, deleteCustomer } from "./actions";
 
-export default async function AllCustomers() {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-  const response = await fetch(`${baseUrl}/api/customers`, {
-    method: "GET",
-    headers: { "Content-Type": "application/json" },
-  });
+export default function AllCustomers() {
+  const [customers, setCustomers] = useState([]);
 
-  if (!response.ok) {
-    throw new Error("Failed to fetch customers");
+  useEffect(() => {
+    async function loadCustomers() {
+      try {
+        const data = await fetchCustomers();
+        setCustomers(data);
+      } catch (error) {
+        console.error("Error fetching customers:", error);
+      }
+    }
+
+    loadCustomers();
+  }, []);
+
+  async function handleDelete(customerId) {
+    try {
+      await deleteCustomer(customerId);
+      setCustomers((prev) =>
+        prev.filter((customer) => customer._id !== customerId)
+      );
+      console.log("Customer deleted successfully");
+    } catch (error) {
+      console.error("Error deleting customer:", error);
+    }
   }
 
-  const customers = await response.json();
-  console.log(customers);
   return (
     <div className="w-full flex flex-col gap-3">
       <h1 className="text-3xl font-bold">All Customers:</h1>
@@ -70,18 +89,21 @@ export default async function AllCustomers() {
               <td>
                 <div className="flex gap-1">
                   <a
-                    href="/customers/view"
+                    href={`/customers/view/${customer._id}`}
                     className="p-2 bg-blue-600 text-white rounded-md"
                   >
                     <FaEye />
                   </a>
                   <a
-                    href="/customers/edit"
+                    href={`/customers/edit/${customer._id}`}
                     className="p-2 bg-green-600 text-white rounded-md"
                   >
                     <FaPencil />
                   </a>
-                  <button className="p-2 bg-red-600 text-white rounded-md cursor-pointer">
+                  <button
+                    className="p-2 bg-red-600 text-white rounded-md cursor-pointer"
+                    onClick={() => handleDelete(customer._id)}
+                  >
                     <FaTrash />
                   </button>
                 </div>

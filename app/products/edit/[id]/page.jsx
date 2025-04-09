@@ -4,90 +4,93 @@ import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Toast from "@/components/Toast";
 
-export default function EditCustomer() {
+export default function EditProduct() {
   const router = useRouter();
   const params = useParams();
-  const customerId = params.id;
+  const productId = params.id;
 
-  const [customer, setCustomer] = useState({
+  const [product, setProduct] = useState({
     name: "",
-    mobileNumber: "",
-    address: "",
+    purchasePrice: "",
+    sellPrice: "",
   });
   const [toast, setToast] = useState({ show: false, message: "" });
 
   useEffect(() => {
-    const fetchCustomer = async () => {
+    const fetchProduct = async () => {
       try {
-        const res = await fetch(`/api/customers/${customerId}`);
-        if (!res.ok) throw new Error("Failed to fetch customer data.");
+        const res = await fetch(`/api/products/${productId}`);
+        if (!res.ok) throw new Error("Failed to fetch product data.");
         const data = await res.json();
-        setCustomer(data);
+        setProduct(data);
       } catch (error) {
-        setToast({ show: true, message: "Error loading customer data." });
+        setToast({ show: true, message: "Error loading product data." });
       }
     };
 
-    if (customerId) fetchCustomer();
-  }, [customerId]);
+    if (productId) fetchProduct();
+  }, [productId]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setCustomer((prev) => ({ ...prev, [name]: value }));
+    setProduct((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch(`/api/customers/${customerId}`, {
+      const res = await fetch(`/api/products/${productId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(customer),
+        body: JSON.stringify(product),
       });
 
-      if (!res.ok) throw new Error("Failed to update customer.");
-      setToast({ show: true, message: "Customer updated successfully." });
+      if (!res.ok) throw new Error("Failed to update product.");
+      setToast({ show: true, message: "Product updated successfully." });
 
       setTimeout(() => {
         setToast({ show: false, message: "" });
-        router.push("/customers/all");
+        router.push("/products/all");
       }, 2000);
     } catch (err) {
-      setToast({ show: true, message: "Error updating customer." });
+      setToast({ show: true, message: "Error updating product." });
     }
   };
 
   return (
     <div className="max-w-xl mx-auto mt-8 p-6 border rounded-md shadow">
-      <h1 className="text-2xl font-bold mb-6">Edit Customer</h1>
+      <h1 className="text-2xl font-bold mb-6">Edit Product</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="block mb-1 font-medium">Name</label>
           <input
             type="text"
             name="name"
-            value={customer.name}
+            value={product.name}
             onChange={handleChange}
             required
             className="w-full border rounded px-3 py-2"
           />
         </div>
         <div>
-          <label className="block mb-1 font-medium">Mobile Number</label>
+          <label className="block mb-1 font-medium">Purchase Price</label>
           <input
-            type="text"
-            name="mobileNumber"
-            value={customer.mobileNumber}
+            type="number"
+            name="purchasePrice"
+            value={product.purchasePrice}
+            min={0}
             onChange={handleChange}
             required
             className="w-full border rounded px-3 py-2"
           />
         </div>
         <div>
-          <label className="block mb-1 font-medium">Address</label>
-          <textarea
-            name="address"
-            value={customer.address}
+          <label className="block mb-1 font-medium">Sell Price</label>
+          <input
+            type="number"
+            name="sellPrice"
+            value={product.sellPrice}
+            min={0}
             onChange={handleChange}
             required
             className="w-full border rounded px-3 py-2"
@@ -102,7 +105,7 @@ export default function EditCustomer() {
           </button>
           <button
             type="button"
-            onClick={() => router.push("/customers/all")}
+            onClick={() => router.push("/products/all")}
             className="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400"
           >
             Cancel

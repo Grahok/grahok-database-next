@@ -6,8 +6,7 @@ import Toast from "@/components/Toast";
 import SummarySection from "@/components/SummarySection";
 import ProductSection from "@/components/ProductSection";
 import CustomerForm from "@/components/CustomerForm";
-import { getCustomers } from "@/app/customers/all/actions";
-import { createCustomer } from "@/app/customers/add/actions";
+import { fetchCustomers } from "@/app/customers/all/actions";
 
 export default function AddEntry() {
   const [customer, setCustomer] = useState(null);
@@ -23,16 +22,17 @@ export default function AddEntry() {
 
   // Load customer list
   useEffect(() => {
-    const fetchCustomers = async () => {
-      const result = await getCustomers();
-      if (result.success) {
-        setCustomers(result.customers);
-      } else {
-        console.error(result.error);
+      async function loadCustomers() {
+        try {
+          const data = await fetchCustomers();
+          setCustomers(data);
+        } catch (error) {
+          console.error("Error fetching customers:", error);
+        }
       }
-    };
-    fetchCustomers();
-  }, []);
+  
+      loadCustomers();
+    }, []);
 
   // Filter customers for dropdown
   const filtered = customers.filter((c) =>
@@ -57,17 +57,23 @@ export default function AddEntry() {
     try {
       // Create new customer if _id is missing
       if (!customer?._id) {
-        const result = await createCustomer({
+        const result = {
           name: customer?.name || "",
           mobileNumber: customer?.mobileNumber || "",
           address: customer?.address || "",
+        };
+
+        const response = await fetch("/api/customers", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(result),
         });
 
-        if (result.success) {
-          finalCustomer = result.customer; // Use newly created one
-          setCustomer(result.customer); // Update UI
+        if (response.success) {
+          finalCustomer = response.customer; // Use newly created one
+          setCustomer(response.customer); // Update UI
         } else {
-          console.error(result.error);
+          console.error(response.error);
           return alert("Failed to create customer");
         }
       }
