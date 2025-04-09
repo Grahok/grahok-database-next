@@ -8,13 +8,12 @@ export default function ProductSelector() {
         onChange={(e) => setSearch(e.target.value)}
       />
       <div className="border rounded max-h-64 overflow-y-auto">
-        {filtered.map((product, i) => (
+        {filtered.map((product, index) => (
           <div
-            key={i}
+            key={index}
             className="p-2 hover:bg-gray-100 cursor-pointer flex items-center gap-3"
             onClick={() => onSelect(product)}
           >
-            <img src={product.image} className="w-8 h-8 rounded" alt="" />
             <span>{product.name}</span>
           </div>
         ))}

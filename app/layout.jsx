@@ -31,10 +31,10 @@ export default function RootLayout({ children }) {
                 <a href="/">Home</a>
               </li>
               <li>
-                <a href="/all-entries">All Entries</a>
+                <a href="/entries/all">All Entries</a>
               </li>
               <li>
-                <a href="/add-entry">Add Entry</a>
+                <a href="/entries/add">Add Entry</a>
               </li>
               <li>
                 <a href="/customers/all">All Customers</a>
