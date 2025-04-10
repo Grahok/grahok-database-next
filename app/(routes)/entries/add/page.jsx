@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-// import Toast from "@/components/Toast";
 import SummarySection from "@/components/SummarySection";
 import ProductSection from "@/components/ProductSection";
 import CustomerForm from "@/components/CustomerForm";
+import ToastConfirmation from "@/components/ToastConfirmation"; // Import the component
 
 export default function AddEntry() {
   const router = useRouter();
@@ -18,7 +18,7 @@ export default function AddEntry() {
   const [otherCost, setOtherCost] = useState(0);
   const [overallDiscount, setOverallDiscount] = useState(0);
   const [courierTax, setCourierTax] = useState(0);
-  // const [showToast, setShowToast] = useState(false);
+  const [toast, setToast] = useState({ show: false, message: "" });
 
   const handleCustomerChange = (data) => {
     setCustomerData(data);
@@ -57,15 +57,6 @@ export default function AddEntry() {
         customerId = newCustomer._id;
       }
 
-      // ✅ Now build the entry
-      // const entry = {
-      //   customer: customerId,
-      //   orderDate: e.target.orderDate.value,
-      //   entryDate: e.target.entryDate.value,
-      //   paymentDate: e.target.paymentDate.value || null,
-      // You would also gather product list, charges, etc. from other subcomponents
-      // };
-
       const totalQuantity = Number(
         selectedProducts.reduce((sum, p) => sum + p.quantity, 0)
       );
@@ -84,10 +75,6 @@ export default function AddEntry() {
           0
         )
       );
-      // const totalIncome = selectedProducts.reduce(
-      //   (sum, p) => sum + p.discount + overallDiscount,
-      //   0
-      // );
       const subtotal = totalSellPrice - overallDiscount;
       const customerPayment = Number(
         selectedProducts.reduce(
@@ -143,8 +130,13 @@ export default function AddEntry() {
         throw new Error("Failed to save entry.");
       }
 
-      // ✅ Redirect to all entries or show success message
-      router.push("/entries/all");
+      // ✅ Show success toast
+      setToast({ show: true, message: "Entry added successfully." });
+
+      setTimeout(() => {
+        setToast({ show: false, message: "" });
+        router.push("/entries/all");
+      }, 2000);
     } catch (err) {
       console.error(err);
       setError(err.message || "Something went wrong.");
@@ -200,6 +192,12 @@ export default function AddEntry() {
           {loading ? "Adding..." : "Add Entry"}
         </button>
       </form>
+
+      <ToastConfirmation
+        message={toast.message}
+        onClose={() => setToast({ show: false, message: "" })}
+        duration={3000}
+      />
     </main>
   );
 }
