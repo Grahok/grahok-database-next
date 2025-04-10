@@ -21,7 +21,7 @@ export async function POST(req) {
     await connectToDatabase();
     const body = await req.json();
 
-    // Optional: Validate required fields before inserting
+    // Validate required fields before inserting
     if (
       !body.customer ||
       !body.orderDate ||
@@ -31,7 +31,17 @@ export async function POST(req) {
       return new Response("Missing required fields", { status: 400 });
     }
 
-    const entry = new Entry(body);
+    // Map products to include only the product reference and other fields
+    const products = body.products.map((p) => ({
+      product: p.product, // Reference to Product model
+      quantity: p.quantity,
+      purchasePrice: p.purchasePrice,
+      sellPrice: p.sellPrice,
+      discount: p.discount,
+      subtotal: p.subtotal,
+    }));
+
+    const entry = new Entry({ ...body, products });
     await entry.save();
 
     console.log("✅ Entry created:", entry._id);
