@@ -1,34 +1,19 @@
 export default function SummarySection({
-  selectedProducts,
   shippingCustomer,
   setShippingCustomer,
   shippingMerchant,
   setShippingMerchant,
   setCourierTax,
-  otherCost,
   setOtherCost,
-  overallDiscount,
   setOverallDiscount,
+  subtotal,
+  customerPayment,
+  totalPurchase,
+  totalShippingCharge,
+  courierTax,
+  totalIncome,
+  netProfit,
 }) {
-  const subtotal =
-    selectedProducts.reduce(
-      (sum, row) => sum + row.quantity * row.sellPrice - row.discount,
-      0
-    ) - overallDiscount;
-  const customerPayment = subtotal + shippingCustomer;
-  const totalPurchase = selectedProducts.reduce(
-    (sum, row) => sum + row.quantity * row.purchasePrice,
-    0
-  );
-
-  const totalShippingCharge = shippingCustomer + shippingMerchant;
-  const courierTax =
-    Number(
-      ((subtotal + totalShippingCharge) * 0.01).toFixed(2)
-    ) || 0;
-  const totalIncome = customerPayment - totalShippingCharge - courierTax - otherCost;
-  const netProfit = totalIncome - totalPurchase;
-
   return (
     <section className="bg-white p-6 rounded-lg shadow grid grid-cols-1 md:grid-cols-2 gap-8">
       {/* Shipping & Options */}
@@ -99,7 +84,6 @@ export default function SummarySection({
                   type="number"
                   placeholder={0}
                   min={0}
-                  step={0.1}
                   defaultValue={courierTax}
                   onChange={(e) => setCourierTax(Number(e.target.value))}
                   className="w-24 p-1 border rounded text-right"

@@ -31,7 +31,6 @@ const entrySchema = new mongoose.Schema({
   totalPurchasePrice: Number,
   totalDiscount: Number,
   totalIncome: Number,
-  // paidByCustomer: Number,
   netProfit: Number,
 });
 

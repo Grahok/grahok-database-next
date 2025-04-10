@@ -9,10 +9,13 @@ export default function EditEntry() {
   const params = useParams();
   const entryId = params.id;
 
+  // Initialize state with default values to avoid uncontrolled inputs
   const [entry, setEntry] = useState({
-    name: "",
-    mobileNumber: "",
-    address: "",
+    customer: { name: "" }, // Default nested object for customer
+    totalPurchasePrice: "",
+    totalSellPrice: "",
+    totalQuantity: "",
+    totalDiscount: "",
   });
   const [toast, setToast] = useState({ show: false, message: "" });
 
@@ -66,8 +69,13 @@ export default function EditEntry() {
           <input
             type="text"
             name="customer"
-            value={entry.customer?.name}
-            onChange={handleChange}
+            value={entry.customer?.name || ""}
+            onChange={(e) =>
+              setEntry((prev) => ({
+                ...prev,
+                customer: { ...prev.customer, name: e.target.value },
+              }))
+            }
             required
             className="w-full border rounded px-3 py-2"
           />
@@ -77,7 +85,7 @@ export default function EditEntry() {
           <input
             type="number"
             name="totalPurchasePrice"
-            value={entry.totalPurchasePrice}
+            value={entry.totalPurchasePrice || ""}
             onChange={handleChange}
             required
             className="w-full border rounded px-3 py-2"
@@ -88,7 +96,7 @@ export default function EditEntry() {
           <input
             type="number"
             name="totalSellPrice"
-            value={entry.totalSellPrice}
+            value={entry.totalSellPrice || 0}
             onChange={handleChange}
             required
             className="w-full border rounded px-3 py-2"
@@ -99,7 +107,7 @@ export default function EditEntry() {
           <input
             type="number"
             name="totalQuantity"
-            value={entry.totalQuantity}
+            value={entry.totalQuantity || 0}
             onChange={handleChange}
             required
             className="w-full border rounded px-3 py-2"
@@ -110,7 +118,7 @@ export default function EditEntry() {
           <input
             type="number"
             name="totalDiscount"
-            value={entry.totalDiscount}
+            value={entry.totalDiscount || 0}
             onChange={handleChange}
             required
             className="w-full border rounded px-3 py-2"

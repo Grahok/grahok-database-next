@@ -6,7 +6,6 @@ import Toast from "@/components/Toast";
 import SummarySection from "@/components/SummarySection";
 import ProductSection from "@/components/ProductSection";
 import CustomerForm from "@/components/CustomerForm";
-import ToastConfirmation from "@/components/ToastConfirmation"; // Import the component
 
 export default function AddEntry() {
   const router = useRouter();

@@ -23,7 +23,7 @@ export async function GET(_, { params }) {
 }
 
 export async function PUT(req, { params }) {
-  const { id } = params;
+  const { id } = await params;
   try {
     await connectToDatabase();
     const data = await req.json();
