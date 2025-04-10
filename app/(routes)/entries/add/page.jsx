@@ -66,34 +66,37 @@ export default function AddEntry() {
       // You would also gather product list, charges, etc. from other subcomponents
       // };
 
-      const totalQuantity = selectedProducts.reduce(
-        (sum, p) => sum + Number(p.quantity),
-        0
+      const totalQuantity = Number(
+        selectedProducts.reduce((sum, p) => sum + p.quantity, 0)
       );
-      const totalSellPrice = selectedProducts.reduce(
-        (sum, p) => sum + p.sellPrice * p.quantity,
-        0
+      const totalSellPrice = Number(
+        selectedProducts.reduce((sum, p) => sum + p.sellPrice * p.quantity, 0)
       );
-      const totalPurchasePrice = selectedProducts.reduce(
-        (sum, p) => sum + p.purchasePrice * p.quantity,
-        0
+      const totalPurchasePrice = Number(
+        selectedProducts.reduce(
+          (sum, p) => sum + p.purchasePrice * p.quantity,
+          0
+        )
       );
-      const totalDiscount = selectedProducts.reduce(
-        (sum, p) => sum + p.discount + overallDiscount,
-        0
+      const totalDiscount = Number(
+        selectedProducts.reduce(
+          (sum, p) => sum + p.discount + overallDiscount,
+          0
+        )
       );
       // const totalIncome = selectedProducts.reduce(
       //   (sum, p) => sum + p.discount + overallDiscount,
       //   0
       // );
       const subtotal = totalSellPrice - overallDiscount;
-      const customerPayment =
+      const customerPayment = Number(
         selectedProducts.reduce(
           (sum, row) => sum + row.quantity * row.sellPrice - row.discount,
           0
         ) +
-        shippingCustomer -
-        overallDiscount;
+          shippingCustomer -
+          overallDiscount
+      );
       const totalShippingCharge = shippingCustomer + shippingMerchant;
       const totalIncome = customerPayment - totalShippingCharge - courierTax;
       const netProfit =
@@ -113,13 +116,15 @@ export default function AddEntry() {
           discount: Number(p.discount || 0),
           subtotal: Number(subtotal),
         })),
+        shippingCustomer,
+        shippingMerchant,
         totalShippingCharge,
-        shippingMethod: e.target.shippingMethod?.value || "N/A", // Optional
+        shippingMethod: e.target.shippingMethod?.value || "N/A",
         otherCost: Number(otherCost),
         courierTax: courierTax,
         totalQuantity,
-        totalSellPrice,
         totalPurchasePrice,
+        totalSellPrice,
         totalDiscount: Number(totalDiscount),
         totalIncome,
         netProfit,

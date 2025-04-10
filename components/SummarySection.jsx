@@ -155,8 +155,8 @@ export default function SummarySection({
           <label className="text-sm">Shipping Method</label>
           <select className="w-full p-2 border rounded" required>
             {["Pathao", "Steadfast", "Sunderban", "Korotoa", "Janani"].map(
-              (opt) => (
-                <option key={opt} value={opt}>{opt}</option>
+              (opt, index) => (
+                <option key={index} value={opt}>{opt}</option>
               )
             )}
           </select>
@@ -216,7 +216,6 @@ export default function SummarySection({
                 <input
                   type="number"
                   placeholder={0}
-                  step={0.1}
                   onChange={(e) => setOverallDiscount(Number(e.target.value))}
                   className="w-24 p-1 border rounded text-right"
                 />

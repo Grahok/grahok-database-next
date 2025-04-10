@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import {
   FaBullseye,
+  FaDollarSign,
   FaEye,
   FaHashtag,
   FaLocationDot,
@@ -11,33 +12,31 @@ import {
   FaTrash,
   FaUser,
 } from "react-icons/fa6";
-import { fetchCustomers, deleteCustomer } from "./actions";
+import { fetchEntries, deleteEntry } from "./actions";
 
-export default function AllCustomers() {
-  const [customers, setCustomers] = useState([]);
+export default function AllEntries() {
+  const [entries, setEntries] = useState([]);
 
   useEffect(() => {
-    async function loadCustomers() {
+    async function loadEntries() {
       try {
-        const data = await fetchCustomers();
-        setCustomers(data);
+        const data = await fetchEntries();
+        setEntries(data);
       } catch (error) {
-        console.error("Error fetching customers:", error);
+        console.error("Error fetching entries:", error);
       }
     }
 
-    loadCustomers();
+    loadEntries();
   }, []);
 
-  async function handleDelete(customerId) {
+  async function handleDelete(entryId) {
     try {
-      await deleteCustomer(customerId);
-      setCustomers((prev) =>
-        prev.filter((customer) => customer._id !== customerId)
-      );
-      console.log("Customer deleted successfully");
+      await deleteEntry(entryId);
+      setEntries((prev) => prev.filter((entry) => entry._id !== entryId));
+      console.log("Entry deleted successfully");
     } catch (error) {
-      console.error("Error deleting customer:", error);
+      console.error("Error deleting entry:", error);
     }
   }
 
@@ -56,19 +55,37 @@ export default function AllCustomers() {
             <th>
               <div className="flex gap-1 items-center">
                 <FaUser />
-                <span>Name</span>
+                <span>Customer</span>
               </div>
             </th>
             <th>
               <div className="flex gap-1 items-center">
-                <FaPhone />
-                <span>Mobile Number</span>
+                <FaDollarSign />
+                <span>Total Purchase Price</span>
               </div>
             </th>
             <th>
               <div className="flex gap-1 items-center">
-                <FaLocationDot />
-                <span>Address</span>
+                <FaDollarSign />
+                <span>Total Sell Price</span>
+              </div>
+            </th>
+            <th>
+              <div className="flex gap-1 items-center">
+                <FaHashtag />
+                <span>Total Quantity</span>
+              </div>
+            </th>
+            <th>
+              <div className="flex gap-1 items-center">
+                <FaDollarSign />
+                <span>Total Discount</span>
+              </div>
+            </th>
+            <th>
+              <div className="flex gap-1 items-center">
+                <FaDollarSign />
+                <span>Total Profit</span>
               </div>
             </th>
             <th>
@@ -80,29 +97,32 @@ export default function AllCustomers() {
           </tr>
         </thead>
         <tbody>
-          {customers.map((customer, index) => (
-            <tr key={customer._id} className="hover:bg-gray-100">
+          {entries.map((entry, index) => (
+            <tr key={entry._id} className="hover:bg-gray-100">
               <td>{index + 1}</td>
-              <td>{customer.name}</td>
-              <td>{customer.mobileNumber}</td>
-              <td>{customer.address}</td>
+              <td>{entry.customer}</td>
+              <td>{entry.totalPurchasePrice}</td>
+              <td>{entry.totalSellPrice}</td>
+              <td>{entry.totalQuantity}</td>
+              <td>{entry.totalDiscount}</td>
+              <td>{entry.netProfit}</td>
               <td>
                 <div className="flex gap-1">
                   <a
-                    href={`/customers/view/${customer._id}`}
+                    href={`/entries/view/${entry._id}`}
                     className="p-2 bg-blue-600 text-white rounded-md"
                   >
                     <FaEye />
                   </a>
                   <a
-                    href={`/customers/edit/${customer._id}`}
+                    href={`/entries/edit/${entry._id}`}
                     className="p-2 bg-green-600 text-white rounded-md"
                   >
                     <FaPencil />
                   </a>
                   <button
                     className="p-2 bg-red-600 text-white rounded-md cursor-pointer"
-                    onClick={() => handleDelete(customer._id)}
+                    onClick={() => handleDelete(entry._id)}
                   >
                     <FaTrash />
                   </button>

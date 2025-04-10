@@ -18,21 +18,21 @@ const entrySchema = new mongoose.Schema({
 
   products: [productSchema],
 
-  shippingChargeCustomer: Number,
-  shippingChargeMerchant: Number,
+  shippingCustomer: Number,
+  shippingMerchant: Number,
   shippingMethod: String,
   otherCost: Number,
   courierTax: Number,
 
   // Calculated fields (write-once at submission)
-  totalQuantity: { type: Number, immutable: true },
-  totalSell: { type: Number, immutable: true },
-  totalPurchase: { type: Number, immutable: true },
-  totalDiscount: { type: Number, immutable: true },
-  subtotal: { type: Number, immutable: true },
-  paidByCustomer: { type: Number, immutable: true },
-  shippingChargeTotal: { type: Number, immutable: true },
-  netProfit: { type: Number, immutable: true },
+  totalShippingCharge: Number,
+  totalQuantity: Number,
+  totalSellPrice: Number,
+  totalPurchasePrice: Number,
+  totalDiscount: Number,
+  totalIncome: Number,
+  // paidByCustomer: Number,
+  netProfit: Number,
 });
 
 const Entry = mongoose.models.Entry || mongoose.model("Entry", entrySchema);

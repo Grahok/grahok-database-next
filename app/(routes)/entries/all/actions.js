@@ -1,28 +1,29 @@
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
-export async function fetchCustomers() {
-  const response = await fetch(`${baseUrl}/api/customers`, {
+export async function fetchEntries() {
+  const response = await fetch(`${baseUrl}/api/entries`, {
     method: "GET",
     headers: { "Content-Type": "application/json" },
     cache: "no-store", // ensure fresh data
   });
 
   if (!response.ok) {
-    throw new Error("Failed to fetch customers");
+    throw new Error("Failed to fetch entries");
   }
 
   return response.json();
 }
 
-export async function deleteCustomer(customerId) {
-  const response = await fetch(`${baseUrl}/api/customers`, {
+export async function deleteEntry(entryId) {
+  const response = await fetch(`${baseUrl}/api/entries`, {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ _id: customerId }), // 🔁 fixed key to _id
+    body: JSON.stringify({ _id: entryId }), // 🔁 fixed key to _id
   });
 
+  console.log(response)
   if (!response.ok) {
-    throw new Error("Failed to delete customer");
+    throw new Error("Failed to delete entry");
   }
 
   return response.json();
