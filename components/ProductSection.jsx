@@ -21,10 +21,10 @@ export default function ProductSection({
     loadProducts();
   }, []);
 
-  const selectedIds = selectedProducts.map((row) => row.product.id);
+  const selectedIds = selectedProducts.map((row) => row.product._id); // Use _id consistently
   const filtered = products.filter(
     (p) =>
-      !selectedIds.includes(p.id) &&
+      !selectedIds.includes(p._id) && // Use _id here
       p.name.toLowerCase().includes(search.toLowerCase())
   );
 
@@ -39,7 +39,7 @@ export default function ProductSection({
     };
     setSelectedProducts((prev) => [...prev, newRow]);
     document.getElementById("dropdown").classList.add("hidden");
-    setSearch("");
+    setSearch(""); // Clear search input
   };
 
   const updateRow = (id, field, value) => {
@@ -58,7 +58,7 @@ export default function ProductSection({
     <section className="bg-white p-6 rounded-lg shadow space-y-6">
       <h2 className="text-2xl font-semibold">Add Products</h2>
 
-      {/* Dropdown */}
+      {/* Product Dropdown */}
       <div className="relative w-80">
         <button
           onClick={() =>
