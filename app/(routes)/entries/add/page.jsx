@@ -6,6 +6,7 @@ import Toast from "@/components/Toast";
 import SummarySection from "@/components/SummarySection";
 import ProductSection from "@/components/ProductSection";
 import CustomerForm from "@/components/CustomerForm";
+import ToastConfirmation from "@/components/ToastConfirmation"; // Import the component
 
 export default function AddEntry() {
   const router = useRouter();
@@ -125,6 +126,19 @@ export default function AddEntry() {
           0
         )
       );
+      const subtotal = totalSellPrice - overallDiscount;
+      const customerPayment = Number(
+        selectedProducts.reduce(
+          (sum, row) => sum + row.quantity * row.sellPrice - row.discount,
+          0
+        ) +
+          shippingCustomer -
+          overallDiscount
+      );
+      const totalShippingCharge = shippingCustomer + shippingMerchant;
+      const totalIncome = customerPayment - totalShippingCharge - courierTax;
+      const netProfit =
+        subtotal - totalPurchasePrice - shippingMerchant - otherCost;
 
       const entry = {
         invoiceNumber: Number(e.target.invoiceNumber?.value || 0),
@@ -167,8 +181,13 @@ export default function AddEntry() {
         throw new Error("Failed to save entry.");
       }
 
-      // ✅ Redirect to all entries or show success message
-      router.push("/entries/all");
+      // ✅ Show success toast
+      setToast({ show: true, message: "Entry added successfully." });
+
+      setTimeout(() => {
+        setToast({ show: false, message: "" });
+        router.push("/entries/all");
+      }, 2000);
     } catch (err) {
       console.error(err);
       setError(err.message || "Something went wrong.");
