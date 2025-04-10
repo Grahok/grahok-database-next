@@ -10,26 +10,24 @@ export default function SummarySection({
   overallDiscount,
   setOverallDiscount,
 }) {
-  const subtotal = selectedProducts.reduce(
-    (sum, row) => sum + row.quantity * row.sellPrice - row.discount,
-    0
-  );
-  const customerPayment =
+  const subtotal =
     selectedProducts.reduce(
       (sum, row) => sum + row.quantity * row.sellPrice - row.discount,
       0
-    ) +
-    shippingCustomer -
-    overallDiscount;
+    ) - overallDiscount;
+  const customerPayment = subtotal + shippingCustomer;
   const totalPurchase = selectedProducts.reduce(
     (sum, row) => sum + row.quantity * row.purchasePrice,
     0
   );
 
   const totalShippingCharge = shippingCustomer + shippingMerchant;
-  const courierTax = Number(((subtotal + totalShippingCharge - overallDiscount) * 0.01).toFixed(2)) || 0;
-  const totalIncome = customerPayment - totalShippingCharge - courierTax;
-  const netProfit = totalIncome - totalPurchase - otherCost - overallDiscount;
+  const courierTax =
+    Number(
+      ((subtotal + totalShippingCharge) * 0.01).toFixed(2)
+    ) || 0;
+  const totalIncome = customerPayment - totalShippingCharge - courierTax - otherCost;
+  const netProfit = totalIncome - totalPurchase;
 
   return (
     <section className="bg-white p-6 rounded-lg shadow grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -60,7 +58,9 @@ export default function SummarySection({
           <select className="w-full p-2 border rounded" required>
             {["Pathao", "Steadfast", "Sunderban", "Korotoa", "Janani"].map(
               (opt, index) => (
-                <option key={index} value={opt}>{opt}</option>
+                <option key={index} value={opt}>
+                  {opt}
+                </option>
               )
             )}
           </select>
