@@ -2,12 +2,13 @@
 
 import { connectToDatabase } from "@/lib/mongoose";
 import Entry from "@/models/Entry";
+import Customer from "@/models/Customer";
 
 export async function GET() {
   try {
     await connectToDatabase();
 
-    const entries = await Entry.find({});
+    const entries = await Entry.find().populate("customer", "name");
     return Response.json(entries);
   } catch (error) {
     console.error("Error fetching entries:", error);

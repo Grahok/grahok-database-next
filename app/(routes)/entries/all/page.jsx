@@ -100,7 +100,7 @@ export default function AllEntries() {
           {entries.map((entry, index) => (
             <tr key={entry._id} className="hover:bg-gray-100">
               <td>{index + 1}</td>
-              <td>{entry.customer}</td>
+              <td>{entry.customer?.name}</td>
               <td>{entry.totalPurchasePrice}</td>
               <td>{entry.totalSellPrice}</td>
               <td>{entry.totalQuantity}</td>
