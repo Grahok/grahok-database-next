@@ -1,21 +1,22 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   FaBullseye,
   FaDollarSign,
   FaEye,
   FaHashtag,
-  FaLocationDot,
   FaPencil,
-  FaPhone,
   FaTrash,
   FaUser,
 } from "react-icons/fa6";
 import { fetchEntries, deleteEntry } from "./actions";
+import ConfirmDialog from "@/components/ConfirmDialog";
 
 export default function AllEntries() {
   const [entries, setEntries] = useState([]);
+  const [selectedEntryId, setSelectedEntryId] = useState(null);
+  const confirmDialogRef = useRef();
 
   useEffect(() => {
     async function loadEntries() {
@@ -30,10 +31,17 @@ export default function AllEntries() {
     loadEntries();
   }, []);
 
-  async function handleDelete(entryId) {
+  function openConfirmDialog(entryId) {
+    setSelectedEntryId(entryId); // Store the selected entry ID
+    confirmDialogRef.current.open(); // Open the confirmation dialog
+  }
+
+  async function handleDelete() {
     try {
-      await deleteEntry(entryId);
-      setEntries((prev) => prev.filter((entry) => entry._id !== entryId));
+      await deleteEntry(selectedEntryId); // Use the stored entry ID
+      setEntries((prev) =>
+        prev.filter((entry) => entry._id !== selectedEntryId)
+      );
       console.log("Entry deleted successfully");
     } catch (error) {
       console.error("Error deleting entry:", error);
@@ -122,7 +130,7 @@ export default function AllEntries() {
                   </a>
                   <button
                     className="p-2 bg-red-600 text-white rounded-md cursor-pointer"
-                    onClick={() => handleDelete(entry._id)}
+                    onClick={() => openConfirmDialog(entry._id)}
                   >
                     <FaTrash />
                   </button>
@@ -132,6 +140,11 @@ export default function AllEntries() {
           ))}
         </tbody>
       </table>
+      <ConfirmDialog
+        ref={confirmDialogRef}
+        onConfirm={handleDelete} // Call handleDelete only after confirmation
+        message="Are you sure you want to delete this entry?"
+      />
     </div>
   );
 }

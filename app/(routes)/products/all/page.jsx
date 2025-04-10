@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   FaBullseye,
   FaDollarSign,
@@ -11,9 +11,12 @@ import {
   FaUser,
 } from "react-icons/fa6";
 import { fetchProducts, deleteProduct } from "./actions";
+import ConfirmDialog from "@/components/ConfirmDialog";
 
 export default function AllProducts() {
   const [products, setProducts] = useState([]);
+  const [selectedProductId, setSelectedProductId] = useState(null); // State to store the selected product ID
+  const confirmDialogRef = useRef();
 
   useEffect(() => {
     async function loadProducts() {
@@ -28,11 +31,16 @@ export default function AllProducts() {
     loadProducts();
   }, []);
 
-  async function handleDelete(productId) {
+  function openConfirmDialog(productId) {
+    setSelectedProductId(productId); // Store the selected product ID
+    confirmDialogRef.current.open(); // Open the confirmation dialog
+  }
+
+  async function handleDelete() {
     try {
-      await deleteProduct(productId);
+      await deleteProduct(selectedProductId); // Use the stored product ID
       setProducts((prev) =>
-        prev.filter((product) => product._id !== productId)
+        prev.filter((product) => product._id !== selectedProductId)
       );
       console.log("Product deleted successfully");
     } catch (error) {
@@ -101,7 +109,7 @@ export default function AllProducts() {
                   </a>
                   <button
                     className="p-2 bg-red-600 text-white rounded-md cursor-pointer"
-                    onClick={() => handleDelete(product._id)}
+                    onClick={() => openConfirmDialog(product._id)}
                   >
                     <FaTrash />
                   </button>
@@ -111,6 +119,11 @@ export default function AllProducts() {
           ))}
         </tbody>
       </table>
+      <ConfirmDialog
+        ref={confirmDialogRef}
+        onConfirm={handleDelete} // Call handleDelete only after confirmation
+        message="Are you sure you want to delete this product?"
+      />
     </div>
   );
 }

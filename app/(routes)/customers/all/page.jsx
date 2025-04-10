@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
   FaBullseye,
   FaEye,
@@ -12,9 +12,12 @@ import {
   FaUser,
 } from "react-icons/fa6";
 import { fetchCustomers, deleteCustomer } from "./actions";
+import ConfirmDialog from "@/components/ConfirmDialog";
 
 export default function AllCustomers() {
   const [customers, setCustomers] = useState([]);
+  const [selectedCustomerId, setSelectedCustomerId] = useState(null);
+  const confirmDialogRef = useRef();
 
   useEffect(() => {
     async function loadCustomers() {
@@ -29,11 +32,16 @@ export default function AllCustomers() {
     loadCustomers();
   }, []);
 
-  async function handleDelete(customerId) {
+  function openConfirmDialog(customerId) {
+    setSelectedCustomerId(customerId);
+    confirmDialogRef.current.open();
+  }
+
+  async function handleDelete() {
     try {
-      await deleteCustomer(customerId);
+      await deleteCustomer(selectedCustomerId);
       setCustomers((prev) =>
-        prev.filter((customer) => customer._id !== customerId)
+        prev.filter((customer) => customer._id !== selectedCustomerId)
       );
       console.log("Customer deleted successfully");
     } catch (error) {
@@ -102,7 +110,7 @@ export default function AllCustomers() {
                   </a>
                   <button
                     className="p-2 bg-red-600 text-white rounded-md cursor-pointer"
-                    onClick={() => handleDelete(customer._id)}
+                    onClick={() => openConfirmDialog(customer._id)}
                   >
                     <FaTrash />
                   </button>
@@ -112,6 +120,12 @@ export default function AllCustomers() {
           ))}
         </tbody>
       </table>
+
+      <ConfirmDialog
+        ref={confirmDialogRef}
+        onConfirm={handleDelete}
+        message="Are you sure you want to delete this customer?"
+      />
     </div>
   );
 }
