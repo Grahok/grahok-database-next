@@ -139,7 +139,7 @@ export default function CustomerForm({ onCustomerChange }) {
             className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none"
             placeholder="Mobile Number"
             value={mobileNumber}
-            onChange={(e) => setAddress(e.target.mobileNumber)}
+            onChange={(e) => setMobileNumber(e.target.value)}
             required
           />
         </div>
