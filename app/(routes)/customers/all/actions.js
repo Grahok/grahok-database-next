@@ -1,4 +1,6 @@
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+const baseUrl =
+  process.env.NEXT_PUBLIC_BASE_URL ||
+  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "");
 
 export async function fetchCustomers() {
   const response = await fetch(`${baseUrl}/api/customers`, {

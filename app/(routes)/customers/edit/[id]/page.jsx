@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
-import ToastConfirmation from "@/components/ToastConfirmation";
+import Toast from "@/components/Toast";
 
 export default function EditCustomer() {
   const router = useRouter();
@@ -110,10 +110,10 @@ export default function EditCustomer() {
         </div>
       </form>
 
-      <ToastConfirmation
+      <Toast
+        show={toast.show}
         message={toast.message}
         onClose={() => setToast({ show: false, message: "" })}
-        duration={3000}
       />
     </div>
   );

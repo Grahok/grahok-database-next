@@ -96,12 +96,6 @@ export default function AllProducts() {
               <td>
                 <div className="flex gap-1">
                   <a
-                    href={`/products/view/${product._id}`}
-                    className="p-2 bg-blue-600 text-white rounded-md"
-                  >
-                    <FaEye />
-                  </a>
-                  <a
                     href={`/products/edit/${product._id}`}
                     className="p-2 bg-green-600 text-white rounded-md"
                   >

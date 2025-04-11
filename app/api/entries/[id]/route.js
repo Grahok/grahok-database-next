@@ -1,14 +1,16 @@
 import { connectToDatabase } from "@/lib/mongoose";
 import Entry from "@/models/Entry";
+import Customer from "@/models/Customer";
+import Product from "@/models/Product";
 
 export async function GET(_, { params }) {
-  const { id } = params;
+  const { id } = await params;
   try {
     await connectToDatabase();
 
-    // Populate the customer and product fields
+    // Populate the entry and product fields
     const entry = await Entry.findById(id)
-      .populate("customer", "name")
+      .populate("customer", "name mobileNumber address") // Populate customer details
       .populate("products.product", "name"); // Populate product names
 
     if (!entry) {

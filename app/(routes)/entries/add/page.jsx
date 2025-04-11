@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Toast from "@/components/Toast";
 import SummarySection from "@/components/SummarySection";
@@ -9,66 +9,33 @@ import CustomerForm from "@/components/CustomerForm";
 
 export default function AddEntry() {
   const router = useRouter();
+
+  const [invoiceNumber, setInvoiceNumber] = useState(0);
   const [customerData, setCustomerData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [selectedProducts, setSelectedProducts] = useState([]);
-  const [shippingCustomer, setShippingCustomer] = useState(0);
-  const [shippingMerchant, setShippingMerchant] = useState(0);
-  const [otherCost, setOtherCost] = useState(0);
   const [overallDiscount, setOverallDiscount] = useState(0);
-  const [courierTax, setCourierTax] = useState(0);
-  const [toast, setToast] = useState({ show: false, message: "" });
-
-  // Calculate values using useMemo for performance optimization
-  const {
-    subtotal,
-    customerPayment,
-    totalPurchase,
-    totalShippingCharge,
-    calculatedCourierTax,
-    totalIncome,
-    netProfit,
-  } = useMemo(() => {
-    const subtotal =
-      selectedProducts.reduce(
-        (sum, row) => sum + row.quantity * row.sellPrice - row.discount,
-        0
-      ) - overallDiscount;
-
-    const customerPayment = subtotal + shippingCustomer;
-
-    const totalPurchase = selectedProducts.reduce(
-      (sum, row) => sum + row.quantity * row.purchasePrice,
+  const subtotal =
+    selectedProducts.reduce(
+      (sum, row) => sum + row.quantity * row.sellPrice - row.discount,
       0
     );
-
-    const totalShippingCharge = shippingCustomer + shippingMerchant;
-
-    const calculatedCourierTax =
-      Math.ceil((subtotal + totalShippingCharge) * 0.01) || 0;
-
-    const totalIncome =
-      customerPayment - totalShippingCharge - calculatedCourierTax - otherCost;
-
-    const netProfit = totalIncome - totalPurchase;
-
-    return {
-      subtotal,
-      customerPayment,
-      totalPurchase,
-      totalShippingCharge,
-      calculatedCourierTax,
-      totalIncome,
-      netProfit,
-    };
-  }, [
-    selectedProducts,
-    shippingCustomer,
-    shippingMerchant,
-    overallDiscount,
-    otherCost,
-  ]);
+  const totalPurchasePrice = selectedProducts.reduce(
+    (sum, row) => sum + row.quantity * row.purchasePrice,
+    0
+  );
+  const [shippingCustomer, setShippingCustomer] = useState(0);
+  const paidByCustomer = subtotal + shippingCustomer - overallDiscount;
+  const [shippingMerchant, setShippingMerchant] = useState(0);
+  const totalShippingCharge = shippingCustomer + shippingMerchant;
+  const [otherCost, setOtherCost] = useState(0);
+  const [courierTax, setCourierTax] = useState(0);
+  const totalIncome =
+    paidByCustomer - totalShippingCharge - courierTax - otherCost;
+  const netProfit = totalIncome - totalPurchasePrice;
+  const [toast, setToast] = useState({ show: false, message: "" });
+  const [shippingMethod, setShippingMethod] = useState("N/A");
 
   const handleCustomerChange = (data) => {
     setCustomerData(data);
@@ -113,56 +80,40 @@ export default function AddEntry() {
       const totalSellPrice = Number(
         selectedProducts.reduce((sum, p) => sum + p.sellPrice * p.quantity, 0)
       );
-      const totalPurchasePrice = Number(
-        selectedProducts.reduce(
-          (sum, p) => sum + p.purchasePrice * p.quantity,
-          0
-        )
-      );
       const totalDiscount = Number(
         selectedProducts.reduce(
           (sum, p) => sum + p.discount + overallDiscount,
           0
         )
       );
-      const subtotal = totalSellPrice - overallDiscount;
-      const customerPayment = Number(
-        selectedProducts.reduce(
-          (sum, row) => sum + row.quantity * row.sellPrice - row.discount,
-          0
-        ) +
-          shippingCustomer -
-          overallDiscount
-      );
-      const totalShippingCharge = shippingCustomer + shippingMerchant;
-      const totalIncome = customerPayment - totalShippingCharge - courierTax;
-      const netProfit =
-        subtotal - totalPurchasePrice - shippingMerchant - otherCost;
 
       const entry = {
-        invoiceNumber: Number(e.target.invoiceNumber?.value || 0),
+        invoiceNumber: invoiceNumber,
         customer: customerId,
         orderDate: e.target.orderDate.value,
         entryDate: e.target.entryDate.value,
         paymentDate: e.target.paymentDate.value || null,
         products: selectedProducts.map((p) => ({
-          product: p.product._id, // Use the product's ObjectId
+          product: p.product._id,
           quantity: Number(p.quantity),
           purchasePrice: Number(p.purchasePrice),
           sellPrice: Number(p.sellPrice),
           discount: Number(p.discount || 0),
           subtotal: Number(p.quantity * p.sellPrice - p.discount),
         })),
+        subtotal,
+        paidByCustomer,
         shippingCustomer,
         shippingMerchant,
         totalShippingCharge,
-        shippingMethod: e.target.shippingMethod?.value || "N/A",
-        otherCost: Number(otherCost),
-        courierTax: calculatedCourierTax,
+        shippingMethod,
+        otherCost,
+        courierTax,
         totalQuantity,
         totalPurchasePrice,
         totalSellPrice,
-        totalDiscount: Number(totalDiscount),
+        totalDiscount,
+        overallDiscount,
         totalIncome,
         netProfit,
       };
@@ -204,6 +155,7 @@ export default function AddEntry() {
           type="number"
           placeholder="Invoice Number"
           className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none"
+          onChange={(e) => setInvoiceNumber(e.target.value)}
         />
       </header>
 
@@ -224,18 +176,19 @@ export default function AddEntry() {
           setShippingCustomer={setShippingCustomer}
           shippingMerchant={shippingMerchant}
           setShippingMerchant={setShippingMerchant}
+          courierTax={courierTax}
           setCourierTax={setCourierTax}
           otherCost={otherCost}
           setOtherCost={setOtherCost}
           overallDiscount={overallDiscount}
           setOverallDiscount={setOverallDiscount}
           subtotal={subtotal}
-          customerPayment={customerPayment}
-          totalPurchase={totalPurchase}
+          paidByCustomer={paidByCustomer}
+          totalPurchasePrice={totalPurchasePrice}
           totalShippingCharge={totalShippingCharge}
-          courierTax={calculatedCourierTax}
           totalIncome={totalIncome}
           netProfit={netProfit}
+          setShippingMethod={setShippingMethod}
         />
 
         {/* Error or Loading Feedback */}

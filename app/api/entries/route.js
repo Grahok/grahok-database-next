@@ -8,7 +8,7 @@ export async function GET() {
   try {
     await connectToDatabase();
 
-    const entries = await Entry.find().populate("customer", "name");
+    const entries = await Entry.find().populate("customer", "name mobileNumber");
     return Response.json(entries);
   } catch (error) {
     console.error("Error fetching entries:", error);
@@ -22,14 +22,14 @@ export async function POST(req) {
     const body = await req.json();
 
     // Validate required fields before inserting
-    if (
-      !body.customer ||
-      !body.orderDate ||
-      !body.entryDate ||
-      !body.products?.length
-    ) {
-      return new Response("Missing required fields", { status: 400 });
-    }
+    // if (
+    //   !body.customer ||
+    //   !body.orderDate ||
+    //   !body.entryDate ||
+    //   !body.products?.length
+    // ) {
+    //   return new Response("Missing required fields", { status: 400 });
+    // }
 
     // Map products to include only the product reference and other fields
     const products = body.products.map((p) => ({

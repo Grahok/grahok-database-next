@@ -15,21 +15,22 @@ const entrySchema = new mongoose.Schema({
   orderDate: Date,
   entryDate: Date,
   paymentDate: Date,
-
   products: [productSchema],
-
+  subtotal: Number,
+  paidByCustomer: Number,
   shippingCustomer: Number,
   shippingMerchant: Number,
+  totalShippingCharge: Number,
   shippingMethod: String,
   otherCost: Number,
   courierTax: Number,
-
+  
   // Calculated fields (write-once at submission)
-  totalShippingCharge: Number,
   totalQuantity: Number,
-  totalSellPrice: Number,
   totalPurchasePrice: Number,
+  totalSellPrice: Number,
   totalDiscount: Number,
+  overallDiscount: Number,
   totalIncome: Number,
   netProfit: Number,
 });

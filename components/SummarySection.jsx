@@ -3,14 +3,14 @@ export default function SummarySection({
   setShippingCustomer,
   shippingMerchant,
   setShippingMerchant,
+  courierTax,
   setCourierTax,
   setOtherCost,
   setOverallDiscount,
   subtotal,
-  customerPayment,
-  totalPurchase,
+  paidByCustomer,
+  totalPurchasePrice,
   totalShippingCharge,
-  courierTax,
   totalIncome,
   netProfit,
 }) {
@@ -71,7 +71,7 @@ export default function SummarySection({
             </tr>
             <tr>
               <td>Paid by Customer</td>
-              <td>{customerPayment.toFixed(2)}</td>
+              <td>{paidByCustomer.toFixed(2)}</td>
             </tr>
             <tr>
               <td>Shipping Charge</td>
@@ -84,7 +84,7 @@ export default function SummarySection({
                   type="number"
                   placeholder={0}
                   min={0}
-                  defaultValue={courierTax}
+                  value={courierTax}
                   onChange={(e) => setCourierTax(Number(e.target.value))}
                   className="w-24 p-1 border rounded text-right"
                 />
@@ -96,7 +96,7 @@ export default function SummarySection({
             </tr>
             <tr>
               <td>Total Purchase</td>
-              <td>{totalPurchase.toFixed(2)}</td>
+              <td>{totalPurchasePrice.toFixed(2)}</td>
             </tr>
             <tr>
               <td>Overall Discount</td>

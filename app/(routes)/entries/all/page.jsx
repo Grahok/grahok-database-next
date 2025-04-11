@@ -6,6 +6,7 @@ import {
   FaDollarSign,
   FaEye,
   FaHashtag,
+  FaMobile,
   FaPencil,
   FaTrash,
   FaUser,
@@ -48,6 +49,25 @@ export default function AllEntries() {
     }
   }
 
+  const totalIncome = entries.reduce((acc, entry) => {
+    return acc + entry.totalIncome;
+  }, 0);
+  const totalProfit = entries.reduce((acc, entry) => {
+    return acc + entry.netProfit;
+  }, 0);
+  const totalDiscount = entries.reduce((acc, entry) => {
+    return acc + entry.totalDiscount;
+  }, 0);
+  const totalPurchasePrice = entries.reduce((acc, entry) => {
+    return acc + entry.totalPurchasePrice;
+  }, 0);
+  const totalSellPrice = entries.reduce((acc, entry) => {
+    return acc + entry.totalSellPrice;
+  }, 0);
+  const totalQuantity = entries.reduce((acc, entry) => {
+    return acc + entry.totalQuantity;
+  }, 0);
+
   return (
     <div className="w-full flex flex-col gap-3">
       <h1 className="text-3xl font-bold">All Entries:</h1>
@@ -62,8 +82,20 @@ export default function AllEntries() {
             </th>
             <th>
               <div className="flex gap-1 items-center">
+                <FaBullseye />
+                <span>Actions</span>
+              </div>
+            </th>
+            <th>
+              <div className="flex gap-1 items-center">
                 <FaUser />
                 <span>Customer</span>
+              </div>
+            </th>
+            <th>
+              <div className="flex gap-1 items-center">
+                <FaMobile />
+                <span>Mobile Number</span>
               </div>
             </th>
             <th>
@@ -96,53 +128,56 @@ export default function AllEntries() {
                 <span>Total Profit</span>
               </div>
             </th>
-            <th>
-              <div className="flex gap-1 items-center">
-                <FaBullseye />
-                <span>Actions</span>
-              </div>
-            </th>
           </tr>
         </thead>
         <tbody>
           {entries.map((entry, index) => (
             <tr key={entry._id} className="hover:bg-gray-100">
               <td>{index + 1}</td>
+              <td>
+                <div className="flex gap-1">
+                  <a
+                    href={`/entries/view/${entry._id}`}
+                    className="p-1.5 bg-blue-600 text-white rounded-md"
+                  >
+                    <FaEye size={12} />
+                  </a>
+                  <a
+                    href={`/entries/edit/${entry._id}`}
+                    className="p-1.5 bg-green-600 text-white rounded-md"
+                  >
+                    <FaPencil size={12} />
+                  </a>
+                  <button
+                    className="p-1.5 bg-red-600 text-white rounded-md cursor-pointer"
+                    onClick={() => openConfirmDialog(entry._id)}
+                  >
+                    <FaTrash size={12} />
+                  </button>
+                </div>
+              </td>
               <td>{entry.customer?.name}</td>
+              <td>{entry.customer?.mobileNumber}</td>
               <td>{entry.totalPurchasePrice}</td>
               <td>{entry.totalSellPrice}</td>
               <td>{entry.totalQuantity}</td>
               <td>{entry.totalDiscount}</td>
               <td>{entry.netProfit}</td>
-              <td>
-                <div className="flex gap-1">
-                  <a
-                    href={`/entries/view/${entry._id}`}
-                    className="p-2 bg-blue-600 text-white rounded-md"
-                  >
-                    <FaEye />
-                  </a>
-                  <a
-                    href={`/entries/edit/${entry._id}`}
-                    className="p-2 bg-green-600 text-white rounded-md"
-                  >
-                    <FaPencil />
-                  </a>
-                  <button
-                    className="p-2 bg-red-600 text-white rounded-md cursor-pointer"
-                    onClick={() => openConfirmDialog(entry._id)}
-                  >
-                    <FaTrash />
-                  </button>
-                </div>
-              </td>
             </tr>
           ))}
+          <tr>
+            <td colSpan="4" className="font-bold">Total:</td>
+            <td>{totalPurchasePrice}</td>
+            <td>{totalSellPrice}</td>
+            <td>{totalQuantity}</td>
+            <td>{totalDiscount}</td>
+            <td>{totalProfit}</td>
+          </tr>
         </tbody>
       </table>
       <ConfirmDialog
         ref={confirmDialogRef}
-        onConfirm={handleDelete} // Call handleDelete only after confirmation
+        onConfirm={handleDelete}
         message="Are you sure you want to delete this entry?"
       />
     </div>

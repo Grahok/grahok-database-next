@@ -9,12 +9,6 @@ export default function CustomerForm({ onCustomerChange }) {
   const [name, setName] = useState("");
   const [mobileNumber, setMobileNumber] = useState("");
   const [address, setAddress] = useState("");
-  // const [customer, setCustomer] = useState(null);
-  const customer = {
-    name: name,
-    mobileNumber: mobileNumber,
-    address: address,
-  };
   const [customers, setCustomers] = useState([]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [search, setSearch] = useState("");
@@ -35,7 +29,7 @@ export default function CustomerForm({ onCustomerChange }) {
 
   // Filter customers for dropdown
   const filtered = customers.filter((c) =>
-    [c.name, c.mobileNumber, c.address]
+    [c.name, c.mobileNumber]
       .join(" ")
       .toLowerCase()
       .includes(search.toLowerCase())

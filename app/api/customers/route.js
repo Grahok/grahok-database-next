@@ -8,9 +8,13 @@ export async function POST(req) {
     const body = await req.json();
     const customer = new Customer(body);
     await customer.save();
-    console.log("Customer Created Successfully!");
+    console.log("Customer Created Successfully:", customer._id);
 
-    return Response.json({ message: "Customer Created Successfully!" });
+    // Return the created customer's _id along with the success message
+    return Response.json({
+      message: "Customer Created Successfully!",
+      _id: customer._id,
+    });
   } catch (error) {
     console.error(error);
     return new Response("Error creating customer", { status: 500 });
