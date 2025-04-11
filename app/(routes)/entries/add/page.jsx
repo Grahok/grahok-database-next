@@ -11,16 +11,16 @@ export default function AddEntry() {
   const router = useRouter();
 
   const [invoiceNumber, setInvoiceNumber] = useState(0);
+  const [orderStatus, setOrderStatus] = useState("Pending");
   const [customerData, setCustomerData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [overallDiscount, setOverallDiscount] = useState(0);
-  const subtotal =
-    selectedProducts.reduce(
-      (sum, row) => sum + row.quantity * row.sellPrice - row.discount,
-      0
-    );
+  const subtotal = selectedProducts.reduce(
+    (sum, row) => sum + row.quantity * row.sellPrice - row.discount,
+    0
+  );
   const totalPurchasePrice = selectedProducts.reduce(
     (sum, row) => sum + row.quantity * row.purchasePrice,
     0
@@ -81,14 +81,12 @@ export default function AddEntry() {
         selectedProducts.reduce((sum, p) => sum + p.sellPrice * p.quantity, 0)
       );
       const totalDiscount = Number(
-        selectedProducts.reduce(
-          (sum, p) => sum + p.discount + overallDiscount,
-          0
-        )
-      );
+        selectedProducts.reduce((sum, p) => sum + p.discount, 0)
+      ) + Number(overallDiscount);
 
       const entry = {
-        invoiceNumber: invoiceNumber,
+        invoiceNumber,
+        orderStatus,
         customer: customerId,
         orderDate: e.target.orderDate.value,
         entryDate: e.target.entryDate.value,
@@ -149,14 +147,32 @@ export default function AddEntry() {
   return (
     <main className="min-h-screen p-6 bg-gray-50 text-gray-800 flex flex-col gap-8">
       <h1 className="text-4xl font-bold text-blue-600">Grahok Database</h1>
-      <header className="flex justify-between">
+      <header className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">Add New Entry</h1>
-        <input
-          type="number"
-          placeholder="Invoice Number"
-          className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none"
-          onChange={(e) => setInvoiceNumber(e.target.value)}
-        />
+        <div className="flex gap-2">
+          <input
+            type="number"
+            placeholder="Invoice Number"
+            className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none"
+            onChange={(e) => setInvoiceNumber(Number(e.target.value))}
+          />
+
+          <select
+            name="orderStatus"
+            id="orderStatus"
+            className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none"
+            defaultValue={orderStatus}
+            onChange={(e) => setOrderStatus(e.target.value)}
+          >
+            <option value="Pending">Pending</option>
+            <option value="On Hold">On Hold</option>
+            <option value="Confirmed">Confirmed</option>
+            <option value="Shipped">Shipped</option>
+            {/* Removed undefined statuses */}
+            <option value="Cancelled">Cancelled</option>
+            <option value="Delivered">Delivered</option>
+          </select>
+        </div>
       </header>
 
       <form onSubmit={handleSubmit} className="space-y-10">
@@ -171,7 +187,6 @@ export default function AddEntry() {
 
         {/* Summary */}
         <SummarySection
-          selectedProducts={selectedProducts}
           shippingCustomer={shippingCustomer}
           setShippingCustomer={setShippingCustomer}
           shippingMerchant={shippingMerchant}

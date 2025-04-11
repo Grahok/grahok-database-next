@@ -17,6 +17,7 @@ import {
   FaTrash,
   FaUser,
 } from "react-icons/fa6";
+import Toast from "@/components/Toast";
 
 export default function AllCustomers() {
   const [search, setSearch] = useState("");
@@ -316,13 +317,12 @@ export default function AllCustomers() {
       )}
 
       {/* todo: Toast Component Problem */}
-
-      {/* Toast
+      
       <Toast
         message={toast.message}
         show={toast.show}
         onClose={() => setToast({ show: false, message: "" })}
-      /> */}
+      /> 
 
       {/* Confirmation Dialog */}
       <dialog

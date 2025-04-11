@@ -11,6 +11,11 @@ const productSchema = new mongoose.Schema({
 
 const entrySchema = new mongoose.Schema({
   invoiceNumber: Number,
+  orderStatus: { 
+    type: String, 
+    enum: ["Pending", "On Hold", "Confirmed", "Shipped", "Delivered", "Cancelled"], 
+    default: "Pending" 
+  },
   customer: { type: mongoose.Schema.Types.ObjectId, ref: "Customer" },
   orderDate: Date,
   entryDate: Date,

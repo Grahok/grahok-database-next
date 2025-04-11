@@ -4,14 +4,19 @@ import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { FaArrowLeft, FaChevronDown, FaTrashCan } from "react-icons/fa6";
 
-export default function AddEntry() {
+export default function ViewEntry() {
   const router = useRouter();
   const params = useParams();
   const entryId = params.id;
 
   const [entry, setEntry] = useState({
     invoiceNumber: 0,
-    customer: "",
+    orderStatus: "Pending", // Ensure this matches the backend's default value
+    customer: {
+      name: "",
+      mobileNumber: "",
+      address: "",
+    },
     orderDate: null,
     entryDate: null,
     paymentDate: null,
@@ -34,6 +39,9 @@ export default function AddEntry() {
     totalIncome: 0,
     netProfit: 0,
   });
+
+  // Ensure the UI reflects the default behavior
+  // Removed redundant useEffect for setting orderStatus to "Pending"
 
   useEffect(() => {
     const fetchEntry = async () => {
@@ -68,13 +76,30 @@ export default function AddEntry() {
       <h1 className="text-4xl font-bold text-blue-600">Grahok Database</h1>
       <header className="flex justify-between">
         <h1 className="text-3xl font-bold">View Entry</h1>
-        <input
-          type="number"
-          placeholder="Invoice Number"
-          className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none text-right w-24 bg-gray-100 cursor-not-allowed"
-          defaultValue={entry.invoiceNumber || ""}
-          disabled
-        />
+        <div className="flex gap-2">
+          <input
+            type="number"
+            placeholder="Invoice Number"
+            className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none text-right w-24 bg-gray-100 cursor-not-allowed"
+            defaultValue={entry.invoiceNumber || ""}
+            disabled
+          />
+
+          <select
+            name="orderStatus"
+            id="orderStatus"
+            className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none bg-gray-100 cursor-not-allowed"
+            defaultValue={entry.orderStatus}
+            disabled
+          >
+            <option value="Pending">Pending</option>
+            <option value="On Hold">On Hold</option>
+            <option value="Confirmed">Confirmed</option>
+            <option value="Shipped">Shipped</option>
+            <option value="Delivered">Delivered</option>
+            <option value="Cancelled">Cancelled</option>
+          </select>
+        </div>
       </header>
 
       <main className="space-y-10">
