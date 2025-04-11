@@ -156,7 +156,7 @@ export default function AddEntry() {
           <h2 className="text-2xl font-semibold">Products</h2>
 
           {/* Product Table */}
-          <table className="w-full table-auto border-spacing-4 border-separate">
+          <table className="w-full table-auto border-spacing-4 border [&_th,_td]:border [&_th,_td]:border-gray-300 [&_th,_td]:p-2 [&_th]:bg-gray-200">
             <thead>
               <tr className="text-left">
                 <th>Name</th>
