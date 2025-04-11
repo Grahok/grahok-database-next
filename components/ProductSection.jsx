@@ -127,6 +127,7 @@ export default function ProductSection({
                   type="number"
                   className="w-20 p-1 border rounded text-right"
                   min={1}
+                  step={0.25}
                   value={row.quantity}
                   onChange={(e) =>
                     updateRow(row.id, "quantity", e.target.value)
