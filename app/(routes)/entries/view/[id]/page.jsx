@@ -73,7 +73,6 @@ export default function ViewEntry() {
 
   return (
     <main className="min-h-screen p-6 bg-gray-50 text-gray-800 flex flex-col gap-8">
-      <h1 className="text-4xl font-bold text-blue-600">Grahok Database</h1>
       <header className="flex justify-between">
         <h1 className="text-3xl font-bold">View Entry</h1>
         <div className="flex gap-2">

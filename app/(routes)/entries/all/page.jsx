@@ -69,7 +69,7 @@ export default function AllEntries() {
   }, 0);
 
   return (
-    <div className="w-full flex flex-col gap-3">
+    <section className="w-full flex flex-col gap-3">
       <h1 className="text-3xl font-bold">All Entries:</h1>
       <table className="table-auto [&_th,_td]:border [&_th,_td]:p-3 [&_div]:flex [&_div]:justify-self-center text-center">
         <thead>
@@ -180,6 +180,6 @@ export default function AllEntries() {
         onConfirm={handleDelete}
         message="Are you sure you want to delete this entry?"
       />
-    </div>
+    </section>
   );
 }

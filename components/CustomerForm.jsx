@@ -58,7 +58,7 @@ export default function CustomerForm({ onCustomerChange }) {
       <h2 className="text-2xl font-semibold">Customer Info</h2>
       <section className="space-y-10">
         {/* Customer Dropdown */}
-        <div className="relative w-80">
+        <div className="relative max-w-80">
           <button
             type="button"
             onClick={() => setDropdownOpen((prev) => !prev)}
@@ -90,6 +90,7 @@ export default function CustomerForm({ onCustomerChange }) {
 
             {filtered.map((customer) => (
               <button
+                type="button"
                 key={customer._id}
                 role="option"
                 onClick={() => handleCustomerSelect(customer)}

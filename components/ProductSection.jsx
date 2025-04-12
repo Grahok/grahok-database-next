@@ -8,6 +8,8 @@ export default function ProductSection({
 }) {
   const [search, setSearch] = useState("");
   const [products, setProducts] = useState([]);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
   useEffect(() => {
     async function loadProducts() {
       try {
@@ -38,8 +40,7 @@ export default function ProductSection({
       discount: 0,
     };
     setSelectedProducts((prev) => [...prev, newRow]);
-    document.getElementById("dropdown").classList.add("hidden");
-    setSearch(""); // Clear search input
+    setSearch("");
   };
 
   const updateRow = (id, field, value) => {
@@ -59,11 +60,12 @@ export default function ProductSection({
       <h2 className="text-2xl font-semibold">Add Products</h2>
 
       {/* Product Dropdown */}
-      <div className="relative w-80">
+      <div className="relative max-w-80">
         <button
-          onClick={() =>
-            document.getElementById("dropdown").classList.toggle("hidden")
-          }
+          type="button"
+          onClick={() => setDropdownOpen((prev) => !prev)}
+          aria-expanded={dropdownOpen}
+          aria-controls="product-dropdown"
           className="w-full px-4 py-2 bg-white border rounded shadow flex justify-between items-center cursor-pointer"
         >
           <span>Select a Product</span>
@@ -71,8 +73,12 @@ export default function ProductSection({
         </button>
 
         <div
-          id="dropdown"
-          className="absolute z-10 w-full mt-1 bg-white border rounded shadow max-h-64 overflow-y-auto hidden"
+          id="product-dropdown"
+          className={`absolute z-10 w-full mt-1 bg-white border rounded shadow max-h-64 overflow-y-auto ${
+            dropdownOpen ? "" : "hidden"
+          }`}
+          role="listbox"
+          onClick={() => setDropdownOpen((prev) => !prev)}
         >
           <div className="p-2">
             <input
@@ -81,13 +87,17 @@ export default function ProductSection({
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full px-2 py-1 border rounded text-sm"
+              aria-label="Search products"
             />
           </div>
+
           {filtered.map((product) => (
-            <div
+            <button
+              type="button"
               key={product._id}
-              className="px-4 py-2 flex items-center gap-2 hover:bg-gray-100 cursor-pointer"
+              role="option"
               onClick={() => handleProductSelect(product)}
+              className="w-full text-left px-4 py-2 flex items-center gap-2 hover:bg-gray-100 focus:bg-gray-200"
             >
               <div className="flex flex-col">
                 <span className="text-sm font-medium">{product.name}</span>
@@ -95,11 +105,12 @@ export default function ProductSection({
                   ৳{product.sellPrice}
                 </span>
               </div>
-            </div>
+            </button>
           ))}
+
           {filtered.length === 0 && (
             <div className="p-4 text-sm text-gray-500 text-center">
-              No products available
+              No product available
             </div>
           )}
         </div>
@@ -126,7 +137,7 @@ export default function ProductSection({
                 <input
                   type="number"
                   className="w-20 p-1 border rounded text-right"
-                  min={1}
+                  min={0.25}
                   step={0.25}
                   value={row.quantity}
                   onChange={(e) =>

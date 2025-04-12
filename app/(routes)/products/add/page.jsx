@@ -35,13 +35,14 @@ export default function AddProduct() {
           id="name"
           className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none"
           required
+          autoFocus
         />
       </div>
 
       <div className="flex flex-col gap-1">
         <label htmlFor="purchasePrice">Purchase Price</label>
         <input
-          type="text"
+          type="number"
           name="purchasePrice"
           id="purchasePrice"
           className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none"
@@ -52,9 +53,20 @@ export default function AddProduct() {
       <div className="flex flex-col gap-1">
         <label htmlFor="sellPrice">Sell Price</label>
         <input
-          type="text"
+          type="number"
           name="sellPrice"
           id="sellPrice"
+          className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none"
+          required
+        />
+      </div>
+
+      <div className="flex flex-col gap-1">
+        <label htmlFor="inStock">In Stock</label>
+        <input
+          type="number"
+          name="inStock"
+          id="inStock"
           className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none"
           required
         />

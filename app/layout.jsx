@@ -1,5 +1,15 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
+import {
+  FaBoxesStacked,
+  FaCartPlus,
+  FaCirclePlus,
+  FaDatabase,
+  FaHouse,
+  FaUser,
+  FaUserPlus,
+} from "react-icons/fa6";
+import Image from "next/image";
 
 const inter = Inter({
   subsets: [
@@ -22,36 +32,91 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`${inter.className} antialiased p-6 flex items-start gap-6`}
+        className={`${inter.className} antialiased p-6 flex gap-6`}
       >
-        <aside className="h-dvh min-h-dvh bg-white w-1/6 min-w-45">
+        <aside className="h-dvh min-h-dvh min-w-fit">
           <nav>
             <ul className="flex flex-col gap-2">
               <li>
-                <a href="/">Home</a>
+                <a href="/" className="size-16 flex justify-self-center">
+                  <Image
+                    src="/icon.png"
+                    alt="Grahok Logo"
+                    width={64}
+                    height={64}
+                  />
+                </a>
               </li>
               <li>
-                <a href="/entries/all">All Entries</a>
+                <a
+                  href="/"
+                  className="flex items-center gap-2 p-2 rounded-md hover:bg-gray-200"
+                >
+                  <FaHouse />
+                  <span>Home</span>
+                </a>
               </li>
               <li>
-                <a href="/entries/add">Add Entry</a>
+                <a
+                  href="/entries/all"
+                  className="flex items-center gap-2 p-2 rounded-md hover:bg-gray-200"
+                >
+                  <FaDatabase />
+                  <span>All Entries</span>
+                </a>
               </li>
               <li>
-                <a href="/customers/all">All Customers</a>
+                <a
+                  href="/entries/add"
+                  className="flex items-center gap-2 p-2 rounded-md hover:bg-gray-200"
+                >
+                  <FaCartPlus />
+                  <span>Add Entry</span>
+                </a>
               </li>
               <li>
-                <a href="/customers/add">Add Customer</a>
+                <a
+                  href="/customers/all"
+                  className="flex items-center gap-2 p-2 rounded-md hover:bg-gray-200"
+                >
+                  <FaUser />
+                  <span>All Customers</span>
+                </a>
               </li>
               <li>
-                <a href="/products/all">All Products</a>
+                <a
+                  href="/customers/add"
+                  className="flex items-center gap-2 p-2 rounded-md hover:bg-gray-200"
+                >
+                  <FaUserPlus />
+                  <span>Add Customer</span>
+                </a>
               </li>
               <li>
-                <a href="/products/add">Add Product</a>
+                <a
+                  href="/products/all"
+                  className="flex items-center gap-2 p-2 rounded-md hover:bg-gray-200"
+                >
+                  <FaBoxesStacked />
+                  <span>All Products</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/products/add"
+                  className="flex items-center gap-2 p-2 rounded-md hover:bg-gray-200"
+                >
+                  <FaCirclePlus />
+                  <span>Add Product</span>
+                </a>
               </li>
             </ul>
           </nav>
         </aside>
-        {children}
+        <main className="p-6 bg-gray-50 text-gray-800 flex flex-col gap-6 min-h-dvh w-full">
+          <h1 className="text-4xl font-bold text-blue-600">Grahok Database</h1>
+          {children}
+        </main>
       </body>
     </html>
   );

@@ -35,7 +35,7 @@ export default function AddEntry() {
     paidByCustomer - totalShippingCharge - courierTax - otherCost;
   const netProfit = totalIncome - totalPurchasePrice;
   const [toast, setToast] = useState({ show: false, message: "" });
-  const [shippingMethod, setShippingMethod] = useState("N/A");
+  const [shippingMethod, setShippingMethod] = useState("Pathao");
 
   const handleCustomerChange = (data) => {
     setCustomerData(data);
@@ -80,9 +80,9 @@ export default function AddEntry() {
       const totalSellPrice = Number(
         selectedProducts.reduce((sum, p) => sum + p.sellPrice * p.quantity, 0)
       );
-      const totalDiscount = Number(
-        selectedProducts.reduce((sum, p) => sum + p.discount, 0)
-      ) + Number(overallDiscount);
+      const totalDiscount =
+        Number(selectedProducts.reduce((sum, p) => sum + p.discount, 0)) +
+        Number(overallDiscount);
 
       const entry = {
         invoiceNumber,
@@ -145,9 +145,8 @@ export default function AddEntry() {
   };
 
   return (
-    <main className="min-h-screen p-6 bg-gray-50 text-gray-800 flex flex-col gap-8">
-      <h1 className="text-4xl font-bold text-blue-600">Grahok Database</h1>
-      <header className="flex justify-between items-center">
+    <main className="min-h-screen bg-gray-50 text-gray-800 flex flex-col gap-8">
+      <header className="flex justify-between items-center gap-6">
         <h1 className="text-3xl font-bold">Add New Entry</h1>
         <div className="flex gap-2">
           <input
@@ -155,20 +154,20 @@ export default function AddEntry() {
             placeholder="Invoice Number"
             className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none"
             onChange={(e) => setInvoiceNumber(Number(e.target.value))}
+            autoFocus
           />
 
           <select
             name="orderStatus"
             id="orderStatus"
             className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none"
-            defaultValue={orderStatus}
+            value={orderStatus}
             onChange={(e) => setOrderStatus(e.target.value)}
           >
             <option value="Pending">Pending</option>
             <option value="On Hold">On Hold</option>
             <option value="Confirmed">Confirmed</option>
             <option value="Shipped">Shipped</option>
-            {/* Removed undefined statuses */}
             <option value="Cancelled">Cancelled</option>
             <option value="Delivered">Delivered</option>
           </select>

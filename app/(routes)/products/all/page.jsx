@@ -75,6 +75,12 @@ export default function AllProducts() {
             <th>
               <div className="flex gap-1 items-center">
                 <FaDollarSign />
+                <span>In Stock</span>
+              </div>
+            </th>
+            <th>
+              <div className="flex gap-1 items-center">
+                <FaDollarSign />
                 <span>Sell Price</span>
               </div>
             </th>
@@ -92,6 +98,7 @@ export default function AllProducts() {
               <td>{index + 1}</td>
               <td>{product.name}</td>
               <td>{product.purchasePrice}</td>
+              <td>{product.inStock}</td>
               <td>{product.sellPrice}</td>
               <td>
                 <div className="flex gap-1">

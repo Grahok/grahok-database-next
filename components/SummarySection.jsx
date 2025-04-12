@@ -25,9 +25,9 @@ export default function SummarySection({
           <input
             type="number"
             placeholder={shippingCustomer}
+            min={0}
             onChange={(e) => setShippingCustomer(Number(e.target.value))}
             className="w-full p-2 border rounded"
-            required
           />
         </div>
         <div>
@@ -35,9 +35,9 @@ export default function SummarySection({
           <input
             type="number"
             placeholder={shippingMerchant}
+            min={0}
             onChange={(e) => setShippingMerchant(Number(e.target.value))}
             className="w-full p-2 border rounded"
-            required
           />
         </div>
         <div>
@@ -62,6 +62,7 @@ export default function SummarySection({
           <input
             type="number"
             placeholder={0}
+            min={0}
             onChange={(e) => setOtherCost(Number(e.target.value))}
             className="w-full p-2 border rounded"
           />

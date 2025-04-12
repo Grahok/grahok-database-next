@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import { connectToDatabase } from "@/lib/mongoose";
 
 export async function GET(_, { params }) {
-  const { id: customerId } = params; // Correctly extract the 'id' parameter
+  const { id: customerId } = await params; // Correctly extract the 'id' parameter
   try {
     await connectToDatabase();
 

@@ -11,8 +11,9 @@ export default function EditProduct() {
 
   const [product, setProduct] = useState({
     name: "",
-    purchasePrice: "",
-    sellPrice: "",
+    purchasePrice: 0,
+    sellPrice: 0,
+    inStock: 0,
   });
   const [toast, setToast] = useState({ show: false, message: "" });
 
@@ -90,6 +91,18 @@ export default function EditProduct() {
             type="number"
             name="sellPrice"
             value={product.sellPrice}
+            min={0}
+            onChange={handleChange}
+            required
+            className="w-full border rounded px-3 py-2"
+          />
+        </div>
+        <div>
+          <label className="block mb-1 font-medium">In Stock</label>
+          <input
+            type="number"
+            name="inStock"
+            value={product.inStock}
             min={0}
             onChange={handleChange}
             required
