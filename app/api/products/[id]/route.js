@@ -21,9 +21,14 @@ export async function PUT(req, { params }) {
     const data = await req.json();
 
     const product = await Product.findByIdAndUpdate(id, data, { new: true });
+    console.log("Product Updated Successfully!");
     return Response.json(product);
   } catch (error) {
-    console.error("Error fetching product:", error);
-    return new Response("Failed to fetch product", { status: 500 });
+    if (error.code === 11000) {
+      console.error("⚠️ Duplicate Product Name ERROR:", error);
+    } else {
+      console.error("Error fetching or updating product:", error);
+      return new Response("Failed to fetch product", { status: 500 });
+    }
   }
 }

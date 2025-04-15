@@ -8,16 +8,16 @@ export async function POST(req) {
     const body = await req.json();
     const customer = new Customer(body);
     await customer.save();
-    console.log("Customer Created Successfully:", customer._id);
+    console.log("Customer Created Successfully!");
 
-    // Return the created customer's _id along with the success message
-    return Response.json({
-      message: "Customer Created Successfully!",
-      _id: customer._id,
-    });
+    return Response.json({ message: "Customer Created Successfully!" });
   } catch (error) {
-    console.error(error);
-    return new Response("Error creating customer", { status: 500 });
+    if (error.code === 11000) {
+      console.error("⚠️ Duplicate Customer Mobile Number ERROR:", error);
+    } else {
+      console.error("⚠️ Duplicate Customer Mobile Number ERROR:", error);
+      return new Response("Error creating customer", { status: 500 });
+    }
   }
 }
 

@@ -12,8 +12,12 @@ export async function POST(req) {
 
     return Response.json({ message: "Product Created Successfully!" });
   } catch (error) {
-    console.error(error);
-    return new Response("Error creating product", { status: 500 });
+    if (error.code === 11000) {
+      console.error("⚠️ Duplicate Product Name ERROR:", error);
+    } else {
+      console.error("⚠️ Duplicate Product Name ERROR:", error);
+      return new Response("Error creating product", { status: 500 });
+    }
   }
 }
 
