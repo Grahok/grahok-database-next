@@ -3,6 +3,7 @@ import "./globals.css";
 import {
   FaBoxesStacked,
   FaCartPlus,
+  FaChartPie,
   FaCirclePlus,
   FaDatabase,
   FaHouse,
@@ -31,9 +32,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body
-        className={`${inter.className} antialiased p-6 flex gap-6`}
-      >
+      <body className={`${inter.className} antialiased p-6 flex gap-6`}>
         <aside className="h-dvh min-h-dvh min-w-fit">
           <nav>
             <ul className="flex flex-col gap-2">
@@ -58,20 +57,38 @@ export default function RootLayout({ children }) {
               </li>
               <li>
                 <a
-                  href="/entries/all"
+                  href="/entries/customer/all"
                   className="flex items-center gap-2 p-2 rounded-md hover:bg-gray-200"
                 >
                   <FaDatabase />
-                  <span>All Entries</span>
+                  <span>All Customer Entries</span>
                 </a>
               </li>
               <li>
                 <a
-                  href="/entries/add"
+                  href="/entries/vendor/all"
+                  className="flex items-center gap-2 p-2 rounded-md hover:bg-gray-200"
+                >
+                  <FaDatabase />
+                  <span>All Vendor Entries</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/entries/customer/add"
                   className="flex items-center gap-2 p-2 rounded-md hover:bg-gray-200"
                 >
                   <FaCartPlus />
-                  <span>Add Entry</span>
+                  <span>Add Customer Entry</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/entries/vendor/add"
+                  className="flex items-center gap-2 p-2 rounded-md hover:bg-gray-200"
+                >
+                  <FaCartPlus />
+                  <span>Add Vendor Entry</span>
                 </a>
               </li>
               <li>
@@ -108,6 +125,15 @@ export default function RootLayout({ children }) {
                 >
                   <FaCirclePlus />
                   <span>Add Product</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/analytics"
+                  className="flex items-center gap-2 p-2 rounded-md hover:bg-gray-200"
+                >
+                  <FaChartPie />
+                  <span>Analytics</span>
                 </a>
               </li>
             </ul>
