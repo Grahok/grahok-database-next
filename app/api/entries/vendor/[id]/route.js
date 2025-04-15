@@ -12,8 +12,13 @@ export async function GET(_, { params }) {
       customer: mongoose.Types.ObjectId.createFromHexString(customerId),
     });
 
-    // Return an empty array if no entries are found
-    return Response.json(entries || []);
+    if (!entries || entries.length === 0) {
+      return new Response("No entries found for this customer", {
+        status: 404,
+      });
+    }
+
+    return Response.json(entries);
   } catch (error) {
     console.error("Error fetching entries for customer:", error);
     return new Response("Failed to fetch entries", { status: 500 });

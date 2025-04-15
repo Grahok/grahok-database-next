@@ -11,7 +11,7 @@ import {
   FaUser,
 } from "react-icons/fa6";
 import { fetchProducts, deleteProduct } from "./actions";
-import ConfirmDialog from "@/components/ConfirmDialog";
+import ConfirmDialog from "@/app/(routes)/entries/customer/add/components/ConfirmDialog";
 
 export default function AllProducts() {
   const [products, setProducts] = useState([]);

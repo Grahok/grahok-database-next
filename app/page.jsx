@@ -1,7 +1,5 @@
 import {
-  FaBox,
   FaBoxesStacked,
-  FaCartPlus,
   FaCirclePlus,
   FaDatabase,
   FaUpRightFromSquare,
@@ -49,6 +47,26 @@ export default function Home() {
         <div className="flex items-center gap-3 flex-1">
           <FaUserPlus className="size-5 flex-shrink-0" />
           <p className="whitespace-normal leading-tight">Add Customer</p>
+        </div>
+        <FaUpRightFromSquare className="hidden group-hover:block transition-transform duration-300 ease-in-out size-5 flex-shrink-0" />
+      </a>
+      <a
+        href="/vendors/all"
+        className="flex items-center justify-between gap-3 bg-gray-100 p-4 rounded-lg shadow-md hover:bg-gray-200 transition group h-20"
+      >
+        <div className="flex items-center gap-3 flex-1">
+          <FaUser className="size-5 flex-shrink-0" />
+          <p className="whitespace-normal leading-tight">All Vendors</p>
+        </div>
+        <FaUpRightFromSquare className="hidden group-hover:block transition-transform duration-300 ease-in-out size-5 flex-shrink-0" />
+      </a>
+      <a
+        href="/vendors/add"
+        className="flex items-center justify-between gap-3 bg-gray-100 p-4 rounded-lg shadow-md hover:bg-gray-200 transition group h-20"
+      >
+        <div className="flex items-center gap-3 flex-1">
+          <FaUserPlus className="size-5 flex-shrink-0" />
+          <p className="whitespace-normal leading-tight">Add Vendor</p>
         </div>
         <FaUpRightFromSquare className="hidden group-hover:block transition-transform duration-300 ease-in-out size-5 flex-shrink-0" />
       </a>

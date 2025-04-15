@@ -1,5 +1,5 @@
 import { connectToDatabase } from "@/lib/mongoose";
-import Entry from "@/models/Entry";
+import Entry from "@/models/CustomerEntry";
 import Customer from "@/models/Customer";
 import Product from "@/models/Product";
 

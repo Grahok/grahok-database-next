@@ -4,106 +4,90 @@ import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Toast from "@/app/(routes)/entries/customer/add/components/Toast";
 
-export default function EditProduct() {
+export default function EditVendor() {
   const router = useRouter();
   const params = useParams();
-  const productId = params.id;
+  const vendorId = params.id;
 
-  const [product, setProduct] = useState({
+  const [vendor, setVendor] = useState({
     name: "",
-    purchasePrice: 0,
-    sellPrice: 0,
-    inStock: 0,
+    mobileNumber: "",
+    address: "",
   });
   const [toast, setToast] = useState({ show: false, message: "" });
 
   useEffect(() => {
-    const fetchProduct = async () => {
+    const fetchVendor = async () => {
       try {
-        const res = await fetch(`/api/products/${productId}`);
-        if (!res.ok) throw new Error("Failed to fetch product data.");
+        const res = await fetch(`/api/vendors/${vendorId}`);
+        if (!res.ok) throw new Error("Failed to fetch vendor data.");
         const data = await res.json();
-        setProduct(data);
+        setVendor(data);
       } catch (error) {
-        setToast({ show: true, message: "Error loading product data." });
+        setToast({ show: true, message: "Error loading vendor data." });
       }
     };
 
-    if (productId) fetchProduct();
-  }, [productId]);
+    if (vendorId) fetchVendor();
+  }, [vendorId]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setProduct((prev) => ({ ...prev, [name]: value }));
+    setVendor((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch(`/api/products/${productId}`, {
+      const res = await fetch(`/api/vendors/${vendorId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(product),
+        body: JSON.stringify(vendor),
       });
 
-      if (!res.ok) throw new Error("Failed to update product.");
-      setToast({ show: true, message: "Product updated successfully." });
+      if (!res.ok) throw new Error("Failed to update vendor.");
+      setToast({ show: true, message: "Vendor updated successfully." });
 
       setTimeout(() => {
         setToast({ show: false, message: "" });
-        router.push("/products/all");
+        router.push("/vendors/all");
       }, 2000);
     } catch (err) {
-      setToast({ show: true, message: "Error updating product." });
+      setToast({ show: true, message: "Error updating vendor." });
     }
   };
 
   return (
     <div className="max-w-xl mx-auto mt-8 p-6 border rounded-md shadow">
-      <h1 className="text-2xl font-bold mb-6">Edit Product</h1>
+      <h1 className="text-2xl font-bold mb-6">Edit Vendor</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="block mb-1 font-medium">Name</label>
           <input
             type="text"
             name="name"
-            value={product.name}
+            value={vendor.name}
             onChange={handleChange}
             required
             className="w-full border rounded px-3 py-2"
           />
         </div>
         <div>
-          <label className="block mb-1 font-medium">Purchase Price</label>
+          <label className="block mb-1 font-medium">Mobile Number</label>
           <input
-            type="number"
-            name="purchasePrice"
-            value={product.purchasePrice}
-            min={0}
+            type="text"
+            name="mobileNumber"
+            value={vendor.mobileNumber}
             onChange={handleChange}
             required
             className="w-full border rounded px-3 py-2"
           />
         </div>
         <div>
-          <label className="block mb-1 font-medium">Sell Price</label>
-          <input
-            type="number"
-            name="sellPrice"
-            value={product.sellPrice}
-            min={0}
-            onChange={handleChange}
-            required
-            className="w-full border rounded px-3 py-2"
-          />
-        </div>
-        <div>
-          <label className="block mb-1 font-medium">In Stock</label>
-          <input
-            type="number"
-            name="inStock"
-            value={product.inStock}
-            min={0}
+          <label className="block mb-1 font-medium">Address</label>
+          <textarea
+            name="address"
+            value={vendor.address}
             onChange={handleChange}
             required
             className="w-full border rounded px-3 py-2"
@@ -112,14 +96,14 @@ export default function EditProduct() {
         <div className="flex gap-3">
           <button
             type="submit"
-            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 cursor-pointer"
           >
             Update
           </button>
           <button
             type="button"
-            onClick={() => router.push("/products/all")}
-            className="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400"
+            onClick={() => router.push("/vendors/all")}
+            className="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400 cursor-pointer"
           >
             Cancel
           </button>

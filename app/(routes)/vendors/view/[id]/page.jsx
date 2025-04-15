@@ -1,16 +1,16 @@
 "use client";
 
-import { fetchEntries } from "@/app/(routes)/customers/view/[id]/actions";
+import { fetchEntries } from "@/app/(routes)/vendors/view/[id]/actions";
 import Toast from "@/app/(routes)/entries/customer/add/components/Toast";
 import ConfirmDialog from "@/app/(routes)/entries/customer/add/components/ConfirmDialog";
 import { useParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { FaEye, FaPencil, FaPhone, FaTrash } from "react-icons/fa6";
 
-export default function CustomerDeatils() {
+export default function VendorDeatils() {
   const params = useParams();
-  const customerId = params.id;
-  const [customer, setCustomer] = useState({
+  const vendorId = params.id;
+  const [vendor, setVendor] = useState({
     name: "",
     mobileNumber: "",
     address: "",
@@ -23,23 +23,23 @@ export default function CustomerDeatils() {
   const confirmDialogRef = useRef();
 
   useEffect(() => {
-    const fetchCustomer = async () => {
+    const fetchVendor = async () => {
       try {
-        const res = await fetch(`/api/customers/${customerId}`);
-        if (!res.ok) throw new Error("Failed to fetch customer data.");
+        const res = await fetch(`/api/vendors/${vendorId}`);
+        if (!res.ok) throw new Error("Failed to fetch vendor data.");
         const data = await res.json();
-        setCustomer(data);
+        setVendor(data);
       } catch (error) {
-        setToast({ show: true, message: "Error loading customer data." });
+        setToast({ show: true, message: "Error loading vendor data." });
       }
     };
-    fetchCustomer();
-  }, [customerId]);
+    fetchVendor();
+  }, [vendorId]);
 
   useEffect(() => {
-    const loadEntries = async (customerId) => {
+    const loadEntries = async (vendorId) => {
       try {
-        const entries = await fetchEntries(customerId);
+        const entries = await fetchEntries(vendorId);
         setEntries(entries);
       } catch (error) {
         setError("Failed to fetch entries."); // Set an error message
@@ -47,8 +47,8 @@ export default function CustomerDeatils() {
         setLoading(false); // Ensure loading is set to false
       }
     };
-    loadEntries(customerId);
-  }, [customerId]);
+    loadEntries(vendorId);
+  }, [vendorId]);
 
   function openConfirmDialog(entryId) {
     setSelectedEntryId(entryId); // Store the selected entry ID
@@ -70,12 +70,12 @@ export default function CustomerDeatils() {
     <main>
       <header>
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold">Customer Details</h1>
+          <h1 className="text-2xl font-bold">Vendor Details</h1>
           <a
-            href="/customers/all"
+            href="/vendors/all"
             className="px-4 py-2 rounded-md bg-blue-600 text-white cursor-pointer hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           >
-            All Customers
+            All Vendors
           </a>
         </div>
       </header>
@@ -86,13 +86,13 @@ export default function CustomerDeatils() {
               <img
                 className="size-16 rounded-full"
                 src="/avatar.png"
-                alt={customer.name}
+                alt={vendor.name}
               />
               <div className="flex flex-col items-center justify-center gap-2">
-                <h3 className="text-xl font-semibold">{customer.name}</h3>
+                <h3 className="text-xl font-semibold">{vendor.name}</h3>
                 <a
                   className="px-2 py-1 bg-green-600 hover:bg-green-700 text-white rounded flex items-center gap-2 transition duration-200"
-                  href={`tel:${customer.mobileNumber}`}
+                  href={`tel:${vendor.mobileNumber}`}
                 >
                   <FaPhone size={14} />
                   Call
@@ -104,15 +104,15 @@ export default function CustomerDeatils() {
               <tbody className="bg-gray-50 [&_tr:nth-child(odd)]:bg-gray-100">
                 <tr>
                   <th>Name</th>
-                  <td>{customer.name}</td>
+                  <td>{vendor.name}</td>
                 </tr>
                 <tr>
                   <th>Mobile</th>
-                  <td>{customer.mobileNumber}</td>
+                  <td>{vendor.mobileNumber}</td>
                 </tr>
                 <tr>
                   <th>Address</th>
-                  <td>{customer.address}</td>
+                  <td>{vendor.address}</td>
                 </tr>
               </tbody>
             </table>
@@ -141,7 +141,7 @@ export default function CustomerDeatils() {
                   <td>
                     {new Date(entry.orderDate).toLocaleDateString("en-GB")}
                   </td>
-                  <td>{entry.paidByCustomer}</td>
+                  <td>{entry.paidByVendor}</td>
                   <td>{entry.status || "Unknown"}</td>
                   <td>
                     <div className="flex gap-1">

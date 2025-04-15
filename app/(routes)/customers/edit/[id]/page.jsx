@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
-import Toast from "@/components/Toast";
+import Toast from "@/app/(routes)/entries/customer/add/components/Toast";
 
 export default function EditCustomer() {
   const router = useRouter();
