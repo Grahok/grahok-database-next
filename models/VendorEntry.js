@@ -1,3 +1,5 @@
+import { ORDER_STATUSES } from "@/constants/orderStatuses";
+import { SHIPPING_METHODS } from "@/constants/shippingMethods";
 import mongoose from "mongoose";
 
 const productSchema = new mongoose.Schema({
@@ -20,14 +22,13 @@ export const vendorEntrySchema = new mongoose.Schema(
     vendor: { type: mongoose.Schema.Types.ObjectId, ref: "Vendor" },
     orderDate: Date,
     entryDate: Date,
-    paymentDate: Date,
     products: [productSchema],
     subtotal: Number,
     paidByVendor: Number,
     shippingCharge: Number,
     shippingMethod: {
       type: String,
-      enum: SHIPPING_METHODSX,
+      enum: SHIPPING_METHODS,
     },
     otherCost: Number,
     courierTax: Number,

@@ -12,7 +12,7 @@ import {
   FaUser,
 } from "react-icons/fa6";
 import { fetchCustomers, deleteCustomer } from "./actions";
-import ConfirmDialog from "@/app/(routes)/entries/customer/components/ConfirmDialog";
+import ConfirmDialog from "@/app/(routes)/entries/customer/all/components/ConfirmDialog";
 
 export default function AllCustomers() {
   const [customers, setCustomers] = useState([]);

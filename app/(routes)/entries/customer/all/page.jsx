@@ -15,21 +15,33 @@ import { fetchEntries, deleteEntry } from "./actions";
 import ConfirmDialog from "@/app/(routes)/entries/customer/all/components/ConfirmDialog";
 
 export default function AllEntries() {
+  const baseUrl =
+    process.env.NEXT_PUBLIC_BASE_URL ||
+    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "");
   const [entries, setEntries] = useState([]);
   const [selectedEntryId, setSelectedEntryId] = useState(null);
   const confirmDialogRef = useRef();
 
   useEffect(() => {
-    async function loadEntries() {
-      try {
-        const data = await fetchEntries();
-        setEntries(data);
-      } catch (error) {
-        console.error("Error fetching entries:", error);
-      }
-    }
+    async function fetchEntries() {
+      const response = await fetch(`${baseUrl}/api/entries/customer`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+        cache: "no-store", // ensure fresh data
+      });
 
-    loadEntries();
+      if (!response.ok) {
+        if (response.status === 404) {
+          throw new Error("No Entries Found");
+        } else {
+          throw new Error("Failed to fetch entries");
+        }
+      }
+      const data = await response.json();
+      setEntries(data);
+      return data;
+    }
+    fetchEntries();
   }, []);
 
   function openConfirmDialog(entryId) {
@@ -127,6 +139,11 @@ export default function AllEntries() {
           </tr>
         </thead>
         <tbody>
+          {!entries.length && (
+            <tr>
+              <td colSpan={9}>No Entries Found</td>
+            </tr>
+          )}
           {entries.map((entry, index) => (
             <tr key={entry._id} className="hover:bg-gray-100">
               <td>{index + 1}</td>

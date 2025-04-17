@@ -1,12 +1,12 @@
 import { connectToDatabase } from "@/lib/mongoose";
-import Entry from "@/models/VendorEntry";
+import VendorEntry from "@/models/VendorEntry";
 import Vendor from "@/models/Vendor";
 
 export async function GET() {
   try {
     await connectToDatabase();
 
-    const entries = await Entry.find().populate(
+    const entries = await VendorEntry.find().populate(
       "vendor",
       "name mobileNumber"
     );
@@ -42,7 +42,7 @@ export async function POST(req) {
       subtotal: p.subtotal,
     }));
 
-    const entry = new Entry({ ...body, products });
+    const entry = new VendorEntry({ ...body, products });
     await entry.save();
 
     console.log("✅ Entry created:", entry._id);

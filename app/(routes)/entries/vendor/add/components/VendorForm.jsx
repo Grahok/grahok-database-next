@@ -170,15 +170,6 @@ export default function VendorForm({ onVendorChange }) {
             required
           />
         </div>
-        <div className="flex flex-col gap-1">
-          <label htmlFor="paymentDate">Payment Date</label>
-          <input
-            id="paymentDate"
-            type="date"
-            className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none"
-            placeholder="Payment Date"
-          />
-        </div>
       </div>
     </section>
   );
