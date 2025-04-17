@@ -136,7 +136,7 @@ export default function AddEntry() {
 
       setTimeout(() => {
         setToast({ show: false, message: "" });
-        router.push("/entries/all");
+        router.push("/entries/customer/all");
       }, 2000);
     } catch (err) {
       console.error(err);

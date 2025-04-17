@@ -5,6 +5,7 @@ export default function SummarySection({
   setShippingMethod,
   setOtherCost,
   subtotal,
+  paidByMerchant,
   shippingCharge,
   setShippingCharge,
   totalPayment,
@@ -17,7 +18,7 @@ export default function SummarySection({
       {/* Shipping & Options */}
       <div className="space-y-4">
         <div>
-          <label className="text-sm">Shipping Charge (Vendor)</label>
+          <label className="text-sm">Shipping Charge (Merchant)</label>
           <input
             type="number"
             placeholder={shippingCharge}
@@ -62,6 +63,10 @@ export default function SummarySection({
             <tr>
               <td>Subtotal</td>
               <td>{subtotal.toFixed(2)}</td>
+            </tr>
+            <tr>
+              <td>Paid by Merchant</td>
+              <td>{paidByMerchant.toFixed(2)}</td>
             </tr>
             <tr>
               <td>Shipping Charge</td>

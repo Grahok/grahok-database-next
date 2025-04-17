@@ -11,6 +11,11 @@ const productSchema = new mongoose.Schema({
   subtotal: Number,
 });
 
+// const paymentSchema = new mongoose.Schema({
+//   paymentDate: Date,
+//   amount: Number,
+// })
+
 export const vendorEntrySchema = new mongoose.Schema(
   {
     invoiceNumber: Number,
@@ -24,7 +29,7 @@ export const vendorEntrySchema = new mongoose.Schema(
     entryDate: Date,
     products: [productSchema],
     subtotal: Number,
-    paidByVendor: Number,
+    paidByMerchant: Number,
     shippingCharge: Number,
     shippingMethod: {
       type: String,
@@ -36,11 +41,12 @@ export const vendorEntrySchema = new mongoose.Schema(
     // Calculated fields (write-once at submission)
     totalQuantity: Number,
     totalPurchasePrice: Number,
-    totalSellPrice: Number,
     totalDiscount: Number,
     overallDiscount: Number,
-    totalIncome: Number,
-    netProfit: Number,
+    totalPayment: Number,
+    // payments: [paymentSchema],
+    alreadyPaid: Number,
+    duePayment: Number,
   },
   {
     collection: "Vendor Entries",

@@ -28,12 +28,13 @@ export default function AddEntry() {
     0
   );
   const [shippingCharge, setShippingCharge] = useState(0);
-  const paidByVendor = subtotal + shippingCharge - overallDiscount;
+  const paidByMerchant = subtotal + shippingCharge - overallDiscount;
   const [otherCost, setOtherCost] = useState(0);
   const [courierTax, setCourierTax] = useState(0);
-  const totalPayment = paidByVendor - courierTax - otherCost;
-  const alreadyPaid = totalPayment - totalPurchasePrice;
-  const duePayment = totalPayment - totalPurchasePrice;
+  const totalPayment = paidByMerchant - courierTax - otherCost;
+  // const alreadyPaid = totalPayment - totalPurchasePrice;
+  const alreadyPaid = 0; // todo: For Now, to be fixed
+  const duePayment = totalPayment - alreadyPaid;
   const [toast, setToast] = useState({ show: false, message: "" });
   const [shippingMethod, setShippingMethod] = useState("Pathao");
 
@@ -77,9 +78,6 @@ export default function AddEntry() {
       const totalQuantity = Number(
         selectedProducts.reduce((sum, p) => sum + p.quantity, 0)
       );
-      const totalSellPrice = Number(
-        selectedProducts.reduce((sum, p) => sum + p.sellPrice * p.quantity, 0)
-      );
       const totalDiscount =
         Number(selectedProducts.reduce((sum, p) => sum + p.discount, 0)) +
         Number(overallDiscount);
@@ -98,13 +96,13 @@ export default function AddEntry() {
           subtotal: Number(p.quantity * p.purchasePrice - p.discount),
         })),
         subtotal,
-        paidByVendor,
+        paidByMerchant,
         shippingCharge,
         shippingMethod,
         otherCost,
         courierTax,
         totalQuantity,
-        totalSellPrice,
+        totalPurchasePrice,
         totalDiscount,
         overallDiscount,
         totalPayment,
@@ -130,7 +128,7 @@ export default function AddEntry() {
 
       setTimeout(() => {
         setToast({ show: false, message: "" });
-        router.push("/entries/all");
+        router.push("/entries/vendor/all");
       }, 2000);
     } catch (err) {
       console.error(err);
@@ -190,7 +188,7 @@ export default function AddEntry() {
           overallDiscount={overallDiscount}
           setOverallDiscount={setOverallDiscount}
           subtotal={subtotal}
-          paidByVendor={paidByVendor}
+          paidByMerchant={paidByMerchant}
           totalPayment={totalPayment}
           setShippingMethod={setShippingMethod}
         />
