@@ -90,7 +90,6 @@ export default function AddEntry() {
         vendor: vendorId,
         orderDate: e.target.orderDate.value,
         entryDate: e.target.entryDate.value,
-        paymentDate: e.target.paymentDate.value || null,
         products: selectedProducts.map((p) => ({
           product: p.product._id,
           quantity: Number(p.quantity),
@@ -114,7 +113,7 @@ export default function AddEntry() {
       };
 
       // 💾 Post the entry
-      const entryRes = await fetch("/api/entries", {
+      const entryRes = await fetch("/api/entries/vendor", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

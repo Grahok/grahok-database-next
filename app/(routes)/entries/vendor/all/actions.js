@@ -3,7 +3,7 @@ const baseUrl =
   (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "");
 
 export async function fetchEntries() {
-  const response = await fetch(`${baseUrl}/api/entries`, {
+  const response = await fetch(`${baseUrl}/api/entries/vendor`, {
     method: "GET",
     headers: { "Content-Type": "application/json" },
     cache: "no-store", // ensure fresh data

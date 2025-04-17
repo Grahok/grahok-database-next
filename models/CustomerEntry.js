@@ -1,3 +1,5 @@
+import { ORDER_STATUSES } from "@/constants/orderStatuses";
+import { SHIPPING_METHODS } from "@/constants/shippingMethods";
 import mongoose from "mongoose";
 
 const productSchema = new mongoose.Schema({

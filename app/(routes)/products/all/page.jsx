@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import {
   FaBullseye,
   FaDollarSign,
-  FaEye,
   FaHashtag,
   FaPencil,
   FaTrash,

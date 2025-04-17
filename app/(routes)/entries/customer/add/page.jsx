@@ -119,7 +119,7 @@ export default function AddEntry() {
       };
 
       // 💾 Post the entry
-      const entryRes = await fetch("/api/entries", {
+      const entryRes = await fetch("/api/entries/customer", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

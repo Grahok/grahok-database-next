@@ -20,16 +20,25 @@ export default function AllEntries() {
   const confirmDialogRef = useRef();
 
   useEffect(() => {
-    async function loadEntries() {
-      try {
-        const data = await fetchEntries();
-        setEntries(data);
-      } catch (error) {
-        console.error("Error fetching entries:", error);
-      }
-    }
+    async function fetchEntries() {
+      const response = await fetch("/api/entries/vendor", {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+        cache: "no-store", // ensure fresh data
+      });
 
-    loadEntries();
+      if (!response.ok) {
+        if (response.status === 404) {
+          throw new Error("No Entries Found");
+        } else {
+          throw new Error("Failed to fetch entries");
+        }
+      }
+      const data = await response.json();
+      setEntries(data);
+      return data;
+    }
+    fetchEntries();
   }, []);
 
   function openConfirmDialog(entryId) {
@@ -53,9 +62,6 @@ export default function AllEntries() {
   }, 0);
   const totalDiscount = entries.reduce((acc, entry) => {
     return acc + entry.totalDiscount;
-  }, 0);
-  const totalPurchasePrice = entries.reduce((acc, entry) => {
-    return acc + entry.totalPurchasePrice;
   }, 0);
   const totalSellPrice = entries.reduce((acc, entry) => {
     return acc + entry.totalSellPrice;
@@ -85,7 +91,7 @@ export default function AllEntries() {
             <th>
               <div className="flex gap-1 items-center">
                 <FaUser />
-                <span>Customer</span>
+                <span>Vendor</span>
               </div>
             </th>
             <th>
@@ -98,12 +104,6 @@ export default function AllEntries() {
               <div className="flex gap-1 items-center">
                 <FaDollarSign />
                 <span>Total Purchase Price</span>
-              </div>
-            </th>
-            <th>
-              <div className="flex gap-1 items-center">
-                <FaDollarSign />
-                <span>Total Sell Price</span>
               </div>
             </th>
             <th>
@@ -121,7 +121,7 @@ export default function AllEntries() {
             <th>
               <div className="flex gap-1 items-center">
                 <FaDollarSign />
-                <span>Total Profit</span>
+                <span>Total Payment</span>
               </div>
             </th>
           </tr>
@@ -152,9 +152,8 @@ export default function AllEntries() {
                   </button>
                 </div>
               </td>
-              <td>{entry.customer?.name}</td>
-              <td>{entry.customer?.mobileNumber}</td>
-              <td>{entry.totalPurchasePrice}</td>
+              <td>{entry.vendor?.name}</td>
+              <td>{entry.vendor?.mobileNumber}</td>
               <td>{entry.totalSellPrice}</td>
               <td>{entry.totalQuantity}</td>
               <td>{entry.totalDiscount}</td>
@@ -165,7 +164,6 @@ export default function AllEntries() {
             <td colSpan="4" className="font-bold">
               Total:
             </td>
-            <td>{totalPurchasePrice}</td>
             <td>{totalSellPrice}</td>
             <td>{totalQuantity}</td>
             <td>{totalDiscount}</td>
