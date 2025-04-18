@@ -1,6 +1,7 @@
 import { connectToDatabase } from "@/lib/mongoose";
 import VendorEntry from "@/models/VendorEntry";
 import Vendor from "@/models/Vendor";
+import Product from "@/models/Product";
 
 export async function GET() {
   try {
@@ -42,6 +43,19 @@ export async function POST(req) {
       subtotal: p.subtotal,
     }));
 
+    for await (const p of products) {
+      const product = await Product.findById(p.product);
+      await Product.findByIdAndUpdate(
+        p.product,
+        {
+          $inc: {
+            instock: p.quantity,
+          },
+        },
+        { new: true }
+      );
+    }
+
     const entry = new VendorEntry({ ...body, products });
     await entry.save();
 
@@ -58,7 +72,7 @@ export async function DELETE(req) {
   try {
     await connectToDatabase();
     const { _id } = await req.json(); // ✅ correctly parse the request body
-    const deleted = await Entry.deleteOne({ _id }); // ✅ use _id to delete
+    const deleted = await VendorEntry.deleteOne({ _id }); // ✅ use _id to delete
     if (deleted.deletedCount === 0) {
       return new Response("Entry not found", { status: 404 });
     }

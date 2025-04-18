@@ -1,4 +1,4 @@
-import Entry from "@/models/CustomerEntry";
+import CustomerEntry from "@/models/CustomerEntry";
 import mongoose from "mongoose";
 import { connectToDatabase } from "@/lib/mongoose";
 
@@ -8,7 +8,7 @@ export async function GET(_, { params }) {
     await connectToDatabase();
 
     // Find entries where the customer matches the given customerId
-    const entries = await Entry.find({
+    const entries = await CustomerEntry.find({
       customer: mongoose.Types.ObjectId.createFromHexString(customerId),
     });
 
