@@ -5,8 +5,8 @@ export async function POST(req) {
   try {
     await connectToDatabase();
 
-    const body = await req.json();
-    const createdCustomer = await Customer.create(body);
+    const customerData = await req.json();
+    const createdCustomer = await Customer.create(customerData);
 
     return new Response(
       JSON.stringify({

@@ -22,7 +22,7 @@ export default function EditEntry() {
   useEffect(() => {
     const fetchEntry = async () => {
       try {
-        const res = await fetch(`/api/entries/${entryId}`);
+        const res = await fetch(`/api/entries/customer/${entryId}`);
         if (!res.ok) throw new Error("Failed to fetch entry data.");
         const data = await res.json();
         setEntry(data);
@@ -30,9 +30,7 @@ export default function EditEntry() {
         setToast({ show: true, message: "Error loading entry data." });
       }
     };
-
-    if (entryId) fetchEntry();
-  }, [entryId]);
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;

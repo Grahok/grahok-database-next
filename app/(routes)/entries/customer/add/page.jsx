@@ -72,7 +72,7 @@ export default function AddEntry() {
           throw new Error("Failed to create new customer.");
         }
 
-        const newCustomer = await res.json();
+        const { createdCustomer: newCustomer } = await res.json();
         customerId = newCustomer._id;
       }
 
