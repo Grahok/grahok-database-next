@@ -1,120 +1,106 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter, useParams } from "next/navigation";
-import Toast from "@/app/(routes)/entries/customer/add/components/Toast";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { getVendor, updateVendor } from "./actions";
 
-export default function EditVendor() {
+export default function EditVendor({ params }) {
   const router = useRouter();
-  const params = useParams();
-  const vendorId = params.id;
-
-  const [vendor, setVendor] = useState({
-    name: "",
-    mobileNumber: "",
-    address: "",
-  });
-  const [toast, setToast] = useState({ show: false, message: "" });
-
+  const { vendorId } = React.use(params);
+  const [vendor, setVendor] = useState();
   useEffect(() => {
-    const fetchVendor = async () => {
+    (async () => {
+      const response = await getVendor(vendorId);
       try {
-        const res = await fetch(`/api/vendors/${vendorId}`);
-        if (!res.ok) throw new Error("Failed to fetch vendor data.");
-        const data = await res.json();
-        setVendor(data);
+        const { vendor } = await response.json();
+        setVendor(vendor);
       } catch (error) {
-        setToast({ show: true, message: "Error loading vendor data." });
-      }
-    };
+        console.error("Error fetching Vendor", error);
+        setError("Error fetching vendor");
+      } {/* finally {
+        setLoading(false);
+      } */}
+    })();
+  }, []);
 
-    if (vendorId) fetchVendor();
-  }, [vendorId]);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setVendor((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = async (e) => {
+  async function handleSubmit(e) {
     e.preventDefault();
+    const formdata = new FormData(e.target);
+    const vendorData = Object.fromEntries(formdata);
     try {
-      const res = await fetch(`/api/vendors/${vendorId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(vendor),
-      });
-
-      if (!res.ok) throw new Error("Failed to update vendor.");
-      setToast({ show: true, message: "Vendor updated successfully." });
-
-      setTimeout(() => {
-        setToast({ show: false, message: "" });
+      const response = await updateVendor(vendorId, vendorData);
+      if (response.ok) {
         router.push("/vendors/all");
-      }, 2000);
-    } catch (err) {
-      setToast({ show: true, message: "Error updating vendor." });
+      }
+    } catch (error) {
+      console.log("Error Updating Vendor", error);
     }
-  };
+  }
 
   return (
-    <div className="max-w-xl mx-auto mt-8 p-6 border rounded-md shadow">
-      <h1 className="text-2xl font-bold mb-6">Edit Vendor</h1>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block mb-1 font-medium">Name</label>
-          <input
-            type="text"
-            name="name"
-            value={vendor.name}
-            onChange={handleChange}
-            required
-            className="w-full border rounded px-3 py-2"
-          />
-        </div>
-        <div>
-          <label className="block mb-1 font-medium">Mobile Number</label>
-          <input
-            type="text"
-            name="mobileNumber"
-            value={vendor.mobileNumber}
-            onChange={handleChange}
-            required
-            className="w-full border rounded px-3 py-2"
-          />
-        </div>
-        <div>
-          <label className="block mb-1 font-medium">Address</label>
-          <textarea
-            name="address"
-            value={vendor.address}
-            onChange={handleChange}
-            required
-            className="w-full border rounded px-3 py-2"
-          />
-        </div>
-        <div className="flex gap-3">
-          <button
-            type="submit"
-            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 cursor-pointer"
-          >
-            Update
-          </button>
-          <button
-            type="button"
-            onClick={() => router.push("/vendors/all")}
-            className="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400 cursor-pointer"
-          >
-            Cancel
-          </button>
-        </div>
-      </form>
+    <form
+      onSubmit={handleSubmit}
+      method="post"
+      className="bg-white p-6 rounded-lg shadow space-y-6"
+      aria-labelledby="vendor-section-title"
+    >
+      <h2 id="vendor-section-title" className="text-2xl font-semibold">
+        Edit Vendor
+      </h2>
 
-      <Toast
+      <div className="flex flex-col gap-1">
+        <label htmlFor="name" className="text-sm">
+          Vendor Name
+        </label>
+        <input
+          type="text"
+          name="name"
+          id="name"
+          className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none"
+          defaultValue={vendor?.name}
+          required
+        />
+      </div>
+
+      <div className="flex flex-col gap-1">
+        <label htmlFor="mobileNumber" className="text-sm">
+          Mobile Number
+        </label>
+        <input
+          type="text"
+          name="mobileNumber"
+          id="mobileNumber"
+          className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none"
+          defaultValue={vendor?.mobileNumber}
+          required
+        />
+      </div>
+
+      <div className="flex flex-col gap-1">
+        <label htmlFor="address" className="text-sm">
+          Address
+        </label>
+        <input
+          type="text"
+          name="address"
+          id="address"
+          className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none"
+          defaultValue={vendor?.address}
+          required
+        />
+      </div>
+
+      <button
+        type="submit"
+        className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition cursor-pointer disabled:opacity-50"
+      >
+        Update Vendor
+      </button>
+      {/* <Toast
         show={toast.show}
         message={toast.message}
         onClose={() => setToast({ show: false, message: "" })}
-      />
-    </div>
+      /> */}
+    </form>
   );
 }

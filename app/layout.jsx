@@ -111,6 +111,24 @@ export default function RootLayout({ children }) {
               </li>
               <li>
                 <a
+                  href="/vendors/all"
+                  className="flex items-center gap-2 p-2 rounded-md hover:bg-gray-200"
+                >
+                  <FaUser />
+                  <span>All Vendors</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/vendors/add"
+                  className="flex items-center gap-2 p-2 rounded-md hover:bg-gray-200"
+                >
+                  <FaUserPlus />
+                  <span>Add Vendor</span>
+                </a>
+              </li>
+              <li>
+                <a
                   href="/products/all"
                   className="flex items-center gap-2 p-2 rounded-md hover:bg-gray-200"
                 >
