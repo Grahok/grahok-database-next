@@ -11,22 +11,42 @@ export default function Home() {
   return (
     <section className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-6">
       <a
-        href="/entries/all"
+        href="/entries/customer/all"
         className="flex items-center justify-between gap-3 bg-gray-100 p-4 rounded-lg shadow-md hover:bg-gray-200 transition group h-20"
       >
         <div className="flex items-center gap-3 flex-1">
           <FaDatabase className="size-5 flex-shrink-0" />
-          <p className="whitespace-normal leading-tight">All Entries</p>
+          <p className="whitespace-normal leading-tight">All Customer Entries</p>
         </div>
         <FaUpRightFromSquare className="hidden group-hover:block transition-transform duration-300 ease-in-out size-5 flex-shrink-0" />
       </a>
       <a
-        href="/entries/add"
+        href="/entries/customer/add"
         className="flex items-center justify-between gap-3 bg-gray-100 p-4 rounded-lg shadow-md hover:bg-gray-200 transition group h-20"
       >
         <div className="flex items-center gap-3 flex-1">
           <FaCirclePlus className="size-5 flex-shrink-0" />
-          <p className="whitespace-normal leading-tight">Add Entry</p>
+          <p className="whitespace-normal leading-tight">Add Customer Entry</p>
+        </div>
+        <FaUpRightFromSquare className="hidden group-hover:block transition-transform duration-300 ease-in-out size-5 flex-shrink-0" />
+      </a>
+      <a
+        href="/entries/vendor/all"
+        className="flex items-center justify-between gap-3 bg-gray-100 p-4 rounded-lg shadow-md hover:bg-gray-200 transition group h-20"
+      >
+        <div className="flex items-center gap-3 flex-1">
+          <FaDatabase className="size-5 flex-shrink-0" />
+          <p className="whitespace-normal leading-tight">All Vendor Entries</p>
+        </div>
+        <FaUpRightFromSquare className="hidden group-hover:block transition-transform duration-300 ease-in-out size-5 flex-shrink-0" />
+      </a>
+      <a
+        href="/entries/vendor/add"
+        className="flex items-center justify-between gap-3 bg-gray-100 p-4 rounded-lg shadow-md hover:bg-gray-200 transition group h-20"
+      >
+        <div className="flex items-center gap-3 flex-1">
+          <FaCirclePlus className="size-5 flex-shrink-0" />
+          <p className="whitespace-normal leading-tight">Add Vendor Entry</p>
         </div>
         <FaUpRightFromSquare className="hidden group-hover:block transition-transform duration-300 ease-in-out size-5 flex-shrink-0" />
       </a>
