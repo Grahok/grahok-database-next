@@ -174,7 +174,7 @@ export default function AllEntries() {
             </tr>
           ))}
           <tr>
-            <td colSpan="4" className="font-bold">
+            <td colSpan={4} className="font-bold">
               Total:
             </td>
             <td>{totalPurchasePrice}</td>

@@ -1,20 +1,14 @@
 "use client";
 
 import { fetchEntries } from "@/app/(routes)/vendors/view/[vendorId]/actions";
-import Toast from "@/app/(routes)/entries/customer/add/components/Toast";
-import ConfirmDialog from "@/app/(routes)/entries/customer/add/components/ConfirmDialog";
-import { useParams } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import Toast from "@/app/(routes)/entries/vendor/add/components/Toast";
+import ConfirmDialog from "@/app/(routes)/entries/vendor/add/components/ConfirmDialog";
+import React, { useEffect, useRef, useState } from "react";
 import { FaEye, FaPencil, FaPhone, FaTrash } from "react-icons/fa6";
 
-export default function VendorDeatils() {
-  const params = useParams();
-  const vendorId = params.id;
-  const [vendor, setVendor] = useState({
-    name: "",
-    mobileNumber: "",
-    address: "",
-  });
+export default function VendorDeatils({ params }) {
+  const { vendorId } = React.use(params);
+  const [vendor, setVendor] = useState();
   const [toast, setToast] = useState({ show: false, message: "" });
   const [entries, setEntries] = useState([]);
   const [selectedEntryId, setSelectedEntryId] = useState("");
@@ -23,32 +17,34 @@ export default function VendorDeatils() {
   const confirmDialogRef = useRef();
 
   useEffect(() => {
-    const fetchVendor = async () => {
+    (async () => {
       try {
-        const res = await fetch(`/api/vendors/${vendorId}`);
-        if (!res.ok) throw new Error("Failed to fetch vendor data.");
-        const data = await res.json();
-        setVendor(data);
+        const response = await fetch(`/api/vendors/${vendorId}`, {
+          method: "GET",
+          headers: { "Content-type": "application/json" },
+        });
+        if (!response.ok) throw new Error("Failed to fetch vendor data.");
+        const { vendor } = await response.json();
+        setVendor(vendor);
       } catch (error) {
         setToast({ show: true, message: "Error loading vendor data." });
       }
-    };
-    fetchVendor();
-  }, [vendorId]);
+    })();
+  }, []);
 
   useEffect(() => {
-    const loadEntries = async (vendorId) => {
+    (async () => {
       try {
-        const entries = await fetchEntries(vendorId);
+        const response = await fetchEntries(vendorId);
+        const { entries } = await response.json();
         setEntries(entries);
       } catch (error) {
-        setError("Failed to fetch entries."); // Set an error message
+        setError("Failed to fetch entries.");
       } finally {
-        setLoading(false); // Ensure loading is set to false
+        setLoading(false);
       }
-    };
-    loadEntries(vendorId);
-  }, [vendorId]);
+    })();
+  }, []);
 
   function openConfirmDialog(entryId) {
     setSelectedEntryId(entryId); // Store the selected entry ID
@@ -86,13 +82,13 @@ export default function VendorDeatils() {
               <img
                 className="size-16 rounded-full"
                 src="/avatar.png"
-                alt={vendor.name}
+                alt={vendor?.name}
               />
               <div className="flex flex-col items-center justify-center gap-2">
-                <h3 className="text-xl font-semibold">{vendor.name}</h3>
+                <h3 className="text-xl font-semibold">{vendor?.name}</h3>
                 <a
                   className="px-2 py-1 bg-green-600 hover:bg-green-700 text-white rounded flex items-center gap-2 transition duration-200"
-                  href={`tel:${vendor.mobileNumber}`}
+                  href={`tel:${vendor?.mobileNumber}`}
                 >
                   <FaPhone size={14} />
                   Call
@@ -104,15 +100,15 @@ export default function VendorDeatils() {
               <tbody className="bg-gray-50 [&_tr:nth-child(odd)]:bg-gray-100">
                 <tr>
                   <th>Name</th>
-                  <td>{vendor.name}</td>
+                  <td>{vendor?.name}</td>
                 </tr>
                 <tr>
                   <th>Mobile</th>
-                  <td>{vendor.mobileNumber}</td>
+                  <td>{vendor?.mobileNumber}</td>
                 </tr>
                 <tr>
                   <th>Address</th>
-                  <td>{vendor.address}</td>
+                  <td>{vendor?.address}</td>
                 </tr>
               </tbody>
             </table>
@@ -132,41 +128,6 @@ export default function VendorDeatils() {
               </tr>
             </thead>
             <tbody className=" [&_tr:nth-child(even)]:bg-gray-100">
-              {entries.map((entry, index) => (
-                <tr key={entry._id}>
-                  <td>{index + 1}</td>
-                  <td>
-                    {new Date(entry.entryDate).toLocaleDateString("en-GB")}
-                  </td>
-                  <td>
-                    {new Date(entry.orderDate).toLocaleDateString("en-GB")}
-                  </td>
-                  <td>{entry.paidByVendor}</td>
-                  <td>{entry.status || "Unknown"}</td>
-                  <td>
-                    <div className="flex gap-1">
-                      <a
-                        className="p-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200"
-                        href={`/entries/view/${entry._id}`}
-                      >
-                        <FaEye />
-                      </a>
-                      <a
-                        className="p-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition duration-200"
-                        href={`/entries/edit/${entry._id}`}
-                      >
-                        <FaPencil />
-                      </a>
-                      <button
-                        className="p-2 bg-red-600 text-white rounded-md cursor-pointer hover:bg-red-700 transition duration-200"
-                        onClick={() => openConfirmDialog(entry._id)}
-                      >
-                        <FaTrash />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
               {entries.length === 0 && !loading && !error && (
                 <tr>
                   <td colSpan="6" className="text-center">
@@ -188,6 +149,41 @@ export default function VendorDeatils() {
                   </td>
                 </tr>
               )}
+              {entries.map((entry, index) => (
+                <tr key={entry._id}>
+                  <td>{index + 1}</td>
+                  <td>
+                    {new Date(entry.entryDate).toLocaleDateString("en-GB")}
+                  </td>
+                  <td>
+                    {new Date(entry.orderDate).toLocaleDateString("en-GB")}
+                  </td>
+                  <td>{entry.paidByVendor}</td>
+                  <td>{entry.orderStatus}</td>
+                  <td>
+                    <div className="flex gap-1">
+                      <a
+                        className="p-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200"
+                        href={`/entries/vendor/view/${entry._id}`}
+                      >
+                        <FaEye />
+                      </a>
+                      <a
+                        className="p-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition duration-200"
+                        href={`/entries/vendor/edit/${entry._id}`}
+                      >
+                        <FaPencil />
+                      </a>
+                      <button
+                        className="p-2 bg-red-600 text-white rounded-md cursor-pointer hover:bg-red-700 transition duration-200"
+                        onClick={() => openConfirmDialog(entry._id)}
+                      >
+                        <FaTrash />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </section>

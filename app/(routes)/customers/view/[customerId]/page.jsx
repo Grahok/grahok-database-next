@@ -8,11 +8,7 @@ import { FaEye, FaPencil, FaPhone, FaTrash } from "react-icons/fa6";
 
 export default function CustomerDeatils({ params }) {
   const { customerId } = React.use(params);
-  const [customer, setCustomer] = useState({
-    name: "",
-    mobileNumber: "",
-    address: "",
-  });
+  const [customer, setCustomer] = useState();
   const [toast, setToast] = useState({ show: false, message: "" });
   const [entries, setEntries] = useState([]);
   const [selectedEntryId, setSelectedEntryId] = useState("");
@@ -37,10 +33,10 @@ export default function CustomerDeatils({ params }) {
   }, []);
 
   useEffect(() => {
-    (async (customerId) => {
+    (async () => {
       try {
         const response = await fetchEntries(customerId);
-        const entries = await response.json();
+        const { entries } = await response.json();
         setEntries(entries);
       } catch (error) {
         setError("Failed to fetch entries.");
@@ -86,13 +82,13 @@ export default function CustomerDeatils({ params }) {
               <img
                 className="size-16 rounded-full"
                 src="/avatar.png"
-                alt={customer.name}
+                alt={customer?.name}
               />
               <div className="flex flex-col items-center justify-center gap-2">
-                <h3 className="text-xl font-semibold">{customer.name}</h3>
+                <h3 className="text-xl font-semibold">{customer?.name}</h3>
                 <a
                   className="px-2 py-1 bg-green-600 hover:bg-green-700 text-white rounded flex items-center gap-2 transition duration-200"
-                  href={`tel:${customer.mobileNumber}`}
+                  href={`tel:${customer?.mobileNumber}`}
                 >
                   <FaPhone size={14} />
                   Call
@@ -104,15 +100,15 @@ export default function CustomerDeatils({ params }) {
               <tbody className="bg-gray-50 [&_tr:nth-child(odd)]:bg-gray-100">
                 <tr>
                   <th>Name</th>
-                  <td>{customer.name}</td>
+                  <td>{customer?.name}</td>
                 </tr>
                 <tr>
                   <th>Mobile</th>
-                  <td>{customer.mobileNumber}</td>
+                  <td>{customer?.mobileNumber}</td>
                 </tr>
                 <tr>
                   <th>Address</th>
-                  <td>{customer.address}</td>
+                  <td>{customer?.address}</td>
                 </tr>
               </tbody>
             </table>
@@ -132,41 +128,6 @@ export default function CustomerDeatils({ params }) {
               </tr>
             </thead>
             <tbody className=" [&_tr:nth-child(even)]:bg-gray-100">
-              {entries.map((entry, index) => (
-                <tr key={entry._id}>
-                  <td>{index + 1}</td>
-                  <td>
-                    {new Date(entry.entryDate).toLocaleDateString("en-GB")}
-                  </td>
-                  <td>
-                    {new Date(entry.orderDate).toLocaleDateString("en-GB")}
-                  </td>
-                  <td>{entry.paidByCustomer}</td>
-                  <td>{entry.status || "Unknown"}</td>
-                  <td>
-                    <div className="flex gap-1">
-                      <a
-                        className="p-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200"
-                        href={`/entries/view/${entry._id}`}
-                      >
-                        <FaEye />
-                      </a>
-                      <a
-                        className="p-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition duration-200"
-                        href={`/entries/edit/${entry._id}`}
-                      >
-                        <FaPencil />
-                      </a>
-                      <button
-                        className="p-2 bg-red-600 text-white rounded-md cursor-pointer hover:bg-red-700 transition duration-200"
-                        onClick={() => openConfirmDialog(entry._id)}
-                      >
-                        <FaTrash />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
               {entries.length === 0 && !loading && !error && (
                 <tr>
                   <td colSpan="6" className="text-center">
@@ -188,6 +149,41 @@ export default function CustomerDeatils({ params }) {
                   </td>
                 </tr>
               )}
+              {entries.map((entry, index) => (
+                <tr key={entry._id}>
+                  <td>{index + 1}</td>
+                  <td>
+                    {new Date(entry.entryDate).toLocaleDateString("en-GB")}
+                  </td>
+                  <td>
+                    {new Date(entry.orderDate).toLocaleDateString("en-GB")}
+                  </td>
+                  <td>{entry.paidByCustomer}</td>
+                  <td>{entry.orderStatus}</td>
+                  <td>
+                    <div className="flex gap-1">
+                      <a
+                        className="p-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200"
+                        href={`/entries/customer/view/${entry._id}`}
+                      >
+                        <FaEye />
+                      </a>
+                      <a
+                        className="p-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition duration-200"
+                        href={`/entries/customer/edit/${entry._id}`}
+                      >
+                        <FaPencil />
+                      </a>
+                      <button
+                        className="p-2 bg-red-600 text-white rounded-md cursor-pointer hover:bg-red-700 transition duration-200"
+                        onClick={() => openConfirmDialog(entry._id)}
+                      >
+                        <FaTrash />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </section>

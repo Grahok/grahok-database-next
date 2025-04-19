@@ -12,7 +12,7 @@ import {
   FaUser,
 } from "react-icons/fa6";
 import { fetchEntries, deleteEntry } from "./actions";
-import ConfirmDialog from "@/app/(routes)/entries/customer/add/components/ConfirmDialog";
+import ConfirmDialog from "@/app/(routes)/entries/vendor/all/components/ConfirmDialog";
 
 export default function AllEntries() {
   const [entries, setEntries] = useState([]);
@@ -27,7 +27,7 @@ export default function AllEntries() {
         const { entries } = await response.json();
         setEntries(entries);
       } catch (error) {
-        console.error("Error fetching entries", error);
+        console.error("Error fetching entries:", error);
       } finally {
         setLoading(false);
       }
@@ -35,13 +35,13 @@ export default function AllEntries() {
   }, []);
 
   function openConfirmDialog(entryId) {
-    setSelectedEntryId(entryId); // Store the selected entry ID
-    confirmDialogRef.current.open(); // Open the confirmation dialog
+    setSelectedEntryId(entryId);
+    confirmDialogRef.current.open();
   }
 
   async function handleDelete() {
     try {
-      await deleteEntry(selectedEntryId); // Use the stored entry ID
+      await deleteEntry(selectedEntryId);
       setEntries((prev) =>
         prev.filter((entry) => entry._id !== selectedEntryId)
       );
@@ -50,9 +50,7 @@ export default function AllEntries() {
       console.error("Error deleting entry:", error);
     }
   }
-  // const totalProfit = entries.reduce((acc, entry) => {
-  //   return acc + entry.netProfit;
-  // }, 0);
+
   const totalDiscount = entries.reduce((acc, entry) => {
     return acc + entry.totalDiscount;
   }, 0);
@@ -111,12 +109,6 @@ export default function AllEntries() {
                 <span>Total Discount</span>
               </div>
             </th>
-            {/* <th>
-              <div className="flex gap-1 items-center">
-                <FaDollarSign />
-                <span>Total Payment</span>
-              </div>
-            </th> */}
           </tr>
         </thead>
         <tbody>
@@ -160,17 +152,15 @@ export default function AllEntries() {
               <td>{entry.totalPurchasePrice}</td>
               <td>{entry.totalQuantity}</td>
               <td>{entry.totalDiscount}</td>
-              {/* <td>{entry.netProfit}</td> */}
             </tr>
           ))}
           <tr>
-            <td colSpan="4" className="font-bold">
+            <td colSpan={4} className="font-bold">
               Total:
             </td>
             <td>{totalPurchasePrice}</td>
             <td>{totalQuantity}</td>
             <td>{totalDiscount}</td>
-            {/* <td>{totalProfit}</td> */}
           </tr>
         </tbody>
       </table>

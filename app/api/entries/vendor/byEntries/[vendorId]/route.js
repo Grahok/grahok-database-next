@@ -1,15 +1,15 @@
-import CustomerEntry from "@/models/CustomerEntry";
-import Customer from "@/models/Customer";
+import VendorEntry from "@/models/VendorEntry";
+import Vendor from "@/models/Vendor";
 import Product from "@/models/Product";
 import { connectToDatabase } from "@/lib/mongoose";
 
 export async function GET(_, { params }) {
-  const { customerId } = await params;
+  const { vendorId } = await params;
   try {
     await connectToDatabase();
 
-    const entries = await CustomerEntry.find({ customer: customerId })
-      .populate("customer", "name mobileNumber address")
+    const entries = await VendorEntry.find({ vendor: vendorId })
+      .populate("vendor", "name mobileNumber address")
       .populate("products.product", "name");
 
     return new Response(

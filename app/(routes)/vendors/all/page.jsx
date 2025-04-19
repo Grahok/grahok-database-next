@@ -16,6 +16,7 @@ import ConfirmDialog from "@/app/(routes)/entries/customer/add/components/Confir
 
 export default function AllVendors() {
   const [vendors, setVendors] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [selectedVendorId, setSelectedVendorId] = useState(null);
   const confirmDialogRef = useRef();
 
@@ -27,6 +28,8 @@ export default function AllVendors() {
         setVendors(vendors);
       } catch (error) {
         console.error("Error fetching vendors:", error);
+      } finally {
+        setLoading(false);
       }
     })();
   }, []);
@@ -87,6 +90,16 @@ export default function AllVendors() {
           </tr>
         </thead>
         <tbody>
+          {loading && (
+            <tr>
+              <td colSpan={9}>Loading...</td>
+            </tr>
+          )}
+          {!loading && !vendors.length && (
+            <tr>
+              <td colSpan={9}>No Vendor Found</td>
+            </tr>
+          )}
           {vendors.map((vendor, index) => (
             <tr key={vendor._id} className="hover:bg-gray-100">
               <td>{index + 1}</td>
