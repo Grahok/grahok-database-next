@@ -10,7 +10,7 @@ export async function GET(_, { params }) {
 
     const entry = await CustomerEntry.findById(entryId)
       .populate("customer", "name mobileNumber address")
-      .populate("products.product", "name");
+      .populate("products.product", "name inStock");
 
     return new Response(
       JSON.stringify({
