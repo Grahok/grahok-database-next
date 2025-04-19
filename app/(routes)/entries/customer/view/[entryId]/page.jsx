@@ -2,39 +2,12 @@
 
 import React, { useEffect, useState } from "react";
 import { FaArrowLeft } from "react-icons/fa6";
+import { getCustomerEntry } from "./actions/getCustomerEntry";
 
 export default function ViewEntry({ params }) {
   const { entryId } = React.use(params);
 
-  const [entry, setEntry] = useState({
-    invoiceNumber: 0,
-    orderStatus: "Pending",
-    customer: {
-      name: "",
-      mobileNumber: "",
-      address: "",
-    },
-    orderDate: null,
-    entryDate: null,
-    paymentDate: null,
-    products: [],
-    subtotal: 0,
-    paidByCustomer: 0,
-    shippingCustomer: 0,
-    shippingMerchant: 0,
-    totalShippingCharge: 0,
-    shippingMethod: "",
-    otherCost: 0,
-    courierTax: 0,
-
-    totalQuantity: 0,
-    totalPurchasePrice: 0,
-    totalSellPrice: 0,
-    totalDiscount: 0,
-    overallDiscount: 0,
-    totalIncome: 0,
-    netProfit: 0,
-  });
+  const [entry, setEntry] = useState();
 
   useEffect(() => {
     (async () => {
@@ -69,7 +42,7 @@ export default function ViewEntry({ params }) {
             type="number"
             placeholder="Invoice Number"
             className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none text-right w-24 bg-gray-100 cursor-not-allowed"
-            defaultValue={entry.invoiceNumber}
+            defaultValue={entry?.invoiceNumber}
             disabled
           />
 
@@ -77,7 +50,7 @@ export default function ViewEntry({ params }) {
             name="orderStatus"
             id="orderStatus"
             className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none bg-gray-100 cursor-not-allowed"
-            defaultValue={entry.orderStatus}
+            defaultValue={entry?.orderStatus}
             disabled
           >
             <option value="Pending">Pending</option>
@@ -102,7 +75,7 @@ export default function ViewEntry({ params }) {
                 type="text"
                 className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none bg-gray-100 cursor-not-allowed"
                 placeholder="Customer Name"
-                defaultValue={entry.customer.name || ""}
+                defaultValue={entry?.customer.name || ""}
                 disabled
               />
             </div>
@@ -113,7 +86,7 @@ export default function ViewEntry({ params }) {
                 type="text"
                 className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none bg-gray-100 cursor-not-allowed"
                 placeholder="Mobile Number"
-                defaultValue={entry.customer.mobileNumber || ""}
+                defaultValue={entry?.customer.mobileNumber || ""}
                 disabled
               />
             </div>
@@ -124,7 +97,7 @@ export default function ViewEntry({ params }) {
                 type="text"
                 className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none bg-gray-100 cursor-not-allowed"
                 placeholder="Address"
-                defaultValue={entry.customer.address || ""}
+                defaultValue={entry?.customer.address || ""}
                 disabled
               />
             </div>
@@ -135,7 +108,7 @@ export default function ViewEntry({ params }) {
                 type="date"
                 className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none bg-gray-100 cursor-not-allowed"
                 placeholder="Order Date"
-                defaultValue={entry.orderDate || ""}
+                defaultValue={entry?.orderDate || ""}
                 disabled
               />
             </div>
@@ -146,7 +119,7 @@ export default function ViewEntry({ params }) {
                 type="date"
                 className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none bg-gray-100 cursor-not-allowed"
                 placeholder="Entry Date"
-                defaultValue={entry.entryDate || ""}
+                defaultValue={entry?.entryDate || ""}
                 disabled
               />
             </div>
@@ -157,7 +130,7 @@ export default function ViewEntry({ params }) {
                 type="date"
                 className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none bg-gray-100 cursor-not-allowed"
                 placeholder="Payment Date"
-                defaultValue={entry.paymentDate || ""}
+                defaultValue={entry?.paymentDate || ""}
                 disabled
               />
             </div>
@@ -182,15 +155,15 @@ export default function ViewEntry({ params }) {
               </tr>
             </thead>
             <tbody>
-              {entry.products.map((product, index) => (
+              {entry?.products.map((product, index) => (
                 <tr key={index} className="hover:bg-gray-50">
-                  <td>{product.product.name}</td>
-                  <td>{product.quantity}</td>
-                  <td>{product.inStock}</td>
-                  <td>{product.purchasePrice}</td>
-                  <td>{product.sellPrice}</td>
-                  <td>{product.discount}</td>
-                  <td>{product.subtotal}</td>
+                  <td>{product?.product.name}</td>
+                  <td>{product?.quantity}</td>
+                  <td>{product?.inStock}</td>
+                  <td>{product?.purchasePrice}</td>
+                  <td>{product?.sellPrice}</td>
+                  <td>{product?.discount}</td>
+                  <td>{product?.subtotal}</td>
                 </tr>
               ))}
             </tbody>
@@ -206,7 +179,7 @@ export default function ViewEntry({ params }) {
               <input
                 type="number"
                 className="w-full p-2 border rounded bg-gray-100 cursor-not-allowed"
-                defaultValue={entry.shippingCustomer}
+                defaultValue={entry?.shippingCustomer}
                 disabled
               />
             </div>
@@ -215,7 +188,7 @@ export default function ViewEntry({ params }) {
               <input
                 type="number"
                 className="w-full p-2 border rounded bg-gray-100 cursor-not-allowed"
-                defaultValue={entry.shippingMerchant}
+                defaultValue={entry?.shippingMerchant}
                 disabled
               />
             </div>
@@ -239,7 +212,7 @@ export default function ViewEntry({ params }) {
               <input
                 type="number"
                 placeholder={0}
-                defaultValue={entry.otherCost}
+                defaultValue={entry?.otherCost}
                 className="w-full p-2 border rounded bg-gray-100 cursor-not-allowed"
                 disabled
               />
@@ -252,15 +225,15 @@ export default function ViewEntry({ params }) {
               <tbody>
                 <tr>
                   <td>Subtotal</td>
-                  <td>{entry.subtotal.toFixed(2)}</td>
+                  <td>{entry?.subtotal.toFixed(2)}</td>
                 </tr>
                 <tr>
                   <td>Paid by Customer</td>
-                  <td>{entry.paidByCustomer.toFixed(2)}</td>
+                  <td>{entry?.paidByCustomer.toFixed(2)}</td>
                 </tr>
                 <tr>
                   <td>Shipping Charge</td>
-                  <td>{entry.totalShippingCharge.toFixed(2)}</td>
+                  <td>{entry?.totalShippingCharge.toFixed(2)}</td>
                 </tr>
                 <tr>
                   <td>Courier Tax</td>
@@ -269,7 +242,7 @@ export default function ViewEntry({ params }) {
                       type="number"
                       placeholder={0}
                       min={0}
-                      defaultValue={entry.courierTax}
+                      defaultValue={entry?.courierTax}
                       className="w-24 p-1 border rounded text-right bg-gray-100 cursor-not-allowed"
                       disabled
                     />
@@ -277,11 +250,11 @@ export default function ViewEntry({ params }) {
                 </tr>
                 <tr>
                   <td>Total Income</td>
-                  <td>{entry.totalIncome.toFixed(2)}</td>
+                  <td>{entry?.totalIncome.toFixed(2)}</td>
                 </tr>
                 <tr>
                   <td>Total Purchase</td>
-                  <td>{entry.totalPurchasePrice.toFixed(2)}</td>
+                  <td>{entry?.totalPurchasePrice.toFixed(2)}</td>
                 </tr>
                 <tr>
                   <td>Overall Discount</td>
@@ -290,14 +263,14 @@ export default function ViewEntry({ params }) {
                       type="number"
                       placeholder={0}
                       className="w-24 p-1 border rounded text-right bg-gray-100 cursor-not-allowed"
-                      defaultValue={entry.overallDiscount}
+                      defaultValue={entry?.overallDiscount}
                       disabled
                     />
                   </td>
                 </tr>
                 <tr className="font-semibold">
                   <td>Net Profit</td>
-                  <td>{entry.netProfit.toFixed(2)}</td>
+                  <td>{entry?.netProfit.toFixed(2)}</td>
                 </tr>
               </tbody>
             </table>
@@ -305,7 +278,7 @@ export default function ViewEntry({ params }) {
         </section>
 
         <a
-          href="/entries/all"
+          href="/entries/customer/all"
           className="flex items-center gap-2 underline underline-offset-4 text-blue-600"
         >
           <FaArrowLeft />

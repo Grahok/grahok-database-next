@@ -3,13 +3,11 @@
 import { fetchEntries } from "@/app/(routes)/customers/view/[customerId]/actions";
 import Toast from "@/app/(routes)/entries/customer/add/components/Toast";
 import ConfirmDialog from "@/app/(routes)/entries/customer/add/components/ConfirmDialog";
-import { useParams } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { FaEye, FaPencil, FaPhone, FaTrash } from "react-icons/fa6";
 
-export default function CustomerDeatils() {
-  const params = useParams();
-  const customerId = params.id;
+export default function CustomerDeatils({ params }) {
+  const { customerId } = React.use(params);
   const [customer, setCustomer] = useState({
     name: "",
     mobileNumber: "",
@@ -23,32 +21,34 @@ export default function CustomerDeatils() {
   const confirmDialogRef = useRef();
 
   useEffect(() => {
-    const fetchCustomer = async () => {
+    (async () => {
       try {
-        const res = await fetch(`/api/customers/${customerId}`);
-        if (!res.ok) throw new Error("Failed to fetch customer data.");
-        const data = await res.json();
-        setCustomer(data);
+        const response = await fetch(`/api/customers/${customerId}`, {
+          method: "GET",
+          headers: { "Content-type": "application/json" },
+        });
+        if (!response.ok) throw new Error("Failed to fetch customer data.");
+        const { customer } = await response.json();
+        setCustomer(customer);
       } catch (error) {
         setToast({ show: true, message: "Error loading customer data." });
       }
-    };
-    fetchCustomer();
-  }, [customerId]);
+    })();
+  }, []);
 
   useEffect(() => {
-    const loadEntries = async (customerId) => {
+    (async (customerId) => {
       try {
-        const entries = await fetchEntries(customerId);
+        const response = await fetchEntries(customerId);
+        const entries = await response.json();
         setEntries(entries);
       } catch (error) {
-        setError("Failed to fetch entries."); // Set an error message
+        setError("Failed to fetch entries.");
       } finally {
-        setLoading(false); // Ensure loading is set to false
+        setLoading(false);
       }
-    };
-    loadEntries(customerId);
-  }, [customerId]);
+    })();
+  }, []);
 
   function openConfirmDialog(entryId) {
     setSelectedEntryId(entryId); // Store the selected entry ID

@@ -34,6 +34,7 @@ export const vendorEntrySchema = new mongoose.Schema(
     shippingMethod: {
       type: String,
       enum: SHIPPING_METHODS,
+      default: "Pathao",
     },
     otherCost: Number,
     courierTax: Number,

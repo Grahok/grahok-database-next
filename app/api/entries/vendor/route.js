@@ -7,10 +7,9 @@ export async function GET() {
   try {
     await connectToDatabase();
 
-    const entries = await VendorEntry.find().populate(
-      "vendor",
-      "name mobileNumber"
-    );
+    const entries = await VendorEntry.find()
+      .populate("vendor", "name mobileNumber")
+      .populate("products.product", "name");
     return new Response(
       JSON.stringify({
         message: "Fetching Entries Successful",

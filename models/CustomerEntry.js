@@ -21,7 +21,7 @@ const customerEntrySchema = new mongoose.Schema(
     },
     customer: { type: mongoose.Schema.Types.ObjectId, ref: "Customer" },
     orderDate: Date,
-    customerEntryDate: Date,
+    entryDate: Date,
     paymentDate: Date,
     products: [productSchema],
     subtotal: Number,

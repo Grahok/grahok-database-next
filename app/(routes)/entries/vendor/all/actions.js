@@ -26,9 +26,9 @@ export async function deleteEntry(entryId) {
   return response;
 }
 
-export async function fetchEntry(customerId) {
+export async function fetchEntry(vendorId) {
   const response = await fetch(
-    `/api/entries/customer/${customerId}`,
+    `/api/entries/vendor/${vendorId}`,
     {
       method: "GET",
       headers: { "Content-Type": "application/json" },

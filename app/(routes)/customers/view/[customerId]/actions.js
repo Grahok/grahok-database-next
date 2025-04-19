@@ -1,6 +1,6 @@
 export async function fetchEntries(customerId) {
   const response = await fetch(
-    `/api/entries/customer/${customerId}`,
+    `/api/entries/customer/byCustomer/${customerId}`,
     {
       method: "GET",
       headers: { "Content-Type": "application/json" },

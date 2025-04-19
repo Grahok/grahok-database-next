@@ -11,10 +11,11 @@ export async function getProduct(productId) {
   return response;
 }
 
-export async function updateProduct(productId) {
+export async function updateProduct(productId, productData) {
   const response = await fetch(`/api/products/${productId}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(productData),
   });
 
   if (!response.ok) {

@@ -32,9 +32,9 @@ export async function PUT(req, { params }) {
   const { productId } = await params;
   try {
     await connectToDatabase();
-    const data = await req.json();
+    const productData = await req.json();
 
-    const updatedProduct = await Product.findByIdAndUpdate(productId, data, {
+    const updatedProduct = await Product.findByIdAndUpdate(productId, productData, {
       new: true,
     });
     return new Response(

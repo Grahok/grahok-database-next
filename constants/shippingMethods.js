@@ -4,4 +4,5 @@ export const SHIPPING_METHODS = [
   "Sunderban",
   "Karotoa",
   "Janani",
+  "Other"
 ];

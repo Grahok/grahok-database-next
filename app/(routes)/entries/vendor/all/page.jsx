@@ -136,13 +136,13 @@ export default function AllEntries() {
               <td>
                 <div className="flex gap-1">
                   <a
-                    href={`/entries/view/${entry._id}`}
+                    href={`/entries/vendor/view/${entry._id}`}
                     className="p-1.5 bg-blue-600 text-white rounded-md"
                   >
                     <FaEye size={12} />
                   </a>
                   <a
-                    href={`/entries/edit/${entry._id}`}
+                    href={`/entries/vendor/edit/${entry._id}`}
                     className="p-1.5 bg-green-600 text-white rounded-md"
                   >
                     <FaPencil size={12} />
@@ -155,8 +155,8 @@ export default function AllEntries() {
                   </button>
                 </div>
               </td>
-              <td>{entry.vendor?.name}</td>
-              <td>{entry.vendor?.mobileNumber}</td>
+              <td>{entry.vendor.name}</td>
+              <td>{entry.vendor.mobileNumber}</td>
               <td>{entry.totalPurchasePrice}</td>
               <td>{entry.totalQuantity}</td>
               <td>{entry.totalDiscount}</td>

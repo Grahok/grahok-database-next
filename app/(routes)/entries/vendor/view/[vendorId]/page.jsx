@@ -1,74 +1,34 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import React, { useEffect, useState } from "react";
 import { FaArrowLeft } from "react-icons/fa6";
+import { getVendorEntry } from "./actions/getVendorEntry";
 
-export default function ViewEntry() {
-  const params = useParams();
-  const entryId = params.id;
+export default function ViewEntry({ params }) {
+  const { entryId } = React.use(params);
 
-  const [entry, setEntry] = useState({
-    invoiceNumber: 0,
-    orderStatus: "Pending", // Ensure this matches the backend's default value
-    customer: {
-      name: "",
-      mobileNumber: "",
-      address: "",
-    },
-    orderDate: null,
-    entryDate: null,
-    paymentDate: null,
-    products: [],
-    subtotal: 0,
-    paidByCustomer: 0,
-    shippingCustomer: 0,
-    shippingMerchant: 0,
-    totalShippingCharge: 0,
-    shippingMethod: "",
-    otherCost: 0,
-    courierTax: 0,
-
-    // Calculated fields (write-once at submission)
-    totalQuantity: 0,
-    totalPurchasePrice: 0,
-    totalSellPrice: 0,
-    totalDiscount: 0,
-    overallDiscount: 0,
-    totalIncome: 0,
-    netProfit: 0,
-  });
-
-  // Ensure the UI reflects the default behavior
-  // Removed redundant useEffect for setting orderStatus to "Pending"
+  const [entry, setEntry] = useState();
 
   useEffect(() => {
-    const fetchEntry = async () => {
+    (async () => {
       try {
-        const res = await fetch(`/api/entries/${entryId}`);
-        if (!res.ok) throw new Error("Failed to fetch entry data.");
-        const data = await res.json();
+        const response = await getVendorEntry(entryId);
+        const { entry } = await response.json();
 
-        // Format dates inline while setting the state
         setEntry({
-          ...data,
-          orderDate: data.orderDate
-            ? new Date(data.orderDate).toISOString().split("T")[0]
+          ...entry,
+          orderDate: entry.orderDate
+            ? new Date(entry.orderDate).toISOString().split("T")[0]
             : "",
-          entryDate: data.entryDate
-            ? new Date(data.entryDate).toISOString().split("T")[0]
-            : "",
-          paymentDate: data.paymentDate
-            ? new Date(data.paymentDate).toISOString().split("T")[0]
+          entryDate: entry.entryDate
+            ? new Date(entry.entryDate).toISOString().split("T")[0]
             : "",
         });
       } catch (error) {
-        console.error("Error loading entry data:", error);
+        console.error("Error loading entry:", error);
       }
-    };
-
-    if (entryId) fetchEntry();
-  }, [entryId]);
+    })();
+  }, []);
 
   return (
     <main className="min-h-screen p-6 bg-gray-50 text-gray-800 flex flex-col gap-8">
@@ -79,7 +39,7 @@ export default function ViewEntry() {
             type="number"
             placeholder="Invoice Number"
             className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none text-right w-24 bg-gray-100 cursor-not-allowed"
-            defaultValue={entry.invoiceNumber || ""}
+            defaultValue={entry?.invoiceNumber}
             disabled
           />
 
@@ -87,7 +47,7 @@ export default function ViewEntry() {
             name="orderStatus"
             id="orderStatus"
             className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none bg-gray-100 cursor-not-allowed"
-            defaultValue={entry.orderStatus}
+            defaultValue={entry?.orderStatus}
             disabled
           >
             <option value="Pending">Pending</option>
@@ -101,18 +61,18 @@ export default function ViewEntry() {
       </header>
 
       <main className="space-y-10">
-        {/* Customer Section */}
+        {/* Vendor Section */}
         <section className="bg-white p-6 rounded-lg shadow space-y-6">
-          <h2 className="text-2xl font-semibold">Customer Info</h2>
+          <h2 className="text-2xl font-semibold">Vendor Info</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div className="flex flex-col gap-1">
-              <label htmlFor="customerName">Customer Name</label>
+              <label htmlFor="vendorName">Vendor Name</label>
               <input
-                id="customerName"
+                id="vendorName"
                 type="text"
                 className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none bg-gray-100 cursor-not-allowed"
-                placeholder="Customer Name"
-                defaultValue={entry.customer.name || ""}
+                placeholder="Vendor Name"
+                defaultValue={entry?.vendor.name || ""}
                 disabled
               />
             </div>
@@ -123,7 +83,7 @@ export default function ViewEntry() {
                 type="text"
                 className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none bg-gray-100 cursor-not-allowed"
                 placeholder="Mobile Number"
-                defaultValue={entry.customer.mobileNumber || ""}
+                defaultValue={entry?.vendor.mobileNumber || ""}
                 disabled
               />
             </div>
@@ -134,7 +94,7 @@ export default function ViewEntry() {
                 type="text"
                 className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none bg-gray-100 cursor-not-allowed"
                 placeholder="Address"
-                defaultValue={entry.customer.address || ""}
+                defaultValue={entry?.vendor.address || ""}
                 disabled
               />
             </div>
@@ -145,7 +105,7 @@ export default function ViewEntry() {
                 type="date"
                 className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none bg-gray-100 cursor-not-allowed"
                 placeholder="Order Date"
-                defaultValue={entry.orderDate || ""}
+                defaultValue={entry?.orderDate || ""}
                 disabled
               />
             </div>
@@ -156,18 +116,7 @@ export default function ViewEntry() {
                 type="date"
                 className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none bg-gray-100 cursor-not-allowed"
                 placeholder="Entry Date"
-                defaultValue={entry.entryDate || ""}
-                disabled
-              />
-            </div>
-            <div className="flex flex-col gap-1">
-              <label htmlFor="paymentDate">Payment Date</label>
-              <input
-                id="paymentDate"
-                type="date"
-                className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none bg-gray-100 cursor-not-allowed"
-                placeholder="Payment Date"
-                defaultValue={entry.paymentDate || ""}
+                defaultValue={entry?.entryDate || ""}
                 disabled
               />
             </div>
@@ -192,15 +141,15 @@ export default function ViewEntry() {
               </tr>
             </thead>
             <tbody>
-              {entry.products.map((product, index) => (
+              {entry?.products.map((product, index) => (
                 <tr key={index} className="hover:bg-gray-50">
-                  <td>{product.product.name}</td>
-                  <td>{product.quantity}</td>
-                  <td>{product.inStock}</td>
-                  <td>{product.purchasePrice}</td>
-                  <td>{product.sellPrice}</td>
-                  <td>{product.discount}</td>
-                  <td>{product.subtotal}</td>
+                  <td>{product?.product.name}</td>
+                  <td>{product?.quantity}</td>
+                  <td>{product?.inStock}</td>
+                  <td>{product?.purchasePrice}</td>
+                  <td>{product?.sellPrice}</td>
+                  <td>{product?.discount}</td>
+                  <td>{product?.subtotal}</td>
                 </tr>
               ))}
             </tbody>
@@ -212,20 +161,11 @@ export default function ViewEntry() {
           {/* Shipping & Options */}
           <div className="space-y-4">
             <div>
-              <label className="text-sm">Shipping Charge (Customer)</label>
-              <input
-                type="number"
-                className="w-full p-2 border rounded bg-gray-100 cursor-not-allowed"
-                defaultValue={entry.shippingCustomer}
-                disabled
-              />
-            </div>
-            <div>
               <label className="text-sm">Shipping Charge (Merchant)</label>
               <input
                 type="number"
                 className="w-full p-2 border rounded bg-gray-100 cursor-not-allowed"
-                defaultValue={entry.shippingMerchant}
+                defaultValue={entry?.shippingMerchant}
                 disabled
               />
             </div>
@@ -249,7 +189,7 @@ export default function ViewEntry() {
               <input
                 type="number"
                 placeholder={0}
-                defaultValue={entry.otherCost}
+                defaultValue={entry?.otherCost}
                 className="w-full p-2 border rounded bg-gray-100 cursor-not-allowed"
                 disabled
               />
@@ -262,15 +202,19 @@ export default function ViewEntry() {
               <tbody>
                 <tr>
                   <td>Subtotal</td>
-                  <td>{entry.subtotal.toFixed(2)}</td>
+                  <td>{entry?.subtotal.toFixed(2)}</td>
                 </tr>
                 <tr>
-                  <td>Paid by Customer</td>
-                  <td>{entry.paidByCustomer.toFixed(2)}</td>
+                  <td>Paid by Merchant</td>
+                  <td>{entry?.paidByMerchant.toFixed(2)}</td>
                 </tr>
                 <tr>
                   <td>Shipping Charge</td>
-                  <td>{entry.totalShippingCharge.toFixed(2)}</td>
+                  <td>{entry?.totalShippingCharge.toFixed(2)}</td>
+                </tr>
+                <tr>
+                  <td>Total Payment</td>
+                  <td>{entry?.totalPayment.toFixed(2)}</td>
                 </tr>
                 <tr>
                   <td>Courier Tax</td>
@@ -279,19 +223,11 @@ export default function ViewEntry() {
                       type="number"
                       placeholder={0}
                       min={0}
-                      defaultValue={entry.courierTax}
+                      defaultValue={entry?.courierTax}
                       className="w-24 p-1 border rounded text-right bg-gray-100 cursor-not-allowed"
                       disabled
                     />
                   </td>
-                </tr>
-                <tr>
-                  <td>Total Income</td>
-                  <td>{entry.totalIncome.toFixed(2)}</td>
-                </tr>
-                <tr>
-                  <td>Total Purchase</td>
-                  <td>{entry.totalPurchasePrice.toFixed(2)}</td>
                 </tr>
                 <tr>
                   <td>Overall Discount</td>
@@ -300,14 +236,10 @@ export default function ViewEntry() {
                       type="number"
                       placeholder={0}
                       className="w-24 p-1 border rounded text-right bg-gray-100 cursor-not-allowed"
-                      defaultValue={entry.overallDiscount}
+                      defaultValue={entry?.overallDiscount}
                       disabled
                     />
                   </td>
-                </tr>
-                <tr className="font-semibold">
-                  <td>Net Profit</td>
-                  <td>{entry.netProfit.toFixed(2)}</td>
                 </tr>
               </tbody>
             </table>
@@ -315,7 +247,7 @@ export default function ViewEntry() {
         </section>
 
         <a
-          href="/entries/all"
+          href="/entries/vendor/all"
           className="flex items-center gap-2 underline underline-offset-4 text-blue-600"
         >
           <FaArrowLeft />
