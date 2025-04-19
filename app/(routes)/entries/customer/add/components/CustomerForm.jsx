@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { FaChevronDown } from "react-icons/fa6";
-import { fetchCustomers } from "@/app/(routes)/customers/all/actions";
+import { getCustomers } from "@/app/(routes)/customers/all/actions";
 
 export default function CustomerForm({ onCustomerChange }) {
   const [selectedCustomerId, setSelectedCustomerId] = useState(null);
@@ -17,8 +17,9 @@ export default function CustomerForm({ onCustomerChange }) {
   useEffect(() => {
     async function loadCustomers() {
       try {
-        const data = await fetchCustomers();
-        setCustomers(data);
+        const response = await getCustomers();
+        const { customers } = await response.json();
+        setCustomers(customers);
       } catch (error) {
         console.error("Error fetching customers:", error);
       }
@@ -167,6 +168,7 @@ export default function CustomerForm({ onCustomerChange }) {
             type="date"
             className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none"
             placeholder="Entry Date"
+            defaultValue={new Date(Date.now()).toISOString().split("T")[0]}
             required
           />
         </div>

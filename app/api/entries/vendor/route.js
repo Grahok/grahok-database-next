@@ -11,10 +11,28 @@ export async function GET() {
       "vendor",
       "name mobileNumber"
     );
-    return Response.json(entries);
+    return new Response(
+      JSON.stringify({
+        message: "Fetching Entries Successful",
+        entries: entries,
+      }),
+      {
+        status: 200,
+        headers: { "Content-type": "application/json" },
+      }
+    );
   } catch (error) {
     console.error("Error fetching entries:", error);
-    return new Response("Failed to fetch entries", { status: 500 });
+    return new Response(
+      JSON.stringify({
+        message: "Failed to fetch entries",
+        error: error.message,
+      }),
+      {
+        status: 500,
+        headers: { "Content-type": "application/json" },
+      }
+    );
   }
 }
 
@@ -23,17 +41,6 @@ export async function POST(req) {
     await connectToDatabase();
     const body = await req.json();
 
-    // Validate required fields before inserting
-    // if (
-    //   !body.vendor ||
-    //   !body.orderDate ||
-    //   !body.entryDate ||
-    //   !body.products?.length
-    // ) {
-    //   return new Response("Missing required fields", { status: 400 });
-    // }
-
-    // Map products to include only the product reference and other fields
     const products = body.products.map((p) => ({
       product: p.product, // Reference to Product model
       quantity: p.quantity,
@@ -44,41 +51,32 @@ export async function POST(req) {
     }));
 
     for await (const p of products) {
-      const product = await Product.findById(p.product);
       await Product.findByIdAndUpdate(
         p.product,
         {
           $inc: {
-            instock: p.quantity,
+            inStock: -p.quantity,
           },
         },
         { new: true }
       );
     }
 
-    const entry = new VendorEntry({ ...body, products });
-    await entry.save();
-
-    console.log("✅ Entry created:", entry._id);
-
-    return Response.json({ message: "Entry created successfully", entry });
+    const entry = await VendorEntry.create({ ...body, products });
+    return new Response({
+      message: "✅ Entry created successfully",
+      entry: entry,
+    });
   } catch (error) {
-    console.error("❌ Error creating entry:", error);
-    return new Response("Error creating entry", { status: 500 });
-  }
-}
-
-export async function DELETE(req) {
-  try {
-    await connectToDatabase();
-    const { _id } = await req.json(); // ✅ correctly parse the request body
-    const deleted = await VendorEntry.deleteOne({ _id }); // ✅ use _id to delete
-    if (deleted.deletedCount === 0) {
-      return new Response("Entry not found", { status: 404 });
-    }
-    return Response.json({ message: "Entry deleted successfully" });
-  } catch (error) {
-    console.error("Error deleting entry:", error);
-    return new Response("Internal Server Error", { status: 500 });
+    return new Response(
+      JSON.stringify({
+        message: "❌ Error creating entry",
+        error: error.message,
+      }),
+      {
+        status: 500,
+        headers: { "Content-type": "application/json" },
+      }
+    );
   }
 }

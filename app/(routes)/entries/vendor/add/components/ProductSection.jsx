@@ -13,8 +13,9 @@ export default function ProductSection({
   useEffect(() => {
     async function loadProducts() {
       try {
-        const data = await fetchProducts();
-        setProducts(data);
+        const response = await fetchProducts();
+        const { products } = await response.json();
+        setProducts(products);
       } catch (error) {
         console.error("Error fetching products:", error);
       }

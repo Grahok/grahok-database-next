@@ -1,13 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter, useParams } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import Toast from "@/app/(routes)/entries/customer/add/components/Toast";
 
-export default function EditEntry() {
+export default function EditEntry({params}) {
   const router = useRouter();
-  const params = useParams();
-  const entryId = params.id;
+  const { entryId } = React.use(params);
 
   // Initialize state with default values to avoid uncontrolled inputs
   const [entry, setEntry] = useState({

@@ -15,43 +15,33 @@ import { fetchEntries, deleteEntry } from "./actions";
 import ConfirmDialog from "@/app/(routes)/entries/customer/all/components/ConfirmDialog";
 
 export default function AllEntries() {
-  const baseUrl =
-    process.env.NEXT_PUBLIC_BASE_URL ||
-    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "");
   const [entries, setEntries] = useState([]);
-  const [selectedEntryId, setSelectedEntryId] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [selectedEntryId, setSelectedEntryId] = useState("");
   const confirmDialogRef = useRef();
 
   useEffect(() => {
-    async function fetchEntries() {
-      const response = await fetch(`${baseUrl}/api/entries/customer`, {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-        cache: "no-store", // ensure fresh data
-      });
-
-      if (!response.ok) {
-        if (response.status === 404) {
-          throw new Error("No Entries Found");
-        } else {
-          throw new Error("Failed to fetch entries");
-        }
+    (async () => {
+      try {
+        const response = await fetchEntries();
+        const { entries } = await response.json();
+        setEntries(entries);
+      } catch (error) {
+        console.error("Error fetching entries:", error);
+      } finally {
+        setLoading(false);
       }
-      const data = await response.json();
-      setEntries(data);
-      return data;
-    }
-    fetchEntries();
+    })();
   }, []);
 
   function openConfirmDialog(entryId) {
-    setSelectedEntryId(entryId); // Store the selected entry ID
-    confirmDialogRef.current.open(); // Open the confirmation dialog
+    setSelectedEntryId(entryId);
+    confirmDialogRef.current.open();
   }
 
   async function handleDelete() {
     try {
-      await deleteEntry(selectedEntryId); // Use the stored entry ID
+      await deleteEntry(selectedEntryId);
       setEntries((prev) =>
         prev.filter((entry) => entry._id !== selectedEntryId)
       );
@@ -78,7 +68,7 @@ export default function AllEntries() {
 
   return (
     <section className="w-full flex flex-col gap-3">
-      <h1 className="text-3xl font-bold">All Entries:</h1>
+      <h1 className="text-3xl font-bold">All Customer Entries:</h1>
       <table className="table-auto [&_th,_td]:border [&_th,_td]:p-3 [&_div]:flex [&_div]:justify-self-center text-center">
         <thead>
           <tr>
@@ -139,7 +129,12 @@ export default function AllEntries() {
           </tr>
         </thead>
         <tbody>
-          {!entries.length && (
+          {loading && (
+            <tr>
+              <td colSpan={9}>Loading...</td>
+            </tr>
+          )}
+          {!loading && !entries.length && (
             <tr>
               <td colSpan={9}>No Entries Found</td>
             </tr>
@@ -150,13 +145,13 @@ export default function AllEntries() {
               <td>
                 <div className="flex gap-1">
                   <a
-                    href={`/entries/view/${entry._id}`}
+                    href={`/entries/customer/view/${entry._id}`}
                     className="p-1.5 bg-blue-600 text-white rounded-md"
                   >
                     <FaEye size={12} />
                   </a>
                   <a
-                    href={`/entries/edit/${entry._id}`}
+                    href={`/entries/customer/edit/${entry._id}`}
                     className="p-1.5 bg-green-600 text-white rounded-md"
                   >
                     <FaPencil size={12} />
@@ -169,8 +164,8 @@ export default function AllEntries() {
                   </button>
                 </div>
               </td>
-              <td>{entry.customer?.name}</td>
-              <td>{entry.customer?.mobileNumber}</td>
+              <td>{entry.customer.name}</td>
+              <td>{entry.customer.mobileNumber}</td>
               <td>{entry.totalPurchasePrice}</td>
               <td>{entry.totalSellPrice}</td>
               <td>{entry.totalQuantity}</td>

@@ -11,25 +11,27 @@ import {
   FaTrash,
   FaUser,
 } from "react-icons/fa6";
-import { fetchCustomers, deleteCustomer } from "./actions";
+import { getCustomers, deleteCustomer } from "./actions";
 import ConfirmDialog from "@/app/(routes)/entries/customer/all/components/ConfirmDialog";
 
 export default function AllCustomers() {
   const [customers, setCustomers] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [selectedCustomerId, setSelectedCustomerId] = useState(null);
   const confirmDialogRef = useRef();
 
   useEffect(() => {
-    async function loadCustomers() {
+    (async () => {
       try {
-        const data = await fetchCustomers();
-        setCustomers(data);
+        const response = await getCustomers();
+        const { customers } = await response.json();
+        setCustomers(customers);
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching customers:", error);
+        setLoading(false)
       }
-    }
-
-    loadCustomers();
+    })();
   }, []);
 
   function openConfirmDialog(customerId) {
@@ -88,6 +90,16 @@ export default function AllCustomers() {
           </tr>
         </thead>
         <tbody>
+          {loading && (
+            <tr>
+              <td colSpan={6}>Loading...</td>
+            </tr>
+          )}
+          {!loading && !customers.length && (
+            <tr>
+              <td colSpan={6}>No Customer Found</td>
+            </tr>
+          )}
           {customers.map((customer, index) => (
             <tr key={customer._id} className="hover:bg-gray-100">
               <td>{index + 1}</td>

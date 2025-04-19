@@ -1,31 +1,26 @@
-const baseUrl =
-  process.env.NEXT_PUBLIC_BASE_URL ||
-  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "");
-
-export async function fetchCustomers() {
-  const response = await fetch(`${baseUrl}/api/customers`, {
+export async function getCustomers() {
+  const response = await fetch("/api/customers", {
     method: "GET",
     headers: { "Content-Type": "application/json" },
-    cache: "no-store", // ensure fresh data
+    cache: "no-store",
   });
 
   if (!response.ok) {
-    throw new Error("Failed to fetch customers");
+    throw new Error("❌ Failed to fetch customers");
   }
 
-  return response.json();
+  return response;
 }
 
 export async function deleteCustomer(customerId) {
-  const response = await fetch(`${baseUrl}/api/customers`, {
+  const response = await fetch(`/api/customers/${customerId}`, {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ _id: customerId }), // 🔁 fixed key to _id
   });
 
   if (!response.ok) {
-    throw new Error("Failed to delete customer");
+    throw new Error("❌ Failed to delete customer");
   }
 
-  return response.json();
+  return response;
 }

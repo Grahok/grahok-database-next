@@ -1,16 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import React, { useEffect, useState } from "react";
 import { FaArrowLeft } from "react-icons/fa6";
 
-export default function ViewEntry() {
-  const params = useParams();
-  const entryId = params.id;
+export default function ViewEntry({ params }) {
+  const { entryId } = React.use(params);
 
   const [entry, setEntry] = useState({
     invoiceNumber: 0,
-    orderStatus: "Pending", // Ensure this matches the backend's default value
+    orderStatus: "Pending",
     customer: {
       name: "",
       mobileNumber: "",
@@ -29,7 +27,6 @@ export default function ViewEntry() {
     otherCost: 0,
     courierTax: 0,
 
-    // Calculated fields (write-once at submission)
     totalQuantity: 0,
     totalPurchasePrice: 0,
     totalSellPrice: 0,
@@ -39,36 +36,29 @@ export default function ViewEntry() {
     netProfit: 0,
   });
 
-  // Ensure the UI reflects the default behavior
-  // Removed redundant useEffect for setting orderStatus to "Pending"
-
   useEffect(() => {
-    const fetchEntry = async () => {
+    (async () => {
       try {
-        const res = await fetch(`/api/entries/${entryId}`);
-        if (!res.ok) throw new Error("Failed to fetch entry data.");
-        const data = await res.json();
+        const response = await getCustomerEntry(entryId);
+        const { entry } = await response.json();
 
-        // Format dates inline while setting the state
         setEntry({
-          ...data,
-          orderDate: data.orderDate
-            ? new Date(data.orderDate).toISOString().split("T")[0]
+          ...entry,
+          orderDate: entry.orderDate
+            ? new Date(entry.orderDate).toISOString().split("T")[0]
             : "",
-          entryDate: data.entryDate
-            ? new Date(data.entryDate).toISOString().split("T")[0]
+          entryDate: entry.entryDate
+            ? new Date(entry.entryDate).toISOString().split("T")[0]
             : "",
-          paymentDate: data.paymentDate
-            ? new Date(data.paymentDate).toISOString().split("T")[0]
+          paymentDate: entry.paymentDate
+            ? new Date(entry.paymentDate).toISOString().split("T")[0]
             : "",
         });
       } catch (error) {
-        console.error("Error loading entry data:", error);
+        console.error("Error loading entry:", error);
       }
-    };
-
-    if (entryId) fetchEntry();
-  }, [entryId]);
+    })();
+  }, []);
 
   return (
     <main className="min-h-screen p-6 bg-gray-50 text-gray-800 flex flex-col gap-8">
@@ -79,7 +69,7 @@ export default function ViewEntry() {
             type="number"
             placeholder="Invoice Number"
             className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none text-right w-24 bg-gray-100 cursor-not-allowed"
-            defaultValue={entry.invoiceNumber || ""}
+            defaultValue={entry.invoiceNumber}
             disabled
           />
 
