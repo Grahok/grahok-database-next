@@ -13,8 +13,9 @@ export default function ProductSection({
   useEffect(() => {
     async function loadProducts() {
       try {
-        const data = await fetchProducts();
-        setProducts(data);
+        const response = await fetchProducts();
+        const { products } = await response.json();
+        setProducts(products);
       } catch (error) {
         console.error("Error fetching products:", error);
       }
@@ -23,7 +24,7 @@ export default function ProductSection({
     loadProducts();
   }, []);
 
-  const selectedIds = selectedProducts.map((row) => row.product._id); // Use _id consistently
+  const selectedIds = selectedProducts.map((row) => row.product._id);
   const filtered = products.filter(
     (p) =>
       !selectedIds.includes(p._id) && // Use _id here

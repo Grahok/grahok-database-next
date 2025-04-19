@@ -1,4 +1,26 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { fetchEntries } from "../entries/customer/all/actions";
+
 export default function Analytics() {
+  const [entries, setEntries] = useState();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const response = await fetchEntries();
+        const { entries } = await response.json();
+        setEntries(entries);
+      } catch (error) {
+        console.error("❌ Error fetching Entries", error);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
+
   return (
     <section className="w-full flex flex-col gap-8">
       <h1 className="text-3xl font-bold">Analytics</h1>
@@ -51,14 +73,26 @@ export default function Analytics() {
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>1</td>
-            <td>Amon Half Fiber</td>
-            <td>10</td>
-            <td>650</td>
-            <td>1000</td>
-            <td>350</td>
-          </tr>
+          {loading && (
+            <tr>
+              <td colSpan={6}>Loading...</td>
+            </tr>
+          )}
+          {!loading && !entries.length && (
+            <tr>
+              <td colSpan={6}>No Entries Found</td>
+            </tr>
+          )}
+          {entries?.map((entry, index) => (
+            <tr>
+              <td>{index}</td>
+              <td>{entry.products.name}</td>
+              <td>{entry.product.quantity}</td>
+              <td>{entry.product.purchasePrice}</td>
+              <td>{entry.product.sellPrice}</td>
+              <td>{entry.product.purchasePrice - entry.product.sellPrice}</td>
+            </tr>
+          ))}
         </tbody>
         <tfoot>
           <tr>

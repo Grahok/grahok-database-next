@@ -14,20 +14,23 @@ import ConfirmDialog from "@/app/(routes)/entries/customer/add/components/Confir
 
 export default function AllProducts() {
   const [products, setProducts] = useState([]);
-  const [selectedProductId, setSelectedProductId] = useState(null); // State to store the selected product ID
+  const [loading, setLoading] = useState(true);
+  const [selectedProductId, setSelectedProductId] = useState("");
   const confirmDialogRef = useRef();
 
   useEffect(() => {
-    async function loadProducts() {
+    (async () => {
+      const response = await fetchProducts();
       try {
-        const data = await fetchProducts();
-        setProducts(data);
+        const { products } = await response.json();
+        setProducts(products);
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching products:", error);
+        setLoading(false);
+        setError(error);
       }
-    }
-
-    loadProducts();
+    })();
   }, []);
 
   function openConfirmDialog(productId) {
@@ -37,11 +40,12 @@ export default function AllProducts() {
 
   async function handleDelete() {
     try {
-      await deleteProduct(selectedProductId); // Use the stored product ID
+      const response = await deleteProduct(selectedProductId);
+      const { deletedProduct } = await response.json();
       setProducts((prev) =>
         prev.filter((product) => product._id !== selectedProductId)
       );
-      console.log("Product deleted successfully");
+      console.log("Product deleted successfully", deletedProduct);
     } catch (error) {
       console.error("Error deleting product:", error);
     }
@@ -92,6 +96,16 @@ export default function AllProducts() {
           </tr>
         </thead>
         <tbody>
+          {loading && (
+            <tr>
+              <td colSpan={6}>Loading...</td>
+            </tr>
+          )}
+          {!loading && !products.length && (
+            <tr>
+              <td colSpan={6}>No Product Found</td>
+            </tr>
+          )}
           {products.map((product, index) => (
             <tr key={product._id} className="hover:bg-gray-100">
               <td>{index + 1}</td>
@@ -121,7 +135,7 @@ export default function AllProducts() {
       </table>
       <ConfirmDialog
         ref={confirmDialogRef}
-        onConfirm={handleDelete} // Call handleDelete only after confirmation
+        onConfirm={handleDelete}
         message="Are you sure you want to delete this product?"
       />
     </div>

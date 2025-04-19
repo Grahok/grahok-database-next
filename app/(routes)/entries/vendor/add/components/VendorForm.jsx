@@ -17,8 +17,9 @@ export default function VendorForm({ onVendorChange }) {
   useEffect(() => {
     async function loadVendors() {
       try {
-        const data = await fetchVendors();
-        setVendors(data);
+        const response = await fetchVendors();
+        const { vendors } = await response.json();
+        setVendors(vendors);
       } catch (error) {
         console.error("Error fetching vendors:", error);
       }
@@ -167,6 +168,7 @@ export default function VendorForm({ onVendorChange }) {
             type="date"
             className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none"
             placeholder="Entry Date"
+            defaultValue={new Date(Date.now()).toISOString().split("T")[0]}
             required
           />
         </div>

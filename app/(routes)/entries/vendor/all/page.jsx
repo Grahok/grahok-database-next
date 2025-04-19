@@ -16,29 +16,22 @@ import ConfirmDialog from "@/app/(routes)/entries/customer/add/components/Confir
 
 export default function AllEntries() {
   const [entries, setEntries] = useState([]);
-  const [selectedEntryId, setSelectedEntryId] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [selectedEntryId, setSelectedEntryId] = useState("");
   const confirmDialogRef = useRef();
 
   useEffect(() => {
-    async function fetchEntries() {
-      const response = await fetch("/api/entries/vendor", {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-        cache: "no-store", // ensure fresh data
-      });
-
-      if (!response.ok) {
-        if (response.status === 404) {
-          throw new Error("No Entries Found");
-        } else {
-          throw new Error("Failed to fetch entries");
-        }
+    (async () => {
+      try {
+        const response = await fetchEntries();
+        const { entries } = await response.json();
+        setEntries(entries);
+      } catch (error) {
+        console.error("Error fetching entries", error);
+      } finally {
+        setLoading(false);
       }
-      const data = await response.json();
-      setEntries(data);
-      return data;
-    }
-    fetchEntries();
+    })();
   }, []);
 
   function openConfirmDialog(entryId) {
@@ -57,14 +50,14 @@ export default function AllEntries() {
       console.error("Error deleting entry:", error);
     }
   }
-  const totalProfit = entries.reduce((acc, entry) => {
-    return acc + entry.netProfit;
-  }, 0);
+  // const totalProfit = entries.reduce((acc, entry) => {
+  //   return acc + entry.netProfit;
+  // }, 0);
   const totalDiscount = entries.reduce((acc, entry) => {
     return acc + entry.totalDiscount;
   }, 0);
-  const totalSellPrice = entries.reduce((acc, entry) => {
-    return acc + entry.totalSellPrice;
+  const totalPurchasePrice = entries.reduce((acc, entry) => {
+    return acc + entry.totalPurchasePrice;
   }, 0);
   const totalQuantity = entries.reduce((acc, entry) => {
     return acc + entry.totalQuantity;
@@ -72,7 +65,7 @@ export default function AllEntries() {
 
   return (
     <section className="w-full flex flex-col gap-3">
-      <h1 className="text-3xl font-bold">All Entries:</h1>
+      <h1 className="text-3xl font-bold">All Vendor Entries:</h1>
       <table className="table-auto [&_th,_td]:border [&_th,_td]:p-3 [&_div]:flex [&_div]:justify-self-center text-center">
         <thead>
           <tr>
@@ -118,15 +111,25 @@ export default function AllEntries() {
                 <span>Total Discount</span>
               </div>
             </th>
-            <th>
+            {/* <th>
               <div className="flex gap-1 items-center">
                 <FaDollarSign />
                 <span>Total Payment</span>
               </div>
-            </th>
+            </th> */}
           </tr>
         </thead>
         <tbody>
+          {loading && (
+            <tr>
+              <td colSpan={7}>Loading...</td>
+            </tr>
+          )}
+          {!loading && !entries.length && (
+            <tr>
+              <td colSpan={7}>No Entries Found</td>
+            </tr>
+          )}
           {entries.map((entry, index) => (
             <tr key={entry._id} className="hover:bg-gray-100">
               <td>{index + 1}</td>
@@ -154,20 +157,20 @@ export default function AllEntries() {
               </td>
               <td>{entry.vendor?.name}</td>
               <td>{entry.vendor?.mobileNumber}</td>
-              <td>{entry.totalSellPrice}</td>
+              <td>{entry.totalPurchasePrice}</td>
               <td>{entry.totalQuantity}</td>
               <td>{entry.totalDiscount}</td>
-              <td>{entry.netProfit}</td>
+              {/* <td>{entry.netProfit}</td> */}
             </tr>
           ))}
           <tr>
             <td colSpan="4" className="font-bold">
               Total:
             </td>
-            <td>{totalSellPrice}</td>
+            <td>{totalPurchasePrice}</td>
             <td>{totalQuantity}</td>
             <td>{totalDiscount}</td>
-            <td>{totalProfit}</td>
+            {/* <td>{totalProfit}</td> */}
           </tr>
         </tbody>
       </table>

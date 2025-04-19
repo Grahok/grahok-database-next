@@ -8,16 +8,31 @@ export async function GET() {
     await connectToDatabase();
 
     const entries = await CustomerEntry.find().populate(
-      "customer",
-      "name mobileNumber"
+      "products.product",
+      "name"
     );
-    return new Response("Fetching Entries Successful", {
-      status: 200,
-      entries: entries,
-    });
+    return new Response(
+      JSON.stringify({
+        message: "Fetching Entries Successful",
+        entries: entries,
+      }),
+      {
+        status: 200,
+        headers: { "Content-type": "application/json" },
+      }
+    );
   } catch (error) {
     console.error("Error fetching entries:", error);
-    return new Response("Failed to fetch entries", { status: 500 });
+    return new Response(
+      JSON.stringify({
+        message: "Failed to fetch entries",
+        error: error.message,
+      }),
+      {
+        status: 500,
+        headers: { "Content-type": "application/json" },
+      }
+    );
   }
 }
 
@@ -26,7 +41,6 @@ export async function POST(req) {
     await connectToDatabase();
     const body = await req.json();
 
-    // Map products to include only the product reference and other fields
     const products = body.products.map((p) => ({
       product: p.product, // Reference to Product model
       quantity: p.quantity,
@@ -37,7 +51,6 @@ export async function POST(req) {
     }));
 
     for await (const p of products) {
-      const product = await Product.findById(p.product);
       await Product.findByIdAndUpdate(
         p.product,
         {
@@ -49,29 +62,21 @@ export async function POST(req) {
       );
     }
 
-    const entry = new CustomerEntry({ ...body, products });
-    await entry.save();
-
-    console.log("✅ Entry created:", entry._id);
-
-    return new Response({ message: "Entry created successfully", entry });
+    const entry = await CustomerEntry.create({ ...body, products });
+    return new Response({
+      message: "✅ Entry created successfully",
+      entry: entry,
+    });
   } catch (error) {
-    console.error("❌ Error creating entry:", error);
-    return new Response("Error creating entry", { status: 500 });
-  }
-}
-
-export async function DELETE(req) {
-  try {
-    await connectToDatabase();
-    const { _id } = await req.json(); // ✅ correctly parse the request body
-    const deleted = await CustomerEntry.deleteOne({ _id }); // ✅ use _id to delete
-    if (deleted.deletedCount === 0) {
-      return new Response("Entry not found", { status: 404 });
-    }
-    return new Response({ message: "Entry deleted successfully" });
-  } catch (error) {
-    console.error("Error deleting entry:", error);
-    return new Response("Internal Server Error", { status: 500 });
+    return new Response(
+      JSON.stringify({
+        message: "❌ Error creating entry",
+        error: error.message,
+      }),
+      {
+        status: 500,
+        headers: { "Content-type": "application/json" },
+      }
+    );
   }
 }

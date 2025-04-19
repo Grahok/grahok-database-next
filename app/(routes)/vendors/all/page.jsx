@@ -20,16 +20,15 @@ export default function AllVendors() {
   const confirmDialogRef = useRef();
 
   useEffect(() => {
-    async function loadVendors() {
+    (async () => {
       try {
-        const data = await fetchVendors();
-        setVendors(data);
+        const response = await fetchVendors();
+        const { vendors } = await response.json();
+        setVendors(vendors);
       } catch (error) {
         console.error("Error fetching vendors:", error);
       }
-    }
-
-    loadVendors();
+    })();
   }, []);
 
   function openConfirmDialog(vendorId) {
