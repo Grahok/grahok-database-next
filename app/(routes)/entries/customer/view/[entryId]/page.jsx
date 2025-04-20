@@ -159,7 +159,7 @@ export default function ViewEntry({ params }) {
                 <tr key={index} className="hover:bg-gray-50">
                   <td>{product?.product.name}</td>
                   <td>{product?.quantity}</td>
-                  <td>{product?.inStock}</td>
+                  <td>{product?.product.inStock}</td>
                   <td>{product?.purchasePrice}</td>
                   <td>{product?.sellPrice}</td>
                   <td>{product?.discount}</td>

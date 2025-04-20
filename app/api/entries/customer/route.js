@@ -9,7 +9,7 @@ export async function GET() {
 
     const entries = await CustomerEntry.find()
       .populate("customer", "name mobileNumber")
-      .populate("products.product", "name");
+      .populate("products.product", "name").sort({orderDate: -1});
     return new Response(
       JSON.stringify({
         message: "Fetching Entries Successful",

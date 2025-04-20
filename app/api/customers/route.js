@@ -50,7 +50,7 @@ export async function POST(req) {
 export async function GET() {
   try {
     await connectToDatabase();
-    const customers = await Customer.find();
+    const customers = await Customer.find().sort({ entryDate: -1 });
 
     return new Response(
       JSON.stringify({

@@ -65,6 +65,7 @@ export default function AddEntry() {
             name: customerData.name,
             mobileNumber: customerData.mobileNumber,
             address: customerData.address,
+            entryDate: e.target.entryDate.value,
           }),
         });
 
