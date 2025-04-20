@@ -1,8 +1,8 @@
 export const SHIPPING_METHODS = [
-  "Pathao",
   "Steadfast",
+  "Pathao",
   "Sunderban",
   "Karotoa",
   "Janani",
-  "Other"
+  "Other",
 ];

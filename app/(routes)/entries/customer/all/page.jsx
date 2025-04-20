@@ -158,12 +158,12 @@ export default function AllEntries() {
         <tbody>
           {loading && (
             <tr>
-              <td colSpan={9}>Loading...</td>
+              <td colSpan={12}>Loading...</td>
             </tr>
           )}
           {!loading && !entries.length && (
             <tr>
-              <td colSpan={9}>No Entries Found</td>
+              <td colSpan={12}>No Entries Found</td>
             </tr>
           )}
           {entries.map((entry, index) => (

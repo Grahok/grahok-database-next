@@ -2,7 +2,7 @@ export async function fetchVendors() {
   const response = await fetch("/api/vendors", {
     method: "GET",
     headers: { "Content-Type": "application/json" },
-    cache: "no-store", // ensure fresh data
+    cache: "no-store",
   });
 
   if (!response.ok) {

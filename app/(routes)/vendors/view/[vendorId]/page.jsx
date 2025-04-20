@@ -22,6 +22,7 @@ export default function VendorDeatils({ params }) {
         const response = await fetch(`/api/vendors/${vendorId}`, {
           method: "GET",
           headers: { "Content-type": "application/json" },
+          cache: "no-store",
         });
         if (!response.ok) throw new Error("Failed to fetch vendor data.");
         const { vendor } = await response.json();

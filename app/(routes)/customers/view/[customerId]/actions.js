@@ -4,7 +4,7 @@ export async function fetchEntries(customerId) {
     {
       method: "GET",
       headers: { "Content-Type": "application/json" },
-      cache: "no-store", // ensure fresh data
+      cache: "no-store",
     }
   );
 

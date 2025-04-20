@@ -37,7 +37,8 @@ export default function AddEntry() {
     paidByCustomer - totalShippingCharge - courierTax - otherCost;
   const netProfit = totalIncome - totalPurchasePrice;
   const [toast, setToast] = useState({ show: false, message: "" });
-  const [shippingMethod, setShippingMethod] = useState("Pathao");
+  const [shippingMethod, setShippingMethod] = useState("Steadfast");
+  const [note, setNote] = useState("");
 
   const handleCustomerChange = (data) => {
     setCustomerData(data);
@@ -109,6 +110,7 @@ export default function AddEntry() {
         totalShippingCharge,
         shippingMethod,
         otherCost,
+        note,
         courierTax,
         totalQuantity,
         totalPurchasePrice,
@@ -118,6 +120,8 @@ export default function AddEntry() {
         totalIncome,
         netProfit,
       };
+
+      console.log(entry);
 
       // 💾 Post the entry
       const entryRes = await fetch("/api/entries/customer", {
@@ -195,6 +199,8 @@ export default function AddEntry() {
           courierTax={courierTax}
           setCourierTax={setCourierTax}
           otherCost={otherCost}
+          note={note}
+          setNote={setNote}
           setOtherCost={setOtherCost}
           overallDiscount={overallDiscount}
           setOverallDiscount={setOverallDiscount}

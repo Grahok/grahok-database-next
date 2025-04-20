@@ -5,9 +5,11 @@ export default function SummarySection({
   setShippingCustomer,
   shippingMerchant,
   setShippingMerchant,
+  setOtherCost,
+  note,
+  setNote,
   courierTax,
   setCourierTax,
-  setOtherCost,
   setOverallDiscount,
   subtotal,
   paidByCustomer,
@@ -23,9 +25,13 @@ export default function SummarySection({
       {/* Shipping & Options */}
       <div className="space-y-4">
         <div>
-          <label className="text-sm">Shipping Charge (Customer)</label>
+          <label className="text-sm" htmlFor="shippingCustomer">
+            Shipping Charge (Customer)
+          </label>
           <input
             type="number"
+            name="shippingCustomer"
+            id="shippingCustomer"
             placeholder={shippingCustomer}
             min={0}
             onChange={(e) => setShippingCustomer(Number(e.target.value))}
@@ -33,9 +39,13 @@ export default function SummarySection({
           />
         </div>
         <div>
-          <label className="text-sm">Shipping Charge (Merchant)</label>
+          <label className="text-sm" htmlFor="shippingMerchant">
+            Shipping Charge (Merchant)
+          </label>
           <input
             type="number"
+            id="shippingMerchant"
+            name="shippingMerchant"
             placeholder={shippingMerchant}
             min={0}
             onChange={(e) => setShippingMerchant(Number(e.target.value))}
@@ -43,12 +53,16 @@ export default function SummarySection({
           />
         </div>
         <div>
-          <label className="text-sm">Shipping Method</label>
+          <label className="text-sm" htmlFor="shippingMethod">
+            Shipping Method
+          </label>
           <select
             className="w-full p-2 border rounded"
             required
             value={shippingMethod}
             onChange={(e) => setShippingMethod(e.target.value)}
+            id="shippingMethod"
+            name="shippingMethod"
           >
             {SHIPPING_METHODS.map((shippingMethod, index) => (
               <option key={index} value={shippingMethod}>
@@ -58,14 +72,28 @@ export default function SummarySection({
           </select>
         </div>
         <div>
-          <label className="text-sm">Other Cost</label>
+          <label className="text-sm" htmlFor="otherCost">
+            Other Cost
+          </label>
           <input
             type="number"
+            name="otherCost"
+            id="otherCost"
             placeholder={0}
             min={0}
             onChange={(e) => setOtherCost(Number(e.target.value))}
             className="w-full p-2 border rounded"
           />
+        </div>
+        <div>
+          <label className="text-sm">Note</label>
+          <textarea
+            name="note"
+            id="note"
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            className="w-full p-2 border rounded"
+          ></textarea>
         </div>
       </div>
 

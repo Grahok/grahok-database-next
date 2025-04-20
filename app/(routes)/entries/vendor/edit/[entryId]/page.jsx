@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Toast from "@/app/(routes)/entries/customer/add/components/Toast";
 
-export default function EditEntry({params}) {
+export default function EditEntry({ params }) {
   const router = useRouter();
   const { entryId } = React.use(params);
 
@@ -21,7 +21,11 @@ export default function EditEntry({params}) {
   useEffect(() => {
     const fetchEntry = async () => {
       try {
-        const res = await fetch(`/api/entries/${entryId}`);
+        const res = await fetch(`/api/entries/${entryId}`, {
+          method: "GET",
+          headers: { "Content-type": "application/json" },
+          cache: "no-store",
+        });
         if (!res.ok) throw new Error("Failed to fetch entry data.");
         const data = await res.json();
         setEntry(data);

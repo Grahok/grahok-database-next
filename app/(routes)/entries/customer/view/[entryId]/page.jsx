@@ -217,6 +217,16 @@ export default function ViewEntry({ params }) {
                 disabled
               />
             </div>
+            <div>
+          <label className="text-sm">Note</label>
+          <textarea
+            name="note"
+            id="note"
+            value={entry?.note}
+            className="w-full p-2 border rounded bg-gray-100 cursor-not-allowed"
+            disabled
+          ></textarea>
+        </div>
           </div>
 
           {/* Summary Table */}

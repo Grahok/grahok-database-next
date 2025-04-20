@@ -22,7 +22,11 @@ export default function EditEntry() {
   useEffect(() => {
     const fetchEntry = async () => {
       try {
-        const res = await fetch(`/api/entries/customer/${entryId}`);
+        const res = await fetch(`/api/entries/customer/${entryId}`, {
+          method: "GET",
+          headers: { "Content-type": "application/json" },
+          cache: "no-store",
+        });
         if (!res.ok) throw new Error("Failed to fetch entry data.");
         const data = await res.json();
         setEntry(data);
