@@ -84,7 +84,7 @@ export default function ProductSection({
         >
           <div className="p-2">
             <input
-              type="text"
+              type="search"
               placeholder="Search products..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}

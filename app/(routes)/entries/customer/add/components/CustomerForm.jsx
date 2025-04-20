@@ -80,7 +80,7 @@ export default function CustomerForm({ onCustomerChange }) {
           >
             <div className="p-2">
               <input
-                type="text"
+                type="search"
                 placeholder="Search customers..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}

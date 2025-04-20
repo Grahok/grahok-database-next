@@ -158,7 +158,7 @@ export default function RootLayout({ children }) {
           </nav>
         </aside>
         <main className="p-6 bg-gray-50 text-gray-800 flex flex-col gap-6 min-h-dvh w-full">
-          <h1 className="text-4xl font-bold text-blue-600">Grahok Database</h1>
+          <h1 className="text-4xl font-bold text-blue-600 text-center">Grahok Database</h1>
           {children}
         </main>
       </body>
