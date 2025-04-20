@@ -6,7 +6,6 @@ export default function ProductSection({
   selectedProducts,
   setSelectedProducts,
 }) {
-  
   const [search, setSearch] = useState("");
   const [products, setProducts] = useState([]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
