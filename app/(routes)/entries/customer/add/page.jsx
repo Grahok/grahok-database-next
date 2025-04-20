@@ -137,7 +137,6 @@ export default function AddEntry() {
 
       // ✅ Show success toast
       setToast({ show: true, message: "Entry added successfully." });
-
       setTimeout(() => {
         setToast({ show: false, message: "" });
       }, 2000);
