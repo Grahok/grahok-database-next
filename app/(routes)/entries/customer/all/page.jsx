@@ -192,8 +192,8 @@ export default function AllEntries() {
                 </div>
               </td>
               <td>{formatDate(entry.orderDate)}</td>
-              <td>{entry.customer.name}</td>
-              <td>{entry.customer.mobileNumber}</td>
+              <td>{entry.customer?.name || "Customer Not Found"}</td>
+              <td>{entry.customer?.mobileNumber || "Customer Not Found"}</td>
               <td>{entry.totalPurchasePrice}</td>
               <td>{entry.totalSellPrice}</td>
               <td>{entry.totalQuantity}</td>

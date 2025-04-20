@@ -75,7 +75,7 @@ export default function ViewEntry({ params }) {
                 type="text"
                 className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none bg-gray-100 cursor-not-allowed"
                 placeholder="Customer Name"
-                defaultValue={entry?.customer.name || ""}
+                defaultValue={entry?.customer?.name || "Customer Not Found"}
                 disabled
               />
             </div>
@@ -86,7 +86,7 @@ export default function ViewEntry({ params }) {
                 type="text"
                 className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none bg-gray-100 cursor-not-allowed"
                 placeholder="Mobile Number"
-                defaultValue={entry?.customer.mobileNumber || ""}
+                defaultValue={entry?.customer?.mobileNumber || "Customer Not Found"}
                 disabled
               />
             </div>

@@ -3,15 +3,13 @@
 import { ORDER_STATUSES } from "@/constants/orderStatuses";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import Toast from "@/app/(routes)/entries/customer/add/components/Toast";
 import SummarySection from "@/app/(routes)/entries/customer/add/components/SummarySection";
 import ProductSection from "@/app/(routes)/entries/customer/add/components/ProductSection";
 import CustomerForm from "@/app/(routes)/entries/customer/add/components/CustomerForm";
+import combineDateWithCurrentTime from "@/utils/combineDateWithCurrentTime";
 
 export default function AddEntry() {
-  const router = useRouter();
-
   const [invoiceNumber, setInvoiceNumber] = useState(0);
   const [orderStatus, setOrderStatus] = useState("Pending");
   const [customerData, setCustomerData] = useState(null);
@@ -66,7 +64,7 @@ export default function AddEntry() {
             name: customerData.name,
             mobileNumber: customerData.mobileNumber,
             address: customerData.address,
-            entryDate: e.target.entryDate.value,
+            entryDate: combineDateWithCurrentTime(e.target.entryDate.value),
           }),
         });
 
@@ -92,9 +90,10 @@ export default function AddEntry() {
         invoiceNumber,
         orderStatus,
         customer: customerId,
-        orderDate: e.target.orderDate.value,
-        entryDate: e.target.entryDate.value,
-        paymentDate: e.target.paymentDate.value || null,
+        orderDate: combineDateWithCurrentTime(e.target.orderDate.value),
+        entryDate: combineDateWithCurrentTime(e.target.entryDate.value),
+        paymentDate:
+          combineDateWithCurrentTime(e.target.paymentDate.value) || null,
         products: selectedProducts.map((p) => ({
           product: p.product._id,
           quantity: Number(p.quantity),
@@ -141,7 +140,6 @@ export default function AddEntry() {
 
       setTimeout(() => {
         setToast({ show: false, message: "" });
-        router.push("/entries/customer/all");
       }, 2000);
     } catch (err) {
       console.error(err);

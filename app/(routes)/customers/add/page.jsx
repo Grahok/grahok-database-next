@@ -1,21 +1,27 @@
 "use client";
 
-async function handleSubmit(e) {
-  e.preventDefault();
-  const formData = new FormData(e.target);
-  const customerData = Object.fromEntries(formData);
+import createCustomer from "@/features/customers/actions/createCustomer";
 
-  const response = await fetch("/api/customers", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(customerData),
-  });
-
-  if (response.ok) {
-    e.target.reset();
-  }
-}
 export default function AddCustomer() {
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const customerData = Object.fromEntries(formData);
+
+    const response = await createCustomer(customerData);
+
+    if (response.ok) {
+      e.target.reset();
+      // ✅ Show success toast
+      setToast({ show: true, message: "Entry added successfully." });
+
+      setTimeout(() => {
+        setToast({ show: false, message: "" });
+      }, 2000);
+    }
+  }
+  
   return (
     <form
       onSubmit={handleSubmit}
