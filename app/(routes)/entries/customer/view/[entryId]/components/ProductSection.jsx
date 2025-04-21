@@ -50,7 +50,7 @@ export default function ProductSection({
   const updateRow = (id, field, value) => {
     setSelectedProducts((prev) =>
       prev.map((row) =>
-        row.id === id ? { ...row, [field]: Number(value) } : row
+        row._id === id ? { ...row, [field]: Number(value) } : row
       )
     );
   };
@@ -140,8 +140,8 @@ export default function ProductSection({
           </tr>
         </thead>
         <tbody>
-          {selectedProducts.map((row) => (
-            <tr key={row._id}>
+          {selectedProducts.map((row, index) => (
+            <tr key={index}>
               <td>{row.product.name}</td>
               <td>
                 <input
@@ -151,7 +151,7 @@ export default function ProductSection({
                   step={0.25}
                   value={row.quantity}
                   onChange={(e) =>
-                    updateRow(row.id, "quantity", e.target.value)
+                    updateRow(row._id, "quantity", e.target.value)
                   }
                   disabled={!isEditable}
                 />

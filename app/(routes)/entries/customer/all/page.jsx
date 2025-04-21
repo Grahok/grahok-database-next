@@ -1,7 +1,13 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { FaEye, FaPencil, FaRotateRight, FaTrash } from "react-icons/fa6";
+import {
+  FaEye,
+  FaMagnifyingGlass,
+  FaPencil,
+  FaRotateRight,
+  FaTrash,
+} from "react-icons/fa6";
 import { fetchEntries, deleteEntry } from "./actions";
 import ConfirmDialog from "@/app/(routes)/entries/customer/all/components/ConfirmDialog";
 import formatDate from "@/utils/formatDate";
