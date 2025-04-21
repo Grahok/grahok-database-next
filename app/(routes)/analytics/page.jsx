@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { fetchEntries } from "../entries/customer/all/actions";
+import { fetchEntries } from "../entries/customer/all/components/actions";
 
 export default function Analytics() {
   const [entries, setEntries] = useState();
