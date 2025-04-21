@@ -14,7 +14,7 @@ import {
 import { fetchEntries, deleteEntry } from "./actions";
 import ConfirmDialog from "@/app/(routes)/entries/vendor/all/components/ConfirmDialog";
 
-export default function AllEntries() {
+export default function AllVendorEntries() {
   const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedEntryId, setSelectedEntryId] = useState("");

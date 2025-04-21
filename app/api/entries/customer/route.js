@@ -3,13 +3,28 @@ import CustomerEntry from "@/models/CustomerEntry";
 import Customer from "@/models/Customer";
 import Product from "@/models/Product";
 
-export async function GET() {
+export async function GET(req) {
   try {
     await connectToDatabase();
 
-    const entries = await CustomerEntry.find()
+    const url = new URL(req.url);
+    const fromDate = url.searchParams.get("fromDate");
+    const toDate = url.searchParams.get("toDate");
+
+    const query = {};
+
+    if (fromDate && toDate) {
+      query.orderDate = {
+        $gte: new Date(fromDate),
+        $lte: new Date(toDate),
+      };
+    }
+
+    const entries = await CustomerEntry.find(query)
       .populate("customer", "name mobileNumber")
-      .populate("products.product", "name").sort({orderDate: -1});
+      .populate("products.product", "name")
+      .sort({ orderDate: -1 });
+
     return new Response(
       JSON.stringify({
         message: "Fetching Entries Successful",

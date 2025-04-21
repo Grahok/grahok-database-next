@@ -1,14 +1,20 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { FaArrowLeft } from "react-icons/fa6";
+import { ORDER_STATUSES } from "@/constants/orderStatuses";
+
+import { useEffect, useState } from "react";
+import Toast from "@/app/(routes)/entries/customer/view/[entryId]/components/Toast";
+import SummarySection from "@/app/(routes)/entries/customer/view/[entryId]/components/SummarySection";
+import ProductSection from "@/app/(routes)/entries/customer/view/[entryId]/components/ProductSection";
+import CustomerForm from "@/app/(routes)/entries/customer/view/[entryId]/components/CustomerForm";
+import combineDateWithCurrentTime from "@/utils/combineDateWithCurrentTime";
+import React from "react";
 import { getCustomerEntry } from "./actions/getCustomerEntry";
+import { FaPencil } from "react-icons/fa6";
 
-export default function ViewEntry({ params }) {
+export default function EditEntry({ params }) {
   const { entryId } = React.use(params);
-
-  const [entry, setEntry] = useState();
-
+  const [isEditable, setIsEditable] = useState(false);
   useEffect(() => {
     (async () => {
       try {
@@ -27,274 +33,248 @@ export default function ViewEntry({ params }) {
             ? new Date(entry.paymentDate).toISOString().split("T")[0]
             : "",
         });
+        setSelectedProducts(entry.products);
       } catch (error) {
         console.error("Error loading entry:", error);
       }
     })();
   }, []);
 
+  const [invoiceNumber, setInvoiceNumber] = useState(0);
+  const [entry, setEntry] = useState();
+  const [orderStatus, setOrderStatus] = useState("Pending");
+  const [customerData, setCustomerData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [selectedProducts, setSelectedProducts] = useState([]);
+  const [overallDiscount, setOverallDiscount] = useState(0);
+  const subtotal = selectedProducts.reduce(
+    (sum, row) => sum + row.quantity * row.sellPrice - row.discount,
+    0
+  );
+  const totalPurchasePrice = selectedProducts.reduce(
+    (sum, row) => sum + row.quantity * row.purchasePrice,
+    0
+  );
+  const [shippingCustomer, setShippingCustomer] = useState(0);
+  const paidByCustomer = subtotal + shippingCustomer - overallDiscount;
+  const [shippingMerchant, setShippingMerchant] = useState(0);
+  const totalShippingCharge = shippingCustomer + shippingMerchant;
+  const [otherCost, setOtherCost] = useState(0);
+  const [courierTax, setCourierTax] = useState(0);
+  const totalIncome =
+    paidByCustomer - totalShippingCharge - courierTax - otherCost;
+  const netProfit = totalIncome - totalPurchasePrice;
+  const [toast, setToast] = useState({ show: false, message: "" });
+  const [shippingMethod, setShippingMethod] = useState("Steadfast");
+  const [note, setNote] = useState("");
+
+  const handleCustomerChange = (data) => {
+    setCustomerData(data);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+
+    try {
+      // let customerId;
+
+      // // 🔍 Check if it's an existing customer (already has _id)
+      // if (customerData._id) {
+      //   customerId = customerData._id;
+      // } else {
+      //   // 🆕 Create a new customer
+      //   const res = await fetch("/api/customers", {
+      //     method: "POST",
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //     },
+      //     body: JSON.stringify({
+      //       name: customerData.name,
+      //       mobileNumber: customerData.mobileNumber,
+      //       address: customerData.address,
+      //       entryDate: combineDateWithCurrentTime(e.target.entryDate.value),
+      //     }),
+      //   });
+
+      //   if (!res.ok) {
+      //     throw new Error("Failed to create new customer.");
+      //   }
+
+      //   const { createdCustomer: newCustomer } = await res.json();
+      //   customerId = newCustomer._id;
+      // }
+
+      const totalQuantity = Number(
+        selectedProducts.reduce((sum, p) => sum + p.quantity, 0)
+      );
+      const totalSellPrice = Number(
+        selectedProducts.reduce((sum, p) => sum + p.sellPrice * p.quantity, 0)
+      );
+      const totalDiscount =
+        Number(selectedProducts.reduce((sum, p) => sum + p.discount, 0)) +
+        Number(overallDiscount);
+
+      const entry = {
+        invoiceNumber,
+        orderStatus,
+        orderDate: combineDateWithCurrentTime(e.target.orderDate.value),
+        entryDate: combineDateWithCurrentTime(e.target.entryDate.value),
+        paymentDate:
+          combineDateWithCurrentTime(e.target.paymentDate.value) || null,
+        products: selectedProducts.map((p) => ({
+          product: p.product._id,
+          quantity: Number(p.quantity),
+          purchasePrice: Number(p.purchasePrice),
+          sellPrice: Number(p.sellPrice),
+          discount: Number(p.discount || 0),
+          subtotal: Number(p.quantity * p.sellPrice - p.discount),
+        })),
+        subtotal,
+        paidByCustomer,
+        shippingCustomer,
+        shippingMerchant,
+        totalShippingCharge,
+        shippingMethod,
+        otherCost,
+        note,
+        courierTax,
+        totalQuantity,
+        totalPurchasePrice,
+        totalSellPrice,
+        totalDiscount,
+        overallDiscount,
+        totalIncome,
+        netProfit,
+      };
+
+      // 💾 Update the entry
+      const resppnse = await fetch(`/api/entries/customer/${entryId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(entry),
+      });
+
+      if (!resppnse.ok) {
+        throw new Error("Failed to save entry.");
+      }
+
+      // ✅ Show success toast
+      setToast({ show: true, message: "Entry updated successfully." });
+      setTimeout(() => {
+        setToast({ show: false, message: "" });
+      }, 2000);
+    } catch (err) {
+      console.error(err);
+      setError(err.message || "Something went wrong.");
+    } finally {
+      setLoading(false);
+      window.location.reload();
+    }
+  };
+
   return (
-    <main className="min-h-screen p-6 bg-gray-50 text-gray-800 flex flex-col gap-8">
-      <header className="flex justify-between">
-        <h1 className="text-3xl font-bold">View Entry</h1>
+    <main className="min-h-screen bg-gray-50 text-gray-800 flex flex-col gap-8">
+      <header className="flex justify-between items-center gap-6">
+        <div className="flex items-center gap-2">
+          <h1 className="text-3xl font-bold">View Entry</h1>
+          <button
+            type="button"
+            onClick={() => setIsEditable((prev) => !prev)}
+            className="p-2 bg-green-600 text-white rounded-md cursor-pointer"
+          >
+            <FaPencil />
+          </button>
+        </div>
         <div className="flex gap-2">
           <input
             type="number"
             placeholder="Invoice Number"
-            className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none text-right w-24 bg-gray-100 cursor-not-allowed"
-            defaultValue={entry?.invoiceNumber}
-            disabled
+            className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none disabled:bg-gray-100 disabled:cursor-not-allowed"
+            value={entry?.invoiceNumber || ""}
+            onChange={(e) => setInvoiceNumber(Number(e.target.value))}
+            disabled={!isEditable}
           />
 
           <select
             name="orderStatus"
             id="orderStatus"
-            className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none bg-gray-100 cursor-not-allowed"
-            defaultValue={entry?.orderStatus}
-            disabled
+            className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none disabled:bg-gray-100 disabled:cursor-not-allowed"
+            value={entry?.orderStatus}
+            onChange={(e) => setOrderStatus(e.target.value)}
+            disabled={!isEditable}
           >
-            <option value="Pending">Pending</option>
-            <option value="On Hold">On Hold</option>
-            <option value="Confirmed">Confirmed</option>
-            <option value="Shipped">Shipped</option>
-            <option value="Delivered">Delivered</option>
-            <option value="Cancelled">Cancelled</option>
+            {ORDER_STATUSES.map((orderStatus, index) => (
+              <option key={index} value={orderStatus}>
+                {orderStatus}
+              </option>
+            ))}
           </select>
         </div>
       </header>
 
-      <main className="space-y-10">
+      <form onSubmit={handleSubmit} className="space-y-10">
         {/* Customer Section */}
-        <section className="bg-white p-6 rounded-lg shadow space-y-6">
-          <h2 className="text-2xl font-semibold">Customer Info</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div className="flex flex-col gap-1">
-              <label htmlFor="customerName">Customer Name</label>
-              <input
-                id="customerName"
-                type="text"
-                className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none bg-gray-100 cursor-not-allowed"
-                placeholder="Customer Name"
-                defaultValue={entry?.customer?.name || "Customer Not Found"}
-                disabled
-              />
-            </div>
-            <div className="flex flex-col gap-1">
-              <label htmlFor="mobileNumber">Mobile Number</label>
-              <input
-                id="mobileNumber"
-                type="text"
-                className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none bg-gray-100 cursor-not-allowed"
-                placeholder="Mobile Number"
-                defaultValue={entry?.customer?.mobileNumber || "Customer Not Found"}
-                disabled
-              />
-            </div>
-            <div className="flex flex-col gap-1">
-              <label htmlFor="address">Address</label>
-              <input
-                id="address"
-                type="text"
-                className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none bg-gray-100 cursor-not-allowed"
-                placeholder="Address"
-                defaultValue={entry?.customer?.address || "Customer Not Found"}
-                disabled
-              />
-            </div>
-            <div className="flex flex-col gap-1">
-              <label htmlFor="orderDate">Order Date</label>
-              <input
-                id="orderDate"
-                type="date"
-                className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none bg-gray-100 cursor-not-allowed"
-                placeholder="Order Date"
-                defaultValue={entry?.orderDate || ""}
-                disabled
-              />
-            </div>
-            <div className="flex flex-col gap-1">
-              <label htmlFor="entryDate">Entry Date</label>
-              <input
-                id="entryDate"
-                type="date"
-                className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none bg-gray-100 cursor-not-allowed"
-                placeholder="Entry Date"
-                defaultValue={entry?.entryDate || ""}
-                disabled
-              />
-            </div>
-            <div className="flex flex-col gap-1">
-              <label htmlFor="paymentDate">Payment Date</label>
-              <input
-                id="paymentDate"
-                type="date"
-                className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none bg-gray-100 cursor-not-allowed"
-                placeholder="Payment Date"
-                defaultValue={entry?.paymentDate || ""}
-                disabled
-              />
-            </div>
-          </div>
-        </section>
+        <CustomerForm
+          entry={entry}
+          onCustomerChange={handleCustomerChange}
+          isEditable={isEditable}
+        />
 
         {/* Product Section */}
-        <section className="bg-white p-6 rounded-lg shadow space-y-6">
-          <h2 className="text-2xl font-semibold">Products</h2>
-
-          {/* Product Table */}
-          <table className="w-full table-auto border-spacing-4 border [&_th,_td]:border [&_th,_td]:border-gray-300 [&_th,_td]:p-2 [&_th]:bg-gray-200">
-            <thead>
-              <tr className="text-left">
-                <th>Name</th>
-                <th>Quantity</th>
-                <th>In Stock</th>
-                <th>Purchase Price</th>
-                <th>Sell Price</th>
-                <th>Discount</th>
-                <th>Subtotal</th>
-              </tr>
-            </thead>
-            <tbody>
-              {entry?.products.map((product, index) => (
-                <tr key={index} className="hover:bg-gray-50">
-                  <td>{product?.product.name}</td>
-                  <td>{product?.quantity}</td>
-                  <td>{product?.product.inStock}</td>
-                  <td>{product?.purchasePrice}</td>
-                  <td>{product?.sellPrice}</td>
-                  <td>{product?.discount}</td>
-                  <td>{product?.subtotal}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </section>
+        <ProductSection
+          entry={entry}
+          isEditable={isEditable}
+          selectedProducts={selectedProducts}
+          setSelectedProducts={setSelectedProducts}
+        />
 
         {/* Summary */}
-        <section className="bg-white p-6 rounded-lg shadow grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Shipping & Options */}
-          <div className="space-y-4">
-            <div>
-              <label className="text-sm">Shipping Charge (Customer)</label>
-              <input
-                type="number"
-                className="w-full p-2 border rounded bg-gray-100 cursor-not-allowed"
-                defaultValue={entry?.shippingCustomer}
-                disabled
-              />
-            </div>
-            <div>
-              <label className="text-sm">Shipping Charge (Merchant)</label>
-              <input
-                type="number"
-                className="w-full p-2 border rounded bg-gray-100 cursor-not-allowed"
-                defaultValue={entry?.shippingMerchant}
-                disabled
-              />
-            </div>
-            <div>
-              <label className="text-sm">Shipping Method</label>
-              <select
-                className="w-full p-2 border rounded bg-gray-100 cursor-not-allowed"
-                disabled
-              >
-                {["Pathao", "Steadfast", "Sunderban", "Korotoa", "Janani"].map(
-                  (opt, index) => (
-                    <option key={index} value={opt}>
-                      {opt}
-                    </option>
-                  )
-                )}
-              </select>
-            </div>
-            <div>
-              <label className="text-sm">Other Cost</label>
-              <input
-                type="number"
-                placeholder={0}
-                defaultValue={entry?.otherCost}
-                className="w-full p-2 border rounded bg-gray-100 cursor-not-allowed"
-                disabled
-              />
-            </div>
-            <div>
-          <label className="text-sm">Note</label>
-          <textarea
-            name="note"
-            id="note"
-            value={entry?.note}
-            className="w-full p-2 border rounded bg-gray-100 cursor-not-allowed"
-            disabled
-          ></textarea>
-        </div>
-          </div>
+        <SummarySection
+          isEditable={isEditable}
+          entry={entry}
+          shippingCustomer={shippingCustomer}
+          setShippingCustomer={setShippingCustomer}
+          shippingMerchant={shippingMerchant}
+          setShippingMerchant={setShippingMerchant}
+          courierTax={courierTax}
+          setCourierTax={setCourierTax}
+          otherCost={otherCost}
+          note={note}
+          setNote={setNote}
+          setOtherCost={setOtherCost}
+          overallDiscount={overallDiscount}
+          setOverallDiscount={setOverallDiscount}
+          subtotal={subtotal}
+          paidByCustomer={paidByCustomer}
+          totalPurchasePrice={totalPurchasePrice}
+          totalShippingCharge={totalShippingCharge}
+          totalIncome={totalIncome}
+          netProfit={netProfit}
+          setShippingMethod={setShippingMethod}
+        />
 
-          {/* Summary Table */}
-          <div>
-            <table className="w-full table-auto border-spacing-y-4 border-separate">
-              <tbody>
-                <tr>
-                  <td>Subtotal</td>
-                  <td>{entry?.subtotal.toFixed(2)}</td>
-                </tr>
-                <tr>
-                  <td>Paid by Customer</td>
-                  <td>{entry?.paidByCustomer.toFixed(2)}</td>
-                </tr>
-                <tr>
-                  <td>Shipping Charge</td>
-                  <td>{entry?.totalShippingCharge.toFixed(2)}</td>
-                </tr>
-                <tr>
-                  <td>Courier Tax</td>
-                  <td>
-                    <input
-                      type="number"
-                      placeholder={0}
-                      min={0}
-                      defaultValue={entry?.courierTax}
-                      className="w-24 p-1 border rounded text-right bg-gray-100 cursor-not-allowed"
-                      disabled
-                    />
-                  </td>
-                </tr>
-                <tr>
-                  <td>Total Income</td>
-                  <td>{entry?.totalIncome.toFixed(2)}</td>
-                </tr>
-                <tr>
-                  <td>Total Purchase</td>
-                  <td>{entry?.totalPurchasePrice.toFixed(2)}</td>
-                </tr>
-                <tr>
-                  <td>Overall Discount</td>
-                  <td>
-                    <input
-                      type="number"
-                      placeholder={0}
-                      className="w-24 p-1 border rounded text-right bg-gray-100 cursor-not-allowed"
-                      defaultValue={entry?.overallDiscount}
-                      disabled
-                    />
-                  </td>
-                </tr>
-                <tr className="font-semibold">
-                  <td>Net Profit</td>
-                  <td>{entry?.netProfit.toFixed(2)}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </section>
-
-        <a
-          href="/entries/customer/all"
-          className="flex items-center gap-2 underline underline-offset-4 text-blue-600"
-        >
-          <FaArrowLeft />
-          <span>All Entries</span>
-        </a>
-      </main>
+        {/* Error or Loading Feedback */}
+        {error && <div className="text-red-600">{error}</div>}
+        {isEditable && (
+          <button
+            type="submit"
+            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition cursor-pointer disabled:opacity-50"
+            disabled={loading || !customerData}
+          >
+            {loading ? "Updating..." : "Update Entry"}
+          </button>
+        )}
+      </form>
+      <Toast
+        show={toast.show}
+        message={toast.message}
+        onClose={() => setToast({ show: false, message: "" })}
+      />
     </main>
   );
 }
