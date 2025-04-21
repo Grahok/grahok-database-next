@@ -1,31 +1,28 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import {
-  FaBullseye,
-  FaDollarSign,
-  FaEye,
-  FaHashtag,
-  FaMagnifyingGlass,
-  FaMobile,
-  FaPencil,
-  FaTrash,
-  FaUser,
-} from "react-icons/fa6";
+import { FaEye, FaPencil, FaRotateRight, FaTrash } from "react-icons/fa6";
 import { fetchEntries, deleteEntry } from "./actions";
 import ConfirmDialog from "@/app/(routes)/entries/customer/all/components/ConfirmDialog";
 import formatDate from "@/utils/formatDate";
+import { useSearchParams } from "next/navigation";
 
-export default function AllEntries() {
+export default function AllCustomerEntries() {
   const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedEntryId, setSelectedEntryId] = useState("");
   const confirmDialogRef = useRef();
+  const searchParams = useSearchParams();
+  const fromDateParam = searchParams.get("fromDate") || "";
+  const toDateParam = searchParams.get("toDate") || "";
+  const [isSpinning, setIsSpinning] = useState(false);
 
   useEffect(() => {
     (async () => {
+      setLoading(true);
       try {
-        const response = await fetchEntries();
+        const query = `?${searchParams.toString()}`;
+        const response = await fetchEntries(query);
         const { entries } = await response.json();
         setEntries(entries);
       } catch (error) {
@@ -34,7 +31,7 @@ export default function AllEntries() {
         setLoading(false);
       }
     })();
-  }, []);
+  }, [searchParams]);
 
   function openConfirmDialog(entryId) {
     setSelectedEntryId(entryId);
@@ -76,59 +73,73 @@ export default function AllEntries() {
 
   return (
     <section className="w-full flex flex-col gap-3">
-      <div className="flex items-center justify-between gap-6">
+      <div className="flex items-center gap-6">
         <h1 className="text-3xl font-bold">All Customer Entries:</h1>
         <div className="flex items-center gap-3">
-        <form className="flex items-center md:items-end gap-6 rounded-lg w-full max-w-2xl border border-gray-400 px-4 py-2">
-        <div className="flex items-center gap-2 w-full md:w-1/2">
-          <label
-            htmlFor="fromDate"
-            className="font-medium text-gray-700 mb-1"
-          >
-            From:
-          </label>
-          <input
-            className="p-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-            type="date"
-            name="fromDate"
-            id="fromDate"
-          />
-        </div>
-        <div className="flex items-center gap-2 w-full md:w-1/2">
-          <label
-            htmlFor="toDate"
-            className="font-medium text-gray-700 mb-1"
-          >
-            To:
-          </label>
-          <input
-            className="p-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-            type="date"
-            name="toDate"
-            id="toDate"
-          />
-        </div>
-        <button
-          type="submit"
-          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-1.5 px-3 rounded-md transition w-full md:w-auto"
-        >
-          Search
-        </button>
-      </form>
-          <div className="w-full flex items-center gap-2 border focus-within:ring-1 ring-blue-400 rounded overflow-clip">
+          <form className="flex items-center md:items-end gap-6 rounded-lg border border-gray-400 px-4 py-2">
+            <div className="flex items-center gap-2 w-full md:w-1/2">
+              <label
+                htmlFor="fromDate"
+                className="font-medium text-gray-700 mb-1"
+              >
+                From:
+              </label>
+              <input
+                className="p-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+                type="date"
+                name="fromDate"
+                id="fromDate"
+                defaultValue={fromDateParam}
+              />
+            </div>
+            <div className="flex items-center gap-2 w-full md:w-1/2">
+              <label
+                htmlFor="toDate"
+                className="font-medium text-gray-700 mb-1"
+              >
+                To:
+              </label>
+              <input
+                className="p-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+                type="date"
+                name="toDate"
+                id="toDate"
+                defaultValue={toDateParam}
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                type="submit"
+                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-1.5 px-3 rounded-md transition w-full md:w-auto"
+              >
+                Submit
+              </button>
+              <button
+                type="button"
+                className="p-1.5 bg-orange-300 rounded"
+                onClick={() => setIsSpinning(true)}
+              >
+                <a href="/entries/customer/all">
+                  <FaRotateRight className={isSpinning && "animate-spin"} size={20} />
+                </a>
+              </button>
+            </div>
+          </form>
+          <div className="w-full flex items-center gap-2 rounded">
             <input
               type="search"
               name="search-bar"
               id="search-bar"
-              className="px-2 focus:outline-0"
+              className="p-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
               placeholder="Search..."
             />
-            <button type="submit" className="cursor-pointer bg-blue-600 text-white p-2 rounded-l">
-              <FaMagnifyingGlass />
-            </button>
           </div>
           <div>
-            <select name="showPerPage" id="showPerPage" className="p-2 border rounded text-center">
+            <select
+              name="showPerPage"
+              id="showPerPage"
+              className="p-2 border rounded text-center"
+            >
               <option value={5}>5</option>
               <option value={10}>10</option>
               <option value={20}>20</option>
