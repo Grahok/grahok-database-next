@@ -120,7 +120,10 @@ export default function AllCustomerEntries() {
                 onClick={() => setIsSpinning(true)}
               >
                 <a href="/entries/customer/all">
-                  <FaRotateRight className={isSpinning && "animate-spin"} size={20} />
+                  <FaRotateRight
+                    className={isSpinning && "animate-spin"}
+                    size={20}
+                  />
                 </a>
               </button>
             </div>

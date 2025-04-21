@@ -57,3 +57,29 @@ export async function DELETE(_, { params }) {
     );
   }
 }
+
+export async function PUT(req, { params }) {
+  const { entryId } = await params;
+  const entryData = await req.json();
+
+  try {
+    await connectToDatabase();
+    const updatedEntry = await CustomerEntry.findByIdAndUpdate(
+      entryId,
+      entryData,
+      { new: true }
+    );
+    return new Response({
+      message: "✅ Entry updated successfully",
+      updatedEntry: updatedEntry,
+    });
+  } catch (error) {
+    return new Response(
+      JSON.stringify({
+        message: "❌ Error updating entry",
+        error: error.message,
+      }),
+      { status: 500, headers: { "Content-type": "application/json" } }
+    );
+  }
+}
