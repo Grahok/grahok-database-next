@@ -1,15 +1,20 @@
-name: Trigger Vercel Deploy Hook
+name: Deploy to Vercel
 
 on:
   push:
     branches:
-      - main  # Or whatever branch you want to trigger on
+      - main
 
 jobs:
-  trigger-vercel:
+  deploy:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Trigger Vercel Deploy
-        run: |
-          curl -X POST "${{ secrets.VERCEL_DEPLOY_HOOK_URL }}"
+      - uses: actions/checkout@v2
+
+      - name: Vercel Deploy
+        uses: amondnet/vercel-action@v20
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-args: '--prod'
