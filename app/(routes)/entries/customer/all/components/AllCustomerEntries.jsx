@@ -73,6 +73,9 @@ export default function AllCustomerEntries() {
   const totalSellPrice = entries.reduce((acc, entry) => {
     return acc + entry.totalSellPrice;
   }, 0);
+  const totalPaidByCustomer = entries.reduce((acc, entry) => {
+    return acc + entry.paidByCustomer;
+  }, 0);
   const totalQuantity = entries.reduce((acc, entry) => {
     return acc + entry.totalQuantity;
   }, 0);
@@ -168,6 +171,7 @@ export default function AllCustomerEntries() {
             <th>Mobile Number</th>
             <th>Total Purchase Price</th>
             <th>Total Sell Price</th>
+            <th>Paid By Customer</th>
             <th>Total Quantity</th>
             <th>Total Discount</th>
             <th>Other Cost</th>
@@ -216,6 +220,7 @@ export default function AllCustomerEntries() {
               <td>{entry.customer?.mobileNumber || "Customer Not Found"}</td>
               <td>{entry.totalPurchasePrice}</td>
               <td>{entry.totalSellPrice}</td>
+              <td>{entry.paidByCustomer}</td>
               <td>{entry.totalQuantity}</td>
               <td>{entry.totalDiscount}</td>
               <td>{entry.otherCost}</td>
@@ -229,6 +234,7 @@ export default function AllCustomerEntries() {
             </td>
             <td>{totalPurchasePrice}</td>
             <td>{totalSellPrice}</td>
+            <td>{totalPaidByCustomer}</td>
             <td>{totalQuantity}</td>
             <td>{totalDiscount}</td>
             <td>{totalOtherCost}</td>
