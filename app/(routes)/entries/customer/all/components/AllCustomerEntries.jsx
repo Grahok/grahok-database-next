@@ -61,6 +61,9 @@ export default function AllCustomerEntries() {
   const totalDiscount = entries.reduce((acc, entry) => {
     return acc + entry.totalDiscount;
   }, 0);
+  const totalShippingMerchant = entries.reduce((acc, entry) => {
+    return acc + entry.shippingMerchant;
+  }, 0);
   const totalOtherCost = entries.reduce((acc, entry) => {
     return acc + entry.otherCost;
   }, 0);
@@ -174,6 +177,7 @@ export default function AllCustomerEntries() {
             <th>Paid By Customer</th>
             <th>Total Quantity</th>
             <th>Total Discount</th>
+            <th>Shipping Merchant</th>
             <th>Other Cost</th>
             <th>Courier Tax</th>
             <th>Total Profit</th>
@@ -223,6 +227,7 @@ export default function AllCustomerEntries() {
               <td>{entry.paidByCustomer}</td>
               <td>{entry.totalQuantity}</td>
               <td>{entry.totalDiscount}</td>
+              <td>{entry.shippingMerchant}</td>
               <td>{entry.otherCost}</td>
               <td>{entry.courierTax}</td>
               <td>{entry.netProfit}</td>
@@ -237,6 +242,7 @@ export default function AllCustomerEntries() {
             <td>{totalPaidByCustomer}</td>
             <td>{totalQuantity}</td>
             <td>{totalDiscount}</td>
+            <td>{totalShippingMerchant}</td>
             <td>{totalOtherCost}</td>
             <td>{totalCourierTax}</td>
             <td>{totalProfit}</td>
