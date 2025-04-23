@@ -61,6 +61,9 @@ export default function AllCustomerEntries() {
   const totalDiscount = entries.reduce((acc, entry) => {
     return acc + entry.totalDiscount;
   }, 0);
+  const totalShippingCustomer = entries.reduce((acc, entry) => {
+    return acc + entry.shippingCustomer;
+  }, 0);
   const totalShippingMerchant = entries.reduce((acc, entry) => {
     return acc + entry.shippingMerchant;
   }, 0);
@@ -166,7 +169,7 @@ export default function AllCustomerEntries() {
       </div>
       <table className="table-auto [&_th,_td]:border [&_th,_td]:p-3 [&_div]:flex [&_div]:justify-self-center text-center">
         <thead>
-          <tr className="*:sticky *:top-0 *:bg-gray-200 *:border">
+          <tr className="*:sticky *:top-0 *:bg-gray-200">
             <th>ID</th>
             <th>Actions</th>
             <th>Order Date</th>
@@ -177,21 +180,23 @@ export default function AllCustomerEntries() {
             <th>Paid By Customer</th>
             <th>Total Quantity</th>
             <th>Total Discount</th>
+            <th>Shipping Customer</th>
             <th>Shipping Merchant</th>
             <th>Other Cost</th>
             <th>Courier Tax</th>
             <th>Total Profit</th>
+            <th>Order Status</th>
           </tr>
         </thead>
         <tbody>
           {loading && (
             <tr>
-              <td colSpan={12}>Loading...</td>
+              <td colSpan={16}>Loading...</td>
             </tr>
           )}
           {!loading && !entries.length && (
             <tr>
-              <td colSpan={12}>No Entries Found</td>
+              <td colSpan={16}>No Entries Found</td>
             </tr>
           )}
           {entries.map((entry, index) => (
@@ -227,10 +232,12 @@ export default function AllCustomerEntries() {
               <td>{entry.paidByCustomer}</td>
               <td>{entry.totalQuantity}</td>
               <td>{entry.totalDiscount}</td>
+              <td>{entry.shippingCustomer}</td>
               <td>{entry.shippingMerchant}</td>
               <td>{entry.otherCost}</td>
               <td>{entry.courierTax}</td>
               <td>{entry.netProfit}</td>
+              <td>{entry.orderStatus}</td>
             </tr>
           ))}
           <tr>
@@ -242,10 +249,12 @@ export default function AllCustomerEntries() {
             <td>{totalPaidByCustomer}</td>
             <td>{totalQuantity}</td>
             <td>{totalDiscount}</td>
+            <td>{totalShippingCustomer}</td>
             <td>{totalShippingMerchant}</td>
             <td>{totalOtherCost}</td>
             <td>{totalCourierTax}</td>
             <td>{totalProfit}</td>
+            <td>N/A</td>
           </tr>
         </tbody>
       </table>
