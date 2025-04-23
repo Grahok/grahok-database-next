@@ -166,7 +166,7 @@ export default function AllCustomerEntries() {
       </div>
       <table className="table-auto [&_th,_td]:border [&_th,_td]:p-3 [&_div]:flex [&_div]:justify-self-center text-center">
         <thead>
-          <tr>
+          <tr className="*:sticky *:top-0 *:bg-gray-200 *:border">
             <th>ID</th>
             <th>Actions</th>
             <th>Order Date</th>
