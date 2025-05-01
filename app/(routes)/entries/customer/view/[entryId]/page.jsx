@@ -15,6 +15,14 @@ import { FaPencil } from "react-icons/fa6";
 export default function EditEntry({ params }) {
   const { entryId } = React.use(params);
   const [isEditable, setIsEditable] = useState(false);
+  const [invoiceNumber, setInvoiceNumber] = useState(0);
+  const [entry, setEntry] = useState();
+  const [orderStatus, setOrderStatus] = useState("Pending");
+  const [customerData, setCustomerData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [selectedProducts, setSelectedProducts] = useState([]);
+  const [overallDiscount, setOverallDiscount] = useState(0);
   useEffect(() => {
     (async () => {
       try {
@@ -33,21 +41,19 @@ export default function EditEntry({ params }) {
             ? new Date(entry.paymentDate).toISOString().split("T")[0]
             : "",
         });
+        setInvoiceNumber(entry.invoiceNumber);
+        setOrderStatus(entry.orderStatus);
+        setShippingCustomer(entry.shippingCustomer);
         setSelectedProducts(entry.products);
+        setShippingMethod(entry.shippingMethod);
+        setNote(entry.note);
+        setOverallDiscount(entry.overallDiscount);
       } catch (error) {
         console.error("Error loading entry:", error);
       }
     })();
   }, []);
 
-  const [invoiceNumber, setInvoiceNumber] = useState(0);
-  const [entry, setEntry] = useState();
-  const [orderStatus, setOrderStatus] = useState("Pending");
-  const [customerData, setCustomerData] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [selectedProducts, setSelectedProducts] = useState([]);
-  const [overallDiscount, setOverallDiscount] = useState(0);
   const subtotal = selectedProducts.reduce(
     (sum, row) => sum + row.quantity * row.sellPrice - row.discount,
     0
@@ -195,7 +201,7 @@ export default function EditEntry({ params }) {
             type="number"
             placeholder="Invoice Number"
             className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none disabled:bg-gray-100 disabled:cursor-not-allowed"
-            value={entry?.invoiceNumber || ""}
+            value={invoiceNumber || ""}
             onChange={(e) => setInvoiceNumber(Number(e.target.value))}
             disabled={!isEditable}
           />
@@ -204,7 +210,7 @@ export default function EditEntry({ params }) {
             name="orderStatus"
             id="orderStatus"
             className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none disabled:bg-gray-100 disabled:cursor-not-allowed"
-            value={entry?.orderStatus}
+            value={orderStatus}
             onChange={(e) => setOrderStatus(e.target.value)}
             disabled={!isEditable}
           >
