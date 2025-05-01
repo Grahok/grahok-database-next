@@ -23,6 +23,14 @@ export default function EditEntry({ params }) {
   const [error, setError] = useState("");
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [overallDiscount, setOverallDiscount] = useState(0);
+  const [invoiceNumber, setInvoiceNumber] = useState(0);
+  const [entry, setEntry] = useState();
+  const [orderStatus, setOrderStatus] = useState("Pending");
+  const [customerData, setCustomerData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [selectedProducts, setSelectedProducts] = useState([]);
+  const [overallDiscount, setOverallDiscount] = useState(0);
   useEffect(() => {
     (async () => {
       try {
@@ -213,6 +221,7 @@ export default function EditEntry({ params }) {
             name="orderStatus"
             id="orderStatus"
             className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none disabled:bg-gray-100 disabled:cursor-not-allowed"
+            value={orderStatus}
             value={orderStatus}
             onChange={(e) => setOrderStatus(e.target.value)}
             disabled={!isEditable}
