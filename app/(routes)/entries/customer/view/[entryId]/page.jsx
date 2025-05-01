@@ -184,7 +184,7 @@ export default function EditEntry({ params }) {
       setError(err.message || "Something went wrong.");
     } finally {
       setLoading(false);
-      // window.location.reload();
+      window.location.reload();
     }
   };
 
