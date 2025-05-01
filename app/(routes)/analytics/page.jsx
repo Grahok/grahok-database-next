@@ -131,9 +131,9 @@ export default function Analytics() {
           totalQuantity={statusTotals.Shipped?.totalCount || 0}
           totalAmount={statusTotals.Shipped?.totalPaidByCustomer || 0}
           loading={loading}
-          orderStatus="Cancelled"
+          orderStatus="Shipped"
         >
-          In Courier
+          Shipped
         </AnalyticsCard>
         <AnalyticsCard
           Icon={FaBoxOpen}

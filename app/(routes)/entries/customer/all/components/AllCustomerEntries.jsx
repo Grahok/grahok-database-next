@@ -210,12 +210,6 @@ export default function AllCustomerEntries() {
                   >
                     <FaEye size={12} />
                   </a>
-                  <a
-                    href={`/entries/customer/edit/${entry._id}`}
-                    className="p-1.5 bg-green-600 text-white rounded-md"
-                  >
-                    <FaPencil size={12} />
-                  </a>
                   <button
                     className="p-1.5 bg-red-600 text-white rounded-md cursor-pointer"
                     onClick={() => openConfirmDialog(entry._id)}

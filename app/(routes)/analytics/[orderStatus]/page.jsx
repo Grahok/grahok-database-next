@@ -32,7 +32,7 @@ export default function AllCustomerEntries({ params }) {
         const response = await fetchEntries(query);
         const { entries } = await response.json();
         const filteredEntries = entries.filter(
-          (entry) => (entry.orderStatus === orderStatus)
+          (entry) => entry.orderStatus === orderStatus
         );
         setEntries(filteredEntries);
       } catch (error) {
@@ -213,12 +213,6 @@ export default function AllCustomerEntries({ params }) {
                     className="p-1.5 bg-blue-600 text-white rounded-md"
                   >
                     <FaEye size={12} />
-                  </a>
-                  <a
-                    href={`/entries/customer/edit/${entry._id}`}
-                    className="p-1.5 bg-green-600 text-white rounded-md"
-                  >
-                    <FaPencil size={12} />
                   </a>
                   <button
                     className="p-1.5 bg-red-600 text-white rounded-md cursor-pointer"
