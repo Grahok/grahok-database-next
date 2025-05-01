@@ -49,7 +49,7 @@ export default function EditEntry({ params }) {
         setSelectedProducts(entry.products);
         setShippingMethod(entry.shippingMethod);
         setNote(entry.note);
-        setCourierTax(courierTax);
+        setCourierTax(entry.courierTax);
         setOverallDiscount(entry.overallDiscount);
       } catch (error) {
         console.error("Error loading entry:", error);
@@ -159,6 +159,8 @@ export default function EditEntry({ params }) {
         netProfit,
       };
 
+      console.log(entry)
+
       // 💾 Update the entry
       const resppnse = await fetch(`/api/entries/customer/${entryId}`, {
         method: "PUT",
@@ -182,7 +184,7 @@ export default function EditEntry({ params }) {
       setError(err.message || "Something went wrong.");
     } finally {
       setLoading(false);
-      window.location.reload();
+      // window.location.reload();
     }
   };
 
@@ -250,20 +252,20 @@ export default function EditEntry({ params }) {
           setShippingCustomer={setShippingCustomer}
           shippingMerchant={shippingMerchant}
           setShippingMerchant={setShippingMerchant}
+          totalShippingCharge={totalShippingCharge}
           shippingMethod={shippingMethod}
           setShippingMethod={setShippingMethod}
-          courierTax={courierTax}
-          setCourierTax={setCourierTax}
           otherCost={otherCost}
+          setOtherCost={setOtherCost}
           note={note}
           setNote={setNote}
-          setOtherCost={setOtherCost}
+          courierTax={courierTax}
+          setCourierTax={setCourierTax}
           overallDiscount={overallDiscount}
           setOverallDiscount={setOverallDiscount}
           subtotal={subtotal}
           paidByCustomer={paidByCustomer}
           totalPurchasePrice={totalPurchasePrice}
-          totalShippingCharge={totalShippingCharge}
           totalIncome={totalIncome}
           netProfit={netProfit}
         />
