@@ -3,12 +3,19 @@ import { SHIPPING_METHODS } from "@/constants/shippingMethods";
 export default function SummarySection({
   isEditable,
   entry,
+  shippingCustomer,
   setShippingCustomer,
+  shippingMerchant,
   setShippingMerchant,
+  shippingMethod,
+  setShippingMethod,
+  otherCost,
   setOtherCost,
+  note,
   setNote,
   courierTax,
   setCourierTax,
+  overallDiscount,
   setOverallDiscount,
   subtotal,
   paidByCustomer,
@@ -16,7 +23,6 @@ export default function SummarySection({
   totalShippingCharge,
   totalIncome,
   netProfit,
-  setShippingMethod,
 }) {
   return (
     <section className="bg-white p-6 rounded-lg shadow grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -32,7 +38,7 @@ export default function SummarySection({
             id="shippingCustomer"
             placeholder={0}
             min={0}
-            value={entry?.shippingCustomer || 0}
+            value={shippingCustomer || 0}
             onChange={(e) => setShippingCustomer(Number(e.target.value))}
             className="w-full p-2 border rounded disabled:bg-gray-100 disabled:cursor-not-allowed"
             disabled={!isEditable}
@@ -47,7 +53,7 @@ export default function SummarySection({
             id="shippingMerchant"
             name="shippingMerchant"
             placeholder={0}
-            value={entry?.shippingMerchant || 0}
+            value={shippingMerchant || 0}
             min={0}
             onChange={(e) => setShippingMerchant(Number(e.target.value))}
             className="w-full p-2 border rounded disabled:bg-gray-100 disabled:cursor-not-allowed"
@@ -61,7 +67,7 @@ export default function SummarySection({
           <select
             className="w-full p-2 border rounded disabled:bg-gray-100 disabled:cursor-not-allowed"
             required
-            value={entry?.shippingMethod || 0}
+            value={shippingMethod}
             onChange={(e) => setShippingMethod(e.target.value)}
             id="shippingMethod"
             name="shippingMethod"
@@ -84,7 +90,7 @@ export default function SummarySection({
             id="otherCost"
             placeholder={0}
             min={0}
-            value={entry?.otherCost || 0}
+            value={otherCost || 0}
             onChange={(e) => setOtherCost(Number(e.target.value))}
             className="w-full p-2 border rounded disabled:bg-gray-100 disabled:cursor-not-allowed"
             disabled={!isEditable}
@@ -95,7 +101,7 @@ export default function SummarySection({
           <textarea
             name="note"
             id="note"
-            value={entry?.note || ""}
+            value={note || ""}
             onChange={(e) => setNote(e.target.value)}
             className="w-full p-2 border rounded disabled:bg-gray-100 disabled:cursor-not-allowed"
             disabled={!isEditable}
@@ -147,7 +153,7 @@ export default function SummarySection({
                 <input
                   type="number"
                   placeholder={0}
-                  value={entry?.overallDiscount || 0}
+                  value={overallDiscount || 0}
                   onChange={(e) => setOverallDiscount(Number(e.target.value))}
                   className="w-24 p-1 border rounded text-right disabled:bg-gray-100 disabled:cursor-not-allowed"
                   disabled={!isEditable}

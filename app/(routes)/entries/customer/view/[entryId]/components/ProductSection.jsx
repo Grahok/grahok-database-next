@@ -35,7 +35,7 @@ export default function ProductSection({
 
   const handleProductSelect = (product) => {
     const newRow = {
-      id: product._id,
+      _id: product._id,
       product,
       quantity: 1,
       inStock: product.inStock,
@@ -46,17 +46,16 @@ export default function ProductSection({
     setSelectedProducts((prev) => [...prev, newRow]);
     setSearch("");
   };
-
-  const updateRow = (id, field, value) => {
+  const updateRow = (_id, field, value) => {
     setSelectedProducts((prev) =>
       prev.map((row) =>
-        row._id === id ? { ...row, [field]: Number(value) } : row
+        row._id === _id ? { ...row, [field]: Number(value) } : row
       )
     );
   };
 
-  const removeRow = (id) => {
-    setSelectedProducts((prev) => prev.filter((row) => row.id !== id));
+  const removeRow = (_id) => {
+    setSelectedProducts((prev) => prev.filter((row) => row._id !== _id));
   };
 
   return (
@@ -200,7 +199,8 @@ export default function ProductSection({
               {isEditable && (
                 <td>
                   <button
-                    onClick={() => removeRow(row.id)}
+                    type="button"
+                    onClick={() => removeRow(row._id)}
                     className="bg-red-500 text-white px-2 py-1 rounded cursor-pointer"
                   >
                     <FaTrashCan />
