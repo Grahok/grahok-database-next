@@ -43,7 +43,6 @@ export default function SummarySection({
             placeholder={0}
             min={0}
             value={shippingCustomer || 0}
-            value={shippingCustomer || 0}
             onChange={(e) => setShippingCustomer(Number(e.target.value))}
             className="w-full p-2 border rounded disabled:bg-gray-100 disabled:cursor-not-allowed"
             disabled={!isEditable}
@@ -59,7 +58,6 @@ export default function SummarySection({
             name="shippingMerchant"
             placeholder={0}
             value={shippingMerchant || 0}
-            value={shippingMerchant || 0}
             min={0}
             onChange={(e) => setShippingMerchant(Number(e.target.value))}
             className="w-full p-2 border rounded disabled:bg-gray-100 disabled:cursor-not-allowed"
@@ -73,7 +71,6 @@ export default function SummarySection({
           <select
             className="w-full p-2 border rounded disabled:bg-gray-100 disabled:cursor-not-allowed"
             required
-            value={shippingMethod}
             value={shippingMethod}
             onChange={(e) => setShippingMethod(e.target.value)}
             id="shippingMethod"
@@ -98,7 +95,6 @@ export default function SummarySection({
             placeholder={0}
             min={0}
             value={otherCost || 0}
-            value={otherCost || 0}
             onChange={(e) => setOtherCost(Number(e.target.value))}
             className="w-full p-2 border rounded disabled:bg-gray-100 disabled:cursor-not-allowed"
             disabled={!isEditable}
@@ -109,7 +105,6 @@ export default function SummarySection({
           <textarea
             name="note"
             id="note"
-            value={note || ""}
             value={note || ""}
             onChange={(e) => setNote(e.target.value)}
             className="w-full p-2 border rounded disabled:bg-gray-100 disabled:cursor-not-allowed"
@@ -162,7 +157,6 @@ export default function SummarySection({
                 <input
                   type="number"
                   placeholder={0}
-                  value={overallDiscount || 0}
                   value={overallDiscount || 0}
                   onChange={(e) => setOverallDiscount(Number(e.target.value))}
                   className="w-24 p-1 border rounded text-right disabled:bg-gray-100 disabled:cursor-not-allowed"
