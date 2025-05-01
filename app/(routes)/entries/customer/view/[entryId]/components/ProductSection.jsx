@@ -163,7 +163,7 @@ export default function ProductSection({
                   min={0}
                   value={row.purchasePrice}
                   onChange={(e) =>
-                    updateRow(row.id, "purchasePrice", e.target.value)
+                    updateRow(row._id, "purchasePrice", e.target.value)
                   }
                   disabled={!isEditable}
                 />
@@ -175,7 +175,7 @@ export default function ProductSection({
                   min={0}
                   value={row.sellPrice}
                   onChange={(e) =>
-                    updateRow(row.id, "sellPrice", e.target.value)
+                    updateRow(row._id, "sellPrice", e.target.value)
                   }
                   disabled={!isEditable}
                 />
@@ -188,7 +188,7 @@ export default function ProductSection({
                   placeholder={0}
                   value={row.discount}
                   onChange={(e) =>
-                    updateRow(row.id, "discount", e.target.value)
+                    updateRow(row._id, "discount", e.target.value)
                   }
                   disabled={!isEditable}
                 />
