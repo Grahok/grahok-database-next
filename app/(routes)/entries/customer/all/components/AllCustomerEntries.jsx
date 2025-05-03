@@ -36,13 +36,19 @@ export default function AllCustomerEntries() {
   const itemsPerPageParam = Number(searchParams.get("itemsPerPage")) || 20;
   const [itemsPerPage, setItemsPerPage] = useState(itemsPerPageParam);
   const [isSpinning, setIsSpinning] = useState(false);
+  // const query = `?${
+  //   searchParams.toString() || `itemsPerPage=${itemsPerPage}`
+  // }`;
+  const query = new URLSearchParams(
+    searchParams.toString() || `itemsPerPage=${itemsPerPage}`
+  );
+  const queryParams = `?${query}`;
 
   useEffect(() => {
     (async () => {
       setLoading(true);
       try {
-        const query = `?${searchParams.toString()}`;
-        const response = await fetchEntries(query);
+        const response = await fetchEntries(queryParams);
         const { entries, pagination } = await response.json();
         const { totalEntries, totalPages } = pagination;
         setTotalEntries(totalEntries);
@@ -167,7 +173,10 @@ export default function AllCustomerEntries() {
               className="p-1.5 focus:outline-none"
               placeholder="Search..."
             />
-            <button type="button" className="p-2 bg-blue-600 hover:bg-blue-700 text-white rounded cursor-pointer">
+            <button
+              type="button"
+              className="p-2 bg-blue-600 hover:bg-blue-700 text-white rounded cursor-pointer"
+            >
               <FaMagnifyingGlass />
             </button>
           </div>
@@ -285,20 +294,30 @@ export default function AllCustomerEntries() {
         </tbody>
       </table>
       <div className="flex justify-between">
-        <strong>{`Showing ${itemsPerPageParam} items of ${totalEntries}`}</strong>
+        <strong>{`Showing ${itemsPerPageParam} items of ${
+          totalEntries || "Loading..."
+        }`}</strong>
         <div className="flex gap-2 leading-none">
-          <a
-            href="?page=1"
+          <button
+            type="button"
             className="bg-blue-600 hover:bg-blue-700 p-2 rounded cursor-pointer text-white"
+            onClick={() => {
+              query.set("page", 1);
+              router.push(`${pathname}?${query.toString()}`);
+            }}
           >
             <LuChevronsLeft />
-          </a>
-          <a
-            href={`?page=${Math.max(1, pageParam - 1)}`}
+          </button>
+          <button
+            type="button"
             className="bg-blue-600 hover:bg-blue-700 p-2 rounded cursor-pointer text-white"
+            onClick={() => {
+              query.set("page", Math.max(1, pageParam - 1));
+              router.push(`${pathname}?${query.toString()}`);
+            }}
           >
             <LuChevronLeft />
-          </a>
+          </button>
 
           {[
             pageParam - 2,
@@ -307,19 +326,23 @@ export default function AllCustomerEntries() {
             pageParam + 1,
             pageParam + 2,
           ]
-            .filter((page) => page > 0)
+            .filter((page) => page > 0 && page <= totalPages)
             .map((page) => (
-              <a
+              <button
                 key={page}
-                href={`?page=${page}`}
+                type="button"
                 className={`${
                   page === pageParam
                     ? "border-2 border-blue-600"
                     : "bg-blue-600 hover:bg-blue-700 text-white"
                 } p-2 rounded cursor-pointer`}
+                onClick={() => {
+                  query.set("page", page);
+                  router.push(`${pathname}?${query.toString()}`);
+                }}
               >
                 {page}
-              </a>
+              </button>
             ))}
 
           <a

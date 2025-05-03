@@ -8,7 +8,7 @@ export default function AnalyticsCard({
 }) {
   return (
     <a
-      href={`analytics/${orderStatus}`}
+      href={orderStatus ? `analytics/${orderStatus}` : "/entries/customer/all"}
       className="flex flex-col gap-6 border p-5 rounded-md"
     >
       <div className="flex items-center gap-3">

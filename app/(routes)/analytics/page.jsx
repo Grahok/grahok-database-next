@@ -12,22 +12,35 @@ import {
   FaXmark,
 } from "react-icons/fa6";
 import { ORDER_STATUSES } from "@/constants/orderStatuses";
+import inputDateFormat from "@/utils/inputDateFormat";
+import firstDateOfCurrentMonth from "@/utils/firstDateOfCurrentMonth";
+import { useSearchParams } from "next/navigation";
 
 export default function Analytics() {
-  const [entries, setEntries] = useState([]);
+  const searchParams = useSearchParams();
+  const fromDateParam =
+    searchParams.get("fromDate") ||
+    firstDateOfCurrentMonth(new Date(Date.now()));
+  const toDateParam =
+    searchParams.get("toDate") || inputDateFormat(new Date(Date.now()));
+  const query =
+    new URLSearchParams(searchParams.toString()) ||
+    `fromDate=${fromDateParam}&toDate=${toDateParam}`;
+  const queryParams = `?${query}`;
   const [loading, setLoading] = useState(true);
   const [statusEntries, setStatusEntries] = useState({});
   const [statusTotals, setStatusTotals] = useState({});
-  const [totalObj, setTotalObj] = useState({ totalCount: 0, totalPaidByCustomer: 0 });
+  const [totalObj, setTotalObj] = useState({
+    totalCount: 0,
+    totalPaidByCustomer: 0,
+  });
 
   useEffect(() => {
     (async () => {
       setLoading(true);
       try {
-        const response = await fetchEntries();
+        const response = await fetchEntries(queryParams);
         const { entries } = await response.json();
-        setEntries(entries);
-
         const statusEntriesTemp = {};
         const statusTotalsTemp = {};
 
@@ -36,7 +49,10 @@ export default function Analytics() {
           statusEntriesTemp[status] = filtered;
           statusTotalsTemp[status] = {
             totalCount: filtered.length,
-            totalPaidByCustomer: filtered.reduce((acc, e) => acc + e.paidByCustomer, 0),
+            totalPaidByCustomer: filtered.reduce(
+              (acc, e) => acc + e.paidByCustomer,
+              0
+            ),
           };
         });
 
@@ -45,7 +61,10 @@ export default function Analytics() {
 
         setTotalObj({
           totalCount: entries.length,
-          totalPaidByCustomer: entries.reduce((acc, e) => acc + e.paidByCustomer, 0),
+          totalPaidByCustomer: entries.reduce(
+            (acc, e) => acc + e.paidByCustomer,
+            0
+          ),
         });
       } catch (error) {
         console.error("Error fetching entries:", error);
@@ -53,7 +72,7 @@ export default function Analytics() {
         setLoading(false);
       }
     })();
-  }, []);
+  }, [searchParams]);
 
   return (
     <section className="w-full flex flex-col gap-8">
@@ -61,7 +80,10 @@ export default function Analytics() {
 
       <form className="flex flex-col md:flex-row items-start md:items-end gap-4 rounded-lg w-full max-w-2xl">
         <div className="flex flex-col w-full md:w-1/2">
-          <label htmlFor="fromDate" className="text-sm font-medium text-gray-700 mb-1">
+          <label
+            htmlFor="fromDate"
+            className="text-sm font-medium text-gray-700 mb-1"
+          >
             From
           </label>
           <input
@@ -69,10 +91,14 @@ export default function Analytics() {
             type="date"
             name="fromDate"
             id="fromDate"
+            defaultValue={fromDateParam}
           />
         </div>
         <div className="flex flex-col w-full md:w-1/2">
-          <label htmlFor="toDate" className="text-sm font-medium text-gray-700 mb-1">
+          <label
+            htmlFor="toDate"
+            className="text-sm font-medium text-gray-700 mb-1"
+          >
             To
           </label>
           <input
@@ -80,6 +106,7 @@ export default function Analytics() {
             type="date"
             name="toDate"
             id="toDate"
+            defaultValue={toDateParam}
           />
         </div>
         <button

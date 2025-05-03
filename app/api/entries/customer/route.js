@@ -12,7 +12,7 @@ export async function GET(req) {
     const toDate = url.searchParams.get("toDate");
     const search = url.searchParams.get("search");
     const page = parseInt(url.searchParams.get("page")) || 1;
-    const itemsPerPage = parseInt(url.searchParams.get("itemsPerPage")) || 20;
+    const itemsPerPage = parseInt(url.searchParams.get("itemsPerPage")) || 0;
 
     const query = {};
 
@@ -37,7 +37,7 @@ export async function GET(req) {
 
     // Count total entries matching the query
     const totalEntries = await CustomerEntry.countDocuments(query);
-    const totalPages = Math.ceil(totalEntries / itemsPerPage);
+    const totalPages = Math.ceil(totalEntries / itemsPerPage) || 1;
 
     // Fetch paginated entries
     const entries = await CustomerEntry.find(query)

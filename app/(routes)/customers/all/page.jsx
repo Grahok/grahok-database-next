@@ -57,7 +57,7 @@ export default function AllCustomers() {
   return (
     <div className="w-full flex flex-col gap-3">
       <div className="flex items-center justify-between gap-6">
-              <h1 className="text-3xl font-bold">All Customer Entries:</h1>
+              <h1 className="text-3xl font-bold">All Customers:</h1>
               <div className="flex items-center gap-3">
               <form className="flex items-center md:items-end gap-6 rounded-lg w-full max-w-2xl border border-gray-400 px-4 py-2">
               <div className="flex items-center gap-2 w-full md:w-1/2">
