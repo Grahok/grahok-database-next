@@ -43,6 +43,7 @@ export default function ProductSection({
     };
     setSelectedProducts((prev) => [...prev, newRow]);
     setSearch("");
+    setDropdownOpen(false);
   };
 
   const updateRow = (id, field, value) => {
@@ -80,7 +81,6 @@ export default function ProductSection({
             dropdownOpen ? "" : "hidden"
           }`}
           role="listbox"
-          onClick={() => setDropdownOpen((prev) => !prev)}
         >
           <div className="p-2">
             <input
