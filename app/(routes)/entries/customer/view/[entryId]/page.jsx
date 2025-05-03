@@ -11,6 +11,7 @@ import combineDateWithCurrentTime from "@/utils/combineDateWithCurrentTime";
 import React from "react";
 import { getCustomerEntry } from "./actions/getCustomerEntry";
 import { FaPencil } from "react-icons/fa6";
+import { useRouter } from "next/navigation";
 
 export default function EditEntry({ params }) {
   const { entryId } = React.use(params);
@@ -23,6 +24,7 @@ export default function EditEntry({ params }) {
   const [error, setError] = useState("");
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [overallDiscount, setOverallDiscount] = useState(0);
+  const router = useRouter();
   useEffect(() => {
     (async () => {
       try {
@@ -159,7 +161,7 @@ export default function EditEntry({ params }) {
         netProfit,
       };
 
-      console.log(entry)
+      console.log(entry);
 
       // 💾 Update the entry
       const resppnse = await fetch(`/api/entries/customer/${entryId}`, {
@@ -185,6 +187,7 @@ export default function EditEntry({ params }) {
     } finally {
       setLoading(false);
       window.location.reload();
+      router.back();
     }
   };
 

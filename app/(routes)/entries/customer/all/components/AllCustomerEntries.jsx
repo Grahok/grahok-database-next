@@ -8,19 +8,33 @@ import {
   FaRotateRight,
   FaTrash,
 } from "react-icons/fa6";
+import {
+  LuChevronLeft,
+  LuChevronRight,
+  LuChevronsLeft,
+  LuChevronsRight,
+} from "react-icons/lu";
 import { fetchEntries, deleteEntry } from "./actions";
 import ConfirmDialog from "@/app/(routes)/entries/customer/all/components/ConfirmDialog";
 import formatDate from "@/utils/formatDate";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 
 export default function AllCustomerEntries() {
+  const router = useRouter();
+  const pathname = usePathname();
   const [entries, setEntries] = useState([]);
+  const [totalEntries, setTotalEntries] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(true);
   const [selectedEntryId, setSelectedEntryId] = useState("");
+  const [search, setSearch] = useState("");
   const confirmDialogRef = useRef();
   const searchParams = useSearchParams();
   const fromDateParam = searchParams.get("fromDate") || "";
   const toDateParam = searchParams.get("toDate") || "";
+  const pageParam = Number(searchParams.get("page")) || 1;
+  const itemsPerPageParam = Number(searchParams.get("itemsPerPage")) || 20;
+  const [itemsPerPage, setItemsPerPage] = useState(itemsPerPageParam);
   const [isSpinning, setIsSpinning] = useState(false);
 
   useEffect(() => {
@@ -29,7 +43,10 @@ export default function AllCustomerEntries() {
       try {
         const query = `?${searchParams.toString()}`;
         const response = await fetchEntries(query);
-        const { entries } = await response.json();
+        const { entries, pagination } = await response.json();
+        const { totalEntries, totalPages } = pagination;
+        setTotalEntries(totalEntries);
+        setTotalPages(totalPages);
         setEntries(entries);
       } catch (error) {
         console.error("Error fetching entries:", error);
@@ -90,8 +107,8 @@ export default function AllCustomerEntries() {
     <section className="w-full flex flex-col gap-3">
       <div className="flex items-center gap-6">
         <h1 className="text-3xl font-bold">All Customer Entries:</h1>
-        <div className="flex items-center gap-3">
-          <form className="flex items-center md:items-end gap-6 rounded-lg border border-gray-400 px-4 py-2">
+        <form className="flex items-center gap-3">
+          <div className="flex items-center md:items-end gap-6 rounded-lg border border-gray-400 px-4 py-2">
             <div className="flex items-center gap-2 w-full md:w-1/2">
               <label
                 htmlFor="fromDate"
@@ -129,43 +146,58 @@ export default function AllCustomerEntries() {
               >
                 Submit
               </button>
-              <button
-                type="button"
+              <a
+                href="/entries/customer/all"
                 className="p-1.5 bg-orange-300 rounded"
-                onClick={() => setIsSpinning(true)}
               >
-                <a href="/entries/customer/all">
-                  <FaRotateRight
-                    className={isSpinning && "animate-spin"}
-                    size={20}
-                  />
-                </a>
-              </button>
+                <FaRotateRight
+                  className={`${isSpinning && "animate-spin"} size-5`}
+                  onClick={() => setIsSpinning(true)}
+                />
+              </a>
             </div>
-          </form>
-          <div className="w-full flex items-center gap-2 rounded">
+          </div>
+          <div className="w-full flex items-center gap-2 rounded border border-gray-300 focus-within:ring-2 focus-within:ring-blue-500 transition leading-none">
             <input
               type="search"
-              name="search-bar"
-              id="search-bar"
-              className="p-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+              name="search"
+              id="search"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="p-1.5 focus:outline-none"
               placeholder="Search..."
             />
+            <button type="button" className="p-2 bg-blue-600 hover:bg-blue-700 text-white rounded cursor-pointer">
+              <FaMagnifyingGlass />
+            </button>
           </div>
           <div>
             <select
-              name="showPerPage"
-              id="showPerPage"
+              name="itemsPerPage"
+              id="itemsPerPage"
               className="p-2 border rounded text-center"
+              value={itemsPerPage}
+              onChange={(e) => {
+                const value = Number(e.target.value);
+                setItemsPerPage(value);
+                router.push(
+                  `${pathname}?${new URLSearchParams({
+                    ...Object.fromEntries(searchParams.entries()),
+                    itemsPerPage: value,
+                    page: 1,
+                  }).toString()}`,
+                  { shallow: true }
+                );
+              }}
             >
-              <option value={5}>5</option>
-              <option value={10}>10</option>
               <option value={20}>20</option>
               <option value={50}>50</option>
               <option value={100}>100</option>
+              <option value={150}>150</option>
+              <option value={200}>200</option>
             </select>
           </div>
-        </div>
+        </form>
       </div>
       <table className="table-auto [&_th,_td]:border [&_th,_td]:p-3 [&_div]:flex [&_div]:justify-self-center text-center">
         <thead>
@@ -201,7 +233,7 @@ export default function AllCustomerEntries() {
           )}
           {entries.map((entry, index) => (
             <tr key={entry._id} className="hover:bg-gray-100">
-              <td>{index + 1}</td>
+              <td>{(pageParam - 1) * itemsPerPageParam + (index + 1)}</td>
               <td>
                 <div className="flex gap-1">
                   <a
@@ -238,20 +270,73 @@ export default function AllCustomerEntries() {
             <td colSpan={5} className="font-bold">
               Total:
             </td>
-            <td>{totalPurchasePrice}</td>
-            <td>{totalSellPrice}</td>
-            <td>{totalPaidByCustomer}</td>
-            <td>{totalQuantity}</td>
-            <td>{totalDiscount}</td>
-            <td>{totalShippingCustomer}</td>
-            <td>{totalShippingMerchant}</td>
-            <td>{totalOtherCost}</td>
-            <td>{totalCourierTax}</td>
-            <td>{totalProfit}</td>
-            <td>N/A</td>
+            <th>{totalPurchasePrice}</th>
+            <th>{totalSellPrice}</th>
+            <th>{totalPaidByCustomer}</th>
+            <th>{totalQuantity}</th>
+            <th>{totalDiscount}</th>
+            <th>{totalShippingCustomer}</th>
+            <th>{totalShippingMerchant}</th>
+            <th>{totalOtherCost}</th>
+            <th>{totalCourierTax}</th>
+            <th>{totalProfit}</th>
+            <th>N/A</th>
           </tr>
         </tbody>
       </table>
+      <div className="flex justify-between">
+        <strong>{`Showing ${itemsPerPageParam} items of ${totalEntries}`}</strong>
+        <div className="flex gap-2 leading-none">
+          <a
+            href="?page=1"
+            className="bg-blue-600 hover:bg-blue-700 p-2 rounded cursor-pointer text-white"
+          >
+            <LuChevronsLeft />
+          </a>
+          <a
+            href={`?page=${Math.max(1, pageParam - 1)}`}
+            className="bg-blue-600 hover:bg-blue-700 p-2 rounded cursor-pointer text-white"
+          >
+            <LuChevronLeft />
+          </a>
+
+          {[
+            pageParam - 2,
+            pageParam - 1,
+            pageParam,
+            pageParam + 1,
+            pageParam + 2,
+          ]
+            .filter((page) => page > 0)
+            .map((page) => (
+              <a
+                key={page}
+                href={`?page=${page}`}
+                className={`${
+                  page === pageParam
+                    ? "border-2 border-blue-600"
+                    : "bg-blue-600 hover:bg-blue-700 text-white"
+                } p-2 rounded cursor-pointer`}
+              >
+                {page}
+              </a>
+            ))}
+
+          <a
+            href={`?page=${pageParam + 1}`}
+            className="bg-blue-600 hover:bg-blue-700 p-2 rounded cursor-pointer text-white"
+          >
+            <LuChevronRight />
+          </a>
+          <a
+            href={`?page=${totalPages}`}
+            className="bg-blue-600 hover:bg-blue-700 p-2 rounded cursor-pointer text-white"
+          >
+            <LuChevronsRight />
+          </a>
+        </div>
+      </div>
+
       <ConfirmDialog
         ref={confirmDialogRef}
         onConfirm={handleDelete}

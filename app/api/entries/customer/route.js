@@ -10,6 +10,9 @@ export async function GET(req) {
     const url = new URL(req.url);
     const fromDate = url.searchParams.get("fromDate");
     const toDate = url.searchParams.get("toDate");
+    const search = url.searchParams.get("search");
+    const page = parseInt(url.searchParams.get("page")) || 1;
+    const itemsPerPage = parseInt(url.searchParams.get("itemsPerPage")) || 20;
 
     const query = {};
 
@@ -19,16 +22,39 @@ export async function GET(req) {
         $lte: new Date(toDate),
       };
     }
+    if (search) {
+      const matchedCustomers = await Customer.find({
+        $or: [
+          { name: { $regex: search, $options: "i" } },
+          { mobileNumber: { $regex: search, $options: "i" } },
+        ],
+      }).select("_id");
 
+      const customerIds = matchedCustomers.map((c) => c._id);
+
+      query.customer = { $in: customerIds };
+    }
+
+    // Count total entries matching the query
+    const totalEntries = await CustomerEntry.countDocuments(query);
+    const totalPages = Math.ceil(totalEntries / itemsPerPage);
+
+    // Fetch paginated entries
     const entries = await CustomerEntry.find(query)
       .populate("customer", "name mobileNumber")
       .populate("products.product", "name")
-      .sort({ orderDate: -1 });
+      .sort({ orderDate: -1 })
+      .skip((page - 1) * itemsPerPage)
+      .limit(itemsPerPage);
 
     return new Response(
       JSON.stringify({
         message: "Fetching Entries Successful",
         entries: entries,
+        pagination: {
+          totalEntries,
+          totalPages,
+        },
       }),
       {
         status: 200,

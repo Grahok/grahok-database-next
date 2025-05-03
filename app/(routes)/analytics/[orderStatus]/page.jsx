@@ -158,8 +158,8 @@ export default function AllCustomerEntries({ params }) {
           </div>
           <div>
             <select
-              name="showPerPage"
-              id="showPerPage"
+              name="itemsPerPage"
+              id="itemsPerPage"
               className="p-2 border rounded text-center"
             >
               <option value={5}>5</option>

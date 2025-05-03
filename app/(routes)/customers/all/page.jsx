@@ -108,7 +108,7 @@ export default function AllCustomers() {
                   </button>
                 </div>
                 <div>
-                  <select name="showPerPage" id="showPerPage" className="p-2 border rounded text-center">
+                  <select name="itemsPerPage" id="itemsPerPage" className="p-2 border rounded text-center">
                     <option value={5}>5</option>
                     <option value={10}>10</option>
                     <option value={20}>20</option>
