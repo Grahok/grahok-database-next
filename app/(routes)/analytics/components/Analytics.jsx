@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { fetchEntries } from "../entries/customer/all/components/actions";
 import AnalyticsCard from "@/features/analytics/components/AnalyticsCard";
 import {
   FaBox,
@@ -15,6 +14,7 @@ import { ORDER_STATUSES } from "@/constants/orderStatuses";
 import inputDateFormat from "@/utils/inputDateFormat";
 import firstDateOfCurrentMonth from "@/utils/firstDateOfCurrentMonth";
 import { useSearchParams } from "next/navigation";
+import { fetchEntries } from "../../entries/customer/all/components/actions";
 
 export default function Analytics() {
   const searchParams = useSearchParams();
