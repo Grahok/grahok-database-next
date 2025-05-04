@@ -14,7 +14,7 @@ export default function AddCustomer() {
     if (response.ok) {
       e.target.reset();
       // ✅ Show success toast
-      setToast({ show: true, message: "Entry added successfully." });
+      setToast({ show: true, message: "Customer added successfully." });
 
       setTimeout(() => {
         setToast({ show: false, message: "" });
