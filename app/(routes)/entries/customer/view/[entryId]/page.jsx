@@ -90,34 +90,6 @@ export default function EditEntry({ params }) {
     setError("");
 
     try {
-      // let customerId;
-
-      // // 🔍 Check if it's an existing customer (already has _id)
-      // if (customerData._id) {
-      //   customerId = customerData._id;
-      // } else {
-      //   // 🆕 Create a new customer
-      //   const res = await fetch("/api/customers", {
-      //     method: "POST",
-      //     headers: {
-      //       "Content-Type": "application/json",
-      //     },
-      //     body: JSON.stringify({
-      //       name: customerData.name,
-      //       mobileNumber: customerData.mobileNumber,
-      //       address: customerData.address,
-      //       entryDate: combineDateWithCurrentTime(e.target.entryDate.value),
-      //     }),
-      //   });
-
-      //   if (!res.ok) {
-      //     throw new Error("Failed to create new customer.");
-      //   }
-
-      //   const { createdCustomer: newCustomer } = await res.json();
-      //   customerId = newCustomer._id;
-      // }
-
       const totalQuantity = Number(
         selectedProducts.reduce((sum, p) => sum + p.quantity, 0)
       );
@@ -161,8 +133,6 @@ export default function EditEntry({ params }) {
         netProfit,
       };
 
-      console.log(entry);
-
       // 💾 Update the entry
       const resppnse = await fetch(`/api/entries/customer/${entryId}`, {
         method: "PUT",
@@ -181,13 +151,13 @@ export default function EditEntry({ params }) {
       setTimeout(() => {
         setToast({ show: false, message: "" });
       }, 2000);
+      window.location.reload();
+      window.history.back();
     } catch (err) {
       console.error(err);
       setError(err.message || "Something went wrong.");
     } finally {
       setLoading(false);
-      window.location.reload();
-      router.back();
     }
   };
 

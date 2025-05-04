@@ -24,7 +24,7 @@ export default function Analytics() {
   const toDateParam =
     searchParams.get("toDate") || inputDateFormat(new Date(Date.now()));
   const query =
-    new URLSearchParams(searchParams.toString()) ||
+    searchParams.toString() ||
     `fromDate=${fromDateParam}&toDate=${toDateParam}`;
   const queryParams = `?${query}`;
   const [loading, setLoading] = useState(true);

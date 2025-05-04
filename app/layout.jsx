@@ -32,8 +32,8 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} antialiased p-6 flex gap-6`}>
-        <aside className="h-dvh min-h-dvh min-w-fit">
+      <body className={`${inter.className} antialiased p-6 flex gap-6 min-h-dvh`}>
+        <aside className="min-w-fit">
           <nav>
             <ul className="flex flex-col gap-2">
               <li>
@@ -157,7 +157,7 @@ export default function RootLayout({ children }) {
             </ul>
           </nav>
         </aside>
-        <main className="p-6 bg-gray-50 text-gray-800 flex flex-col gap-6 min-h-dvh w-full">
+        <main className="p-6 bg-gray-50 text-gray-800 flex flex-col gap-6 w-full">
           <h1 className="text-4xl font-bold text-blue-600 text-center">Grahok Database</h1>
           {children}
         </main>

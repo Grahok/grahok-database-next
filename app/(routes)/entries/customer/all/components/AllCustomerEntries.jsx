@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import {
   FaEye,
   FaMagnifyingGlass,
-  FaPencil,
   FaRotateRight,
   FaTrash,
 } from "react-icons/fa6";
@@ -36,9 +35,6 @@ export default function AllCustomerEntries() {
   const itemsPerPageParam = Number(searchParams.get("itemsPerPage")) || 20;
   const [itemsPerPage, setItemsPerPage] = useState(itemsPerPageParam);
   const [isSpinning, setIsSpinning] = useState(false);
-  // const query = `?${
-  //   searchParams.toString() || `itemsPerPage=${itemsPerPage}`
-  // }`;
   const query = new URLSearchParams(
     searchParams.toString() || `itemsPerPage=${itemsPerPage}`
   );
@@ -111,9 +107,9 @@ export default function AllCustomerEntries() {
 
   return (
     <section className="w-full flex flex-col gap-3">
-      <div className="flex items-center gap-6">
+      <div className="flex items-center justify-between gap-6">
         <h1 className="text-3xl font-bold">All Customer Entries:</h1>
-        <form className="flex items-center gap-3">
+        <form className="flex items-center gap-3 flex-wrap justify-end">
           <div className="flex items-center md:items-end gap-6 rounded-lg border border-gray-400 px-4 py-2">
             <div className="flex items-center gap-2 w-full md:w-1/2">
               <label
@@ -163,136 +159,140 @@ export default function AllCustomerEntries() {
               </a>
             </div>
           </div>
-          <div className="w-full flex items-center gap-2 rounded border border-gray-300 focus-within:ring-2 focus-within:ring-blue-500 transition leading-none">
-            <input
-              type="search"
-              name="search"
-              id="search"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="p-1.5 focus:outline-none"
-              placeholder="Search..."
-            />
-            <button
-              type="button"
-              className="p-2 bg-blue-600 hover:bg-blue-700 text-white rounded cursor-pointer"
-            >
-              <FaMagnifyingGlass />
-            </button>
-          </div>
-          <div>
-            <select
-              name="itemsPerPage"
-              id="itemsPerPage"
-              className="p-2 border rounded text-center"
-              value={itemsPerPage}
-              onChange={(e) => {
-                const value = Number(e.target.value);
-                setItemsPerPage(value);
-                router.push(
-                  `${pathname}?${new URLSearchParams({
-                    ...Object.fromEntries(searchParams.entries()),
-                    itemsPerPage: value,
-                    page: 1,
-                  }).toString()}`,
-                  { shallow: true }
-                );
-              }}
-            >
-              <option value={20}>20</option>
-              <option value={50}>50</option>
-              <option value={100}>100</option>
-              <option value={150}>150</option>
-              <option value={200}>200</option>
-            </select>
+          <div className="flex items-center gap-3">
+            <div className="w-full flex items-center gap-2 rounded border border-gray-300 focus-within:ring-2 focus-within:ring-blue-500 transition leading-none">
+              <input
+                type="search"
+                name="search"
+                id="search"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="p-1.5 focus:outline-none"
+                placeholder="Search..."
+              />
+              <button
+                type="button"
+                className="p-2 bg-blue-600 hover:bg-blue-700 text-white rounded cursor-pointer"
+              >
+                <FaMagnifyingGlass />
+              </button>
+            </div>
+            <div>
+              <select
+                name="itemsPerPage"
+                id="itemsPerPage"
+                className="p-2 border rounded text-center"
+                value={itemsPerPage}
+                onChange={(e) => {
+                  const value = Number(e.target.value);
+                  setItemsPerPage(value);
+                  router.push(
+                    `${pathname}?${new URLSearchParams({
+                      ...Object.fromEntries(searchParams.entries()),
+                      itemsPerPage: value,
+                      page: 1,
+                    }).toString()}`,
+                    { shallow: true }
+                  );
+                }}
+              >
+                <option value={20}>20</option>
+                <option value={50}>50</option>
+                <option value={100}>100</option>
+                <option value={150}>150</option>
+                <option value={200}>200</option>
+              </select>
+            </div>
           </div>
         </form>
       </div>
-      <table className="table-auto [&_th,_td]:border [&_th,_td]:p-3 [&_div]:flex [&_div]:justify-self-center text-center">
-        <thead>
-          <tr className="*:sticky *:top-0 *:bg-gray-200">
-            <th>ID</th>
-            <th>Actions</th>
-            <th>Order Date</th>
-            <th>Customer</th>
-            <th>Mobile Number</th>
-            <th>Total Purchase Price</th>
-            <th>Total Sell Price</th>
-            <th>Paid By Customer</th>
-            <th>Total Quantity</th>
-            <th>Total Discount</th>
-            <th>Shipping Customer</th>
-            <th>Shipping Merchant</th>
-            <th>Other Cost</th>
-            <th>Courier Tax</th>
-            <th>Total Profit</th>
-            <th>Order Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {loading && (
-            <tr>
-              <td colSpan={16}>Loading...</td>
+      <div className="overflow-x-scroll">
+        <table className="table-auto [&_th,_td]:border [&_th,_td]:p-3 [&_div]:flex [&_div]:justify-self-center text-center max-w-full">
+          <thead>
+            <tr className="*:sticky *:top-0 *:bg-gray-200">
+              <th>ID</th>
+              <th>Actions</th>
+              <th>Order Date</th>
+              <th>Customer</th>
+              <th>Mobile Number</th>
+              <th>Total Purchase Price</th>
+              <th>Total Sell Price</th>
+              <th>Paid By Customer</th>
+              <th>Total Quantity</th>
+              <th>Total Discount</th>
+              <th>Shipping Customer</th>
+              <th>Shipping Merchant</th>
+              <th>Other Cost</th>
+              <th>Courier Tax</th>
+              <th>Total Profit</th>
+              <th>Order Status</th>
             </tr>
-          )}
-          {!loading && !entries.length && (
+          </thead>
+          <tbody>
+            {loading && (
+              <tr>
+                <td colSpan={16}>Loading...</td>
+              </tr>
+            )}
+            {!loading && !entries.length && (
+              <tr>
+                <td colSpan={16}>No Entries Found</td>
+              </tr>
+            )}
+            {entries.map((entry, index) => (
+              <tr key={entry._id} className="hover:bg-gray-100">
+                <td>{(pageParam - 1) * itemsPerPageParam + (index + 1)}</td>
+                <td>
+                  <div className="flex gap-1">
+                    <a
+                      href={`/entries/customer/view/${entry._id}`}
+                      className="p-1.5 bg-blue-600 text-white rounded-md"
+                    >
+                      <FaEye size={12} />
+                    </a>
+                    <button
+                      className="p-1.5 bg-red-600 text-white rounded-md cursor-pointer"
+                      onClick={() => openConfirmDialog(entry._id)}
+                    >
+                      <FaTrash size={12} />
+                    </button>
+                  </div>
+                </td>
+                <td>{formatDate(entry.orderDate)}</td>
+                <td>{entry.customer?.name || "Customer Not Found"}</td>
+                <td>{entry.customer?.mobileNumber || "Customer Not Found"}</td>
+                <td>{entry.totalPurchasePrice}</td>
+                <td>{entry.totalSellPrice}</td>
+                <td>{entry.paidByCustomer}</td>
+                <td>{entry.totalQuantity}</td>
+                <td>{entry.totalDiscount}</td>
+                <td>{entry.shippingCustomer}</td>
+                <td>{entry.shippingMerchant}</td>
+                <td>{entry.otherCost}</td>
+                <td>{entry.courierTax}</td>
+                <td>{entry.netProfit}</td>
+                <td>{entry.orderStatus}</td>
+              </tr>
+            ))}
             <tr>
-              <td colSpan={16}>No Entries Found</td>
-            </tr>
-          )}
-          {entries.map((entry, index) => (
-            <tr key={entry._id} className="hover:bg-gray-100">
-              <td>{(pageParam - 1) * itemsPerPageParam + (index + 1)}</td>
-              <td>
-                <div className="flex gap-1">
-                  <a
-                    href={`/entries/customer/view/${entry._id}`}
-                    className="p-1.5 bg-blue-600 text-white rounded-md"
-                  >
-                    <FaEye size={12} />
-                  </a>
-                  <button
-                    className="p-1.5 bg-red-600 text-white rounded-md cursor-pointer"
-                    onClick={() => openConfirmDialog(entry._id)}
-                  >
-                    <FaTrash size={12} />
-                  </button>
-                </div>
+              <td colSpan={5} className="font-bold">
+                Total:
               </td>
-              <td>{formatDate(entry.orderDate)}</td>
-              <td>{entry.customer?.name || "Customer Not Found"}</td>
-              <td>{entry.customer?.mobileNumber || "Customer Not Found"}</td>
-              <td>{entry.totalPurchasePrice}</td>
-              <td>{entry.totalSellPrice}</td>
-              <td>{entry.paidByCustomer}</td>
-              <td>{entry.totalQuantity}</td>
-              <td>{entry.totalDiscount}</td>
-              <td>{entry.shippingCustomer}</td>
-              <td>{entry.shippingMerchant}</td>
-              <td>{entry.otherCost}</td>
-              <td>{entry.courierTax}</td>
-              <td>{entry.netProfit}</td>
-              <td>{entry.orderStatus}</td>
+              <th>{totalPurchasePrice}</th>
+              <th>{totalSellPrice}</th>
+              <th>{totalPaidByCustomer}</th>
+              <th>{totalQuantity}</th>
+              <th>{totalDiscount}</th>
+              <th>{totalShippingCustomer}</th>
+              <th>{totalShippingMerchant}</th>
+              <th>{totalOtherCost}</th>
+              <th>{totalCourierTax}</th>
+              <th>{totalProfit}</th>
+              <th>N/A</th>
             </tr>
-          ))}
-          <tr>
-            <td colSpan={5} className="font-bold">
-              Total:
-            </td>
-            <th>{totalPurchasePrice}</th>
-            <th>{totalSellPrice}</th>
-            <th>{totalPaidByCustomer}</th>
-            <th>{totalQuantity}</th>
-            <th>{totalDiscount}</th>
-            <th>{totalShippingCustomer}</th>
-            <th>{totalShippingMerchant}</th>
-            <th>{totalOtherCost}</th>
-            <th>{totalCourierTax}</th>
-            <th>{totalProfit}</th>
-            <th>N/A</th>
-          </tr>
-        </tbody>
-      </table>
+          </tbody>
+        </table>
+      </div>
       <div className="flex justify-between">
         <strong>{`Showing ${itemsPerPageParam} items of ${
           totalEntries || "Loading..."
