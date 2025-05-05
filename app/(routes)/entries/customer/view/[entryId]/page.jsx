@@ -154,7 +154,6 @@ export default function EditEntry({ params }) {
           show: false,
         }));
       }, 2000);
-      window.location.reload();
       window.history.back();
     } catch (err) {
       console.error(err);

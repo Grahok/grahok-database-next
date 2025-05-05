@@ -1,4 +1,5 @@
 import { connectToDatabase } from "@/lib/mongoose";
+import { UTCDate } from "@date-fns/utc";
 import CustomerEntry from "@/models/CustomerEntry";
 import Customer from "@/models/Customer";
 import Product from "@/models/Product";
@@ -18,8 +19,8 @@ export async function GET(req) {
 
     if (fromDate && toDate) {
       query.orderDate = {
-        $gte: new Date(fromDate),
-        $lte: new Date(toDate),
+        $gte: new UTCDate(`${fromDate}T00:00:00`),
+        $lte: new UTCDate(`${toDate}T23:59:59.999`),
       };
     }
     if (search) {
