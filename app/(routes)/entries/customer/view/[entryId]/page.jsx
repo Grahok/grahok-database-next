@@ -149,7 +149,10 @@ export default function EditEntry({ params }) {
       // ✅ Show success toast
       setToast({ show: true, message: "Entry updated successfully." });
       setTimeout(() => {
-        setToast({ show: false, message: "" });
+        setToast((prev) => ({
+          ...prev,
+          show: false,
+        }));
       }, 2000);
       window.location.reload();
       window.history.back();
@@ -258,7 +261,12 @@ export default function EditEntry({ params }) {
       <Toast
         show={toast.show}
         message={toast.message}
-        onClose={() => setToast({ show: false, message: "" })}
+        onClose={() =>
+          setToast((prev) => ({
+            ...prev,
+            show: false,
+          }))
+        }
       />
     </main>
   );

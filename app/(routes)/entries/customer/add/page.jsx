@@ -136,7 +136,10 @@ export default function AddEntry() {
       // ✅ Show success toast
       setToast({ show: true, message: "Entry added successfully." });
       setTimeout(() => {
-        setToast({ show: false, message: "" });
+        setToast((prev) => ({
+          ...prev,
+          show: false,
+        }));
       }, 2000);
     } catch (err) {
       console.error(err);
@@ -223,7 +226,12 @@ export default function AddEntry() {
       <Toast
         show={toast.show}
         message={toast.message}
-        onClose={() => setToast({ show: false, message: "" })}
+        onClose={() =>
+          setToast((prev) => ({
+            ...prev,
+            show: false,
+          }))
+        }
       />
     </main>
   );

@@ -294,7 +294,7 @@ export default function AllCustomerEntries() {
         </table>
       </div>
       <div className="flex justify-between">
-        <strong>{`Showing ${itemsPerPageParam} items of ${
+        <strong>{`Showing ${Math.min(totalEntries, itemsPerPageParam)} items of ${
           totalEntries || "Loading..."
         }`}</strong>
         <div className="flex gap-2 leading-none">
@@ -345,18 +345,26 @@ export default function AllCustomerEntries() {
               </button>
             ))}
 
-          <a
-            href={`?page=${pageParam + 1}`}
+          <button
+            type="button"
             className="bg-blue-600 hover:bg-blue-700 p-2 rounded cursor-pointer text-white"
+            onClick={() => {
+              query.set("page", pageParam + 1);
+              router.push(`${pathname}?${query.toString()}`);
+            }}
           >
             <LuChevronRight />
-          </a>
-          <a
-            href={`?page=${totalPages}`}
+          </button>
+          <button
+            type="button"
             className="bg-blue-600 hover:bg-blue-700 p-2 rounded cursor-pointer text-white"
+            onClick={() => {
+              query.set("page", totalPages);
+              router.push(`${pathname}?${query.toString()}`);
+            }}
           >
             <LuChevronsRight />
-          </a>
+          </button>
         </div>
       </div>
 

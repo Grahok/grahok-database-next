@@ -66,10 +66,10 @@ export async function PUT(req, { params }) {
         }
       );
     } else {
-      console.error("Error fetching or updating customer:", error);
+      console.error("Error updating customer:", error);
       return new Response(
         JSON.stringify({
-          message: "Failed to fetch customer",
+          message: "Failed to update customer",
           error: error.message,
         }),
         { status: 500 }

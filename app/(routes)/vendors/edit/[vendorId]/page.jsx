@@ -3,11 +3,13 @@
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { getVendor, updateVendor } from "./actions";
+import Toast from "@/components/Toast";
 
 export default function EditVendor({ params }) {
   const router = useRouter();
   const { vendorId } = React.use(params);
   const [vendor, setVendor] = useState();
+  const [toast, setToast] = useState({ show: false, message: "" });
   useEffect(() => {
     (async () => {
       const response = await getVendor(vendorId);
@@ -17,9 +19,12 @@ export default function EditVendor({ params }) {
       } catch (error) {
         console.error("Error fetching Vendor", error);
         setError("Error fetching vendor");
-      } {/* finally {
+      }
+      {
+        /* finally {
         setLoading(false);
-      } */}
+      } */
+      }
     })();
   }, []);
 
@@ -96,11 +101,16 @@ export default function EditVendor({ params }) {
       >
         Update Vendor
       </button>
-      {/* <Toast
+      <Toast
         show={toast.show}
         message={toast.message}
-        onClose={() => setToast({ show: false, message: "" })}
-      /> */}
+        onClose={() =>
+          setToast((prev) => ({
+            ...prev,
+            show: false,
+          }))
+        }
+      />
     </form>
   );
 }

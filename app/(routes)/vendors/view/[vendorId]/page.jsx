@@ -191,7 +191,12 @@ export default function VendorDeatils({ params }) {
         <Toast
           show={toast.show}
           message={toast.message}
-          onClose={() => setToast({ show: false, message: "" })}
+          onClose={() =>
+            setToast((prev) => ({
+              ...prev,
+              show: false,
+            }))
+          }
         />
         <ConfirmDialog
           ref={confirmDialogRef}

@@ -55,7 +55,10 @@ export default function EditEntry({ params }) {
       setToast({ show: true, message: "Entry updated successfully." });
 
       setTimeout(() => {
-        setToast({ show: false, message: "" });
+        setToast((prev) => ({
+          ...prev,
+          show: false,
+        }));
         router.push("/entries/all");
       }, 2000);
     } catch (err) {
@@ -147,7 +150,12 @@ export default function EditEntry({ params }) {
       <Toast
         show={toast.show}
         message={toast.message}
-        onClose={() => setToast({ show: false, message: "" })}
+        onClose={() =>
+          setToast((prev) => ({
+            ...prev,
+            show: false,
+          }))
+        }
       />
     </div>
   );

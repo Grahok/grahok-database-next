@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 const expenseSchema = new mongoose.Schema({
   name: { type: String, required: true },
   amount: { type: Number, required: true },
-  entryDate: { type: Date, required: true },
+  date: { type: Date, required: true },
   paymentMethod: { type: String, enum: PAYMENT_METHODS, required: true },
 });
 

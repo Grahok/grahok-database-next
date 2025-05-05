@@ -2,23 +2,24 @@
 
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { getProduct, updateProduct } from "./actions";
+import { getExpense, updateExpense } from "./actions";
 import Toast from "@/components/Toast";
-
-export default function EditProduct({ params }) {
+import PAYMENT_METHODS from "@/constants/paymentMethods";
+import { setDate } from "date-fns";
+export default function EditExpense({ params }) {
   const router = useRouter();
-  const { productId } = React.use(params);
-  const [product, setProduct] = useState();
-  const [toast, showtoast] = useState({ show: false, message: "" });
+  const { expenseId } = React.use(params);
+  const [toast, setToast] = useState({ show: false, message: "" });
+  const [expense, setExpense] = useState();
   useEffect(() => {
     (async () => {
-      const response = await getProduct(productId);
+      const response = await getExpense(expenseId);
       try {
-        const { product } = await response.json();
-        setProduct(product);
+        const { expense } = await response.json();
+        setExpense(expense);
       } catch (error) {
-        console.error("Error fetching Product", error);
-        setError("Error fetching product");
+        console.error("Error fetching Expense", error);
+        setError("Error fetching expense");
       }
       {
         /* finally {
@@ -31,14 +32,14 @@ export default function EditProduct({ params }) {
   async function handleSubmit(e) {
     e.preventDefault();
     const formdata = new FormData(e.target);
-    const productData = Object.fromEntries(formdata);
+    const expenseData = Object.fromEntries(formdata);
     try {
-      const response = await updateProduct(productId, productData);
+      const response = await updateExpense(expenseId, expenseData);
       if (response.ok) {
-        router.push("/products/all");
+        router.push("/expenses/all");
       }
     } catch (error) {
-      console.log("Error Updating Product", error);
+      console.log("Error Updating Expense", error);
     }
   }
 
@@ -47,73 +48,77 @@ export default function EditProduct({ params }) {
       onSubmit={handleSubmit}
       method="post"
       className="bg-white p-6 rounded-lg shadow space-y-6"
-      aria-labelledby="product-section-title"
+      aria-labelledby="expense-section-title"
     >
-      <h2 id="product-section-title" className="text-2xl font-semibold">
-        Edit Product
+      <h2 id="expense-section-title" className="text-2xl font-semibold">
+        Edit Expense
       </h2>
-
       <div className="flex flex-col gap-1">
         <label htmlFor="name" className="text-sm">
-          Product Name
+          Expense Name
         </label>
         <input
           type="text"
           name="name"
           id="name"
           className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none"
-          defaultValue={product?.name}
+          defaultValue={expense?.name}
+          required
+        />
+      </div>
+      <div className="flex flex-col gap-1">
+        <label htmlFor="amount" className="text-sm">
+          Amount
+        </label>
+        <input
+          type="number"
+          name="amount"
+          id="amount"
+          className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none"
+          defaultValue={expense?.amount}
+          required
+        />
+      </div>
+      <div className="flex flex-col gap-1">
+        <label htmlFor="date" className="text-sm">
+          Date
+        </label>
+        <input
+          type="datetime-local"
+          name="date"
+          id="date"
+          className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none"
+          defaultValue={
+            expense?.date
+              ? new Date(expense.date).toISOString().slice(0, 16)
+              : ""
+          }
           required
         />
       </div>
 
       <div className="flex flex-col gap-1">
-        <label htmlFor="purchasePrice" className="text-sm">
-          Purchase Price
-        </label>
-        <input
-          type="number"
-          name="purchasePrice"
-          id="purchasePrice"
+        <label htmlFor="paymentMethod">Payment Method</label>
+        <select
+          type="datetime-local"
+          name="paymentMethod"
+          id="paymentMethod"
+          defaultValue={expense?.paymentMethod}
           className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none"
-          defaultValue={product?.purchasePrice}
           required
-        />
+        >
+          {PAYMENT_METHODS.map((paymentMethod, index) => (
+            <option key={index} value={paymentMethod}>
+              {paymentMethod}
+            </option>
+          ))}
+        </select>
       </div>
-
-      <div className="flex flex-col gap-1">
-        <label htmlFor="sellPrice" className="text-sm">
-          Sell Price
-        </label>
-        <input
-          type="number"
-          name="sellPrice"
-          id="sellPrice"
-          className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none"
-          defaultValue={product?.sellPrice}
-          required
-        />
-      </div>
-
-      <div className="flex flex-col gap-1">
-        <label htmlFor="inStock" className="text-sm">
-          In Stock
-        </label>
-        <input
-          type="number"
-          name="inStock"
-          id="inStock"
-          className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none"
-          defaultValue={product?.inStock}
-          required
-        />
-      </div>
-
       <button
         type="submit"
         className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition cursor-pointer disabled:opacity-50"
       >
-        Update Product
+        Update Expense
       </button>
       <Toast
         show={toast.show}

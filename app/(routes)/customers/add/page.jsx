@@ -3,7 +3,6 @@
 import createCustomer from "@/features/customers/actions/createCustomer";
 
 export default function AddCustomer() {
-
   async function handleSubmit(e) {
     e.preventDefault();
     const formData = new FormData(e.target);
@@ -17,11 +16,13 @@ export default function AddCustomer() {
       setToast({ show: true, message: "Customer added successfully." });
 
       setTimeout(() => {
-        setToast({ show: false, message: "" });
+        setToast((prev) => ({
+          show: false,
+        }));
       }, 2000);
     }
   }
-  
+
   return (
     <form
       onSubmit={handleSubmit}

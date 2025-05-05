@@ -3,11 +3,13 @@
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { getCustomer, updateCustomer } from "./actions";
+import Toast from "@/components/Toast";
 
 export default function EditCustomer({ params }) {
   const router = useRouter();
   const { customerId } = React.use(params);
   const [customer, setCustomer] = useState();
+  const [toast, setToast] = useState({ show: false, message: "" });
   useEffect(() => {
     (async () => {
       const response = await getCustomer(customerId);
@@ -17,9 +19,12 @@ export default function EditCustomer({ params }) {
       } catch (error) {
         console.error("Error fetching Customer", error);
         setError("Error fetching customer");
-      } {/* finally {
+      }
+      {
+        /* finally {
         setLoading(false);
-      } */}
+      } */
+      }
     })();
   }, []);
 
@@ -96,11 +101,16 @@ export default function EditCustomer({ params }) {
       >
         Update Customer
       </button>
-      {/* <Toast
+      <Toast
         show={toast.show}
         message={toast.message}
-        onClose={() => setToast({ show: false, message: "" })}
-      /> */}
+        onClose={() =>
+          setToast((prev) => ({
+            ...prev,
+            show: false,
+          }))
+        }
+      />
     </form>
   );
 }

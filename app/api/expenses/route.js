@@ -47,15 +47,40 @@ export async function POST(req) {
   }
 }
 
-export async function GET() {
+export async function GET(req) {
   try {
     await connectToDatabase();
-    const expenses = await Expense.find().sort({ createdAt: -1 });
+    const url = new URL(req.url);
+    const fromDate = url.searchParams.get("fromDate");
+    const toDate = url.searchParams.get("toDate");
+    const page = parseInt(url.searchParams.get("page")) || 1;
+    const itemsPerPage = parseInt(url.searchParams.get("itemsPerPage")) || 0;
+
+    const query = {};
+
+    if (fromDate && toDate) {
+      query.date = {
+        $gte: new Date(fromDate),
+        $lte: new Date(toDate),
+      };
+    }
+    // Count total entries matching the query
+    const totalExpenses = await Expense.countDocuments(query);
+    const totalPages = Math.ceil(totalExpenses / itemsPerPage) || 1;
+
+    const expenses = await Expense.find(query)
+      .sort({ date: -1 })
+      .skip((page - 1) * itemsPerPage)
+      .limit(itemsPerPage);
 
     return new Response(
       JSON.stringify({
         message: "✅ Expenses fetched successfully",
         expenses: expenses,
+        pagination: {
+          totalExpenses: totalExpenses,
+          totalPages,
+        },
       }),
       {
         status: 200,

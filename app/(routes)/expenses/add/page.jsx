@@ -21,7 +21,10 @@ export default function AddExpense() {
       setToast({ show: true, message: "Expense added successfully." });
 
       setTimeout(() => {
-        setToast({ show: false, message: "" });
+        setToast((prev) => ({
+          ...prev,
+          show: false,
+        }));
       }, 2000);
     }
   }
@@ -60,18 +63,18 @@ export default function AddExpense() {
       </div>
 
       <div className="flex flex-col gap-1">
-        <label htmlFor="entryDate">Entry Date</label>
+        <label htmlFor="date">Date</label>
         <input
           type="datetime-local"
-          name="entryDate"
-          id="entryDate"
+          name="date"
+          id="date"
           className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none"
           required
         />
       </div>
 
       <div className="flex flex-col gap-1">
-        <label htmlFor="paymentMethod">Paymnet Method</label>
+        <label htmlFor="paymentMethod">Payment Method</label>
         <select
           type="datetime-local"
           name="paymentMethod"
@@ -96,7 +99,12 @@ export default function AddExpense() {
       <Toast
         show={toast.show}
         message={toast.message}
-        onClose={() => setToast({ show: false, message: "" })}
+        onClose={() =>
+          setToast((prev) => ({
+            ...prev,
+            show: false,
+          }))
+        }
       />
     </form>
   );

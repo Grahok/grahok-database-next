@@ -2,8 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import {
-  FaEye,
-  FaMagnifyingGlass,
+  FaPencil,
   FaRotateRight,
   FaTrash,
 } from "react-icons/fa6";
@@ -26,7 +25,6 @@ export default function AllExpenses() {
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(true);
   const [selectedExpenseId, setSelectedExpenseId] = useState("");
-  const [search, setSearch] = useState("");
   const confirmDialogRef = useRef();
   const searchParams = useSearchParams();
   const fromDateParam = searchParams.get("fromDate") || "";
@@ -44,7 +42,8 @@ export default function AllExpenses() {
     (async () => {
       setLoading(true);
       try {
-        const response = await getExpenses(queryParams);
+        console.log(queryParams)
+        const response = await getExpenses(query);
         const { expenses, pagination } = await response.json();
         const { totalExpenses, totalPages } = pagination;
         setTotalExpenses(totalExpenses);
@@ -74,41 +73,15 @@ export default function AllExpenses() {
       console.error("Error deleting entry:", error);
     }
   }
-  const totalProfit = expenses.reduce((acc, entry) => {
-    return acc + entry.netProfit;
-  }, 0);
-  const totalDiscount = expenses.reduce((acc, entry) => {
-    return acc + entry.totalDiscount;
-  }, 0);
-  const totalShippingCustomer = expenses.reduce((acc, entry) => {
-    return acc + entry.shippingCustomer;
-  }, 0);
-  const totalShippingMerchant = expenses.reduce((acc, entry) => {
-    return acc + entry.shippingMerchant;
-  }, 0);
-  const totalOtherCost = expenses.reduce((acc, entry) => {
-    return acc + entry.otherCost;
-  }, 0);
-  const totalCourierTax = expenses.reduce((acc, entry) => {
-    return acc + entry.courierTax;
-  }, 0);
-  const totalPurchasePrice = expenses.reduce((acc, entry) => {
-    return acc + entry.totalPurchasePrice;
-  }, 0);
-  const totalSellPrice = expenses.reduce((acc, entry) => {
-    return acc + entry.totalSellPrice;
-  }, 0);
-  const totalPaidByCustomer = expenses.reduce((acc, entry) => {
-    return acc + entry.paidByCustomer;
-  }, 0);
-  const totalQuantity = expenses.reduce((acc, entry) => {
-    return acc + entry.totalQuantity;
+
+  const totalAmount = expenses.reduce((acc, entry) => {
+    return acc + entry.amount;
   }, 0);
 
   return (
-    <section className="w-full flex flex-col gap-3">
+    <section className="w-full flex flex-col gap-8">
       <div className="flex items-center justify-between gap-6">
-        <h1 className="text-3xl font-bold">All Customer Entries:</h1>
+        <h1 className="text-3xl font-bold">All Expenses:</h1>
         <form className="flex items-center gap-3 flex-wrap justify-end">
           <div className="flex items-center md:items-end gap-6 rounded-lg border border-gray-400 px-4 py-2">
             <div className="flex items-center gap-2 w-full md:w-1/2">
@@ -149,7 +122,7 @@ export default function AllExpenses() {
                 Submit
               </button>
               <a
-                href="/entries/customer/all"
+                href="/expenses/all"
                 className="p-1.5 bg-orange-300 rounded"
               >
                 <FaRotateRight
@@ -160,23 +133,6 @@ export default function AllExpenses() {
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <div className="w-full flex items-center gap-2 rounded border border-gray-300 focus-within:ring-2 focus-within:ring-blue-500 transition leading-none">
-              <input
-                type="search"
-                name="search"
-                id="search"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="p-1.5 focus:outline-none"
-                placeholder="Search..."
-              />
-              <button
-                type="button"
-                className="p-2 bg-blue-600 hover:bg-blue-700 text-white rounded cursor-pointer"
-              >
-                <FaMagnifyingGlass />
-              </button>
-            </div>
             <div>
               <select
                 name="itemsPerPage"
@@ -206,118 +162,93 @@ export default function AllExpenses() {
           </div>
         </form>
       </div>
-      <div className="overflow-x-scroll">
+      <div className="overflow-x-auto">
         <table className="table-auto [&_th,_td]:border [&_th,_td]:p-3 [&_div]:flex [&_div]:justify-self-center text-center max-w-full">
           <thead>
             <tr className="*:sticky *:top-0 *:bg-gray-200">
               <th>ID</th>
               <th>Actions</th>
-              <th>Order Date</th>
-              <th>Customer</th>
-              <th>Mobile Number</th>
-              <th>Total Purchase Price</th>
-              <th>Total Sell Price</th>
-              <th>Paid By Customer</th>
-              <th>Total Quantity</th>
-              <th>Total Discount</th>
-              <th>Shipping Customer</th>
-              <th>Shipping Merchant</th>
-              <th>Other Cost</th>
-              <th>Courier Tax</th>
-              <th>Total Profit</th>
-              <th>Order Status</th>
+              <th>Date</th>
+              <th>Name</th>
+              <th>Payment Method</th>
+              <th>Amount</th>
             </tr>
           </thead>
           <tbody>
             {loading && (
               <tr>
-                <td colSpan={16}>Loading...</td>
+                <td colSpan={6}>Loading...</td>
               </tr>
             )}
             {!loading && !expenses.length && (
               <tr>
-                <td colSpan={16}>No Entries Found</td>
+                <td colSpan={6}>No Expenses Found</td>
               </tr>
             )}
-            {expenses.map((entry, index) => (
-              <tr key={entry._id} className="hover:bg-gray-100">
+            {expenses.map((expense, index) => (
+              <tr key={expense._id} className="hover:bg-gray-100">
                 <td>{(pageParam - 1) * itemsPerPageParam + (index + 1)}</td>
                 <td>
                   <div className="flex gap-1">
                     <a
-                      href={`/entries/customer/view/${entry._id}`}
-                      className="p-1.5 bg-blue-600 text-white rounded-md"
+                      href={`/expenses/edit/${expense._id}`}
+                      className="p-1.5 bg-green-600 text-white rounded-md"
                     >
-                      <FaEye size={12} />
+                      <FaPencil size={12} />
                     </a>
                     <button
                       className="p-1.5 bg-red-600 text-white rounded-md cursor-pointer"
-                      onClick={() => openConfirmDialog(entry._id)}
+                      onClick={() => openConfirmDialog(expense._id)}
                     >
                       <FaTrash size={12} />
                     </button>
                   </div>
                 </td>
-                <td>{formatDate(entry.orderDate)}</td>
-                <td>{entry.customer?.name || "Customer Not Found"}</td>
-                <td>{entry.customer?.mobileNumber || "Customer Not Found"}</td>
-                <td>{entry.totalPurchasePrice}</td>
-                <td>{entry.totalSellPrice}</td>
-                <td>{entry.paidByCustomer}</td>
-                <td>{entry.totalQuantity}</td>
-                <td>{entry.totalDiscount}</td>
-                <td>{entry.shippingCustomer}</td>
-                <td>{entry.shippingMerchant}</td>
-                <td>{entry.otherCost}</td>
-                <td>{entry.courierTax}</td>
-                <td>{entry.netProfit}</td>
-                <td>{entry.orderStatus}</td>
+                <td>{formatDate(expense?.date)}</td>
+                <td>{expense.name || "Not Found"}</td>
+                <td>{expense.paymentMethod || "Not Found"}</td>
+                <td>{expense.amount || "Not Found"}</td>
               </tr>
             ))}
             <tr>
               <td colSpan={5} className="font-bold">
                 Total:
               </td>
-              <th>{totalPurchasePrice}</th>
-              <th>{totalSellPrice}</th>
-              <th>{totalPaidByCustomer}</th>
-              <th>{totalQuantity}</th>
-              <th>{totalDiscount}</th>
-              <th>{totalShippingCustomer}</th>
-              <th>{totalShippingMerchant}</th>
-              <th>{totalOtherCost}</th>
-              <th>{totalCourierTax}</th>
-              <th>{totalProfit}</th>
-              <th>N/A</th>
+              <th>{totalAmount}</th>
             </tr>
           </tbody>
         </table>
       </div>
       <div className="flex justify-between">
-        <strong>{`Showing ${itemsPerPageParam} items of ${
-          totalExpenses || "Loading..."
-        }`}</strong>
+        <strong>{`Showing ${Math.min(
+          totalExpenses,
+          itemsPerPageParam
+        )} items of ${totalExpenses || "Loading..."}`}</strong>
         <div className="flex gap-2 leading-none">
-          <button
-            type="button"
-            className="bg-blue-600 hover:bg-blue-700 p-2 rounded cursor-pointer text-white"
-            onClick={() => {
-              query.set("page", 1);
-              router.push(`${pathname}?${query.toString()}`);
-            }}
-          >
-            <LuChevronsLeft />
-          </button>
-          <button
-            type="button"
-            className="bg-blue-600 hover:bg-blue-700 p-2 rounded cursor-pointer text-white"
-            onClick={() => {
-              query.set("page", Math.max(1, pageParam - 1));
-              router.push(`${pathname}?${query.toString()}`);
-            }}
-          >
-            <LuChevronLeft />
-          </button>
+          {!pageParam === 1 && (
+            <>
+              <button
+                type="button"
+                className="bg-blue-600 hover:bg-blue-700 p-2 rounded cursor-pointer text-white"
+                onClick={() => {
+                  query.set("page", 1);
+                  router.push(`${pathname}?${query.toString()}`);
+                }}
+              >
+                <LuChevronsLeft />
+              </button>
+              <button
+                type="button"
+                className="bg-blue-600 hover:bg-blue-700 p-2 rounded cursor-pointer text-white"
+                onClick={() => {
+                  query.set("page", Math.max(1, pageParam - 1));
+                  router.push(`${pathname}?${query.toString()}`);
+                }}
+              >
+                <LuChevronLeft />
+              </button>
+            </>
+          )}
 
           {[
             pageParam - 2,
@@ -344,19 +275,26 @@ export default function AllExpenses() {
                 {page}
               </button>
             ))}
-
-          <a
-            href={`?page=${pageParam + 1}`}
+          <button
+            type="button"
             className="bg-blue-600 hover:bg-blue-700 p-2 rounded cursor-pointer text-white"
+            onClick={() => {
+              query.set("page", pageParam + 1);
+              router.push(`${pathname}?${query.toString()}`);
+            }}
           >
             <LuChevronRight />
-          </a>
-          <a
-            href={`?page=${totalPages}`}
+          </button>
+          <button
+            type="button"
             className="bg-blue-600 hover:bg-blue-700 p-2 rounded cursor-pointer text-white"
+            onClick={() => {
+              query.set("page", totalPages);
+              router.push(`${pathname}?${query.toString()}`);
+            }}
           >
             <LuChevronsRight />
-          </a>
+          </button>
         </div>
       </div>
 
