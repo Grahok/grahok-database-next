@@ -1,11 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import {
-  FaPencil,
-  FaRotateRight,
-  FaTrash,
-} from "react-icons/fa6";
+import { FaPencil, FaRotateRight, FaTrash } from "react-icons/fa6";
 import {
   LuChevronLeft,
   LuChevronRight,
@@ -16,6 +12,9 @@ import formatDate from "@/utils/formatDate";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import getExpenses from "@/features/expenses/actions/getExpenses";
+import deleteExpense from "@/features/expenses/actions/deleteExpense";
+import Toast from "@/components/Toast";
+import EXPENSE_CATEGORIES from "@/constants/expenseCategories";
 
 export default function AllExpenses() {
   const router = useRouter();
@@ -25,6 +24,7 @@ export default function AllExpenses() {
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(true);
   const [selectedExpenseId, setSelectedExpenseId] = useState("");
+  const [toast, setToast] = useState({ show: false, message: "" });
   const confirmDialogRef = useRef();
   const searchParams = useSearchParams();
   const fromDateParam = searchParams.get("fromDate") || "";
@@ -32,6 +32,8 @@ export default function AllExpenses() {
   const pageParam = Number(searchParams.get("page")) || 1;
   const itemsPerPageParam = Number(searchParams.get("itemsPerPage")) || 20;
   const [itemsPerPage, setItemsPerPage] = useState(itemsPerPageParam);
+  const nameParam = searchParams.get("name") || "Facebook Payment";
+  const [name, setName] = useState(nameParam);
   const [isSpinning, setIsSpinning] = useState(false);
   const query = new URLSearchParams(
     searchParams.toString() || `itemsPerPage=${itemsPerPage}`
@@ -42,7 +44,7 @@ export default function AllExpenses() {
     (async () => {
       setLoading(true);
       try {
-        console.log(queryParams)
+        console.log(queryParams);
         const response = await getExpenses(query);
         const { expenses, pagination } = await response.json();
         const { totalExpenses, totalPages } = pagination;
@@ -64,18 +66,24 @@ export default function AllExpenses() {
 
   async function handleDelete() {
     try {
-      await deleteEntry(selectedExpenseId);
+      await deleteExpense(selectedExpenseId);
+      setToast({ show: true, message: "Expense Deleted Successfully" });
+      setTimeout(() => {
+        setToast((prev) => ({
+          ...prev,
+          show: false,
+        }));
+      }, 2000);
       setExpenses((prev) =>
-        prev.filter((entry) => entry._id !== selectedExpenseId)
+        prev.filter((expense) => expense._id !== selectedExpenseId)
       );
-      console.log("Entry deleted successfully");
     } catch (error) {
-      console.error("Error deleting entry:", error);
+      console.error("Error deleting expense:", error);
     }
   }
 
-  const totalAmount = expenses.reduce((acc, entry) => {
-    return acc + entry.amount;
+  const totalAmount = expenses.reduce((acc, expense) => {
+    return acc + expense.amount;
   }, 0);
 
   return (
@@ -121,10 +129,7 @@ export default function AllExpenses() {
               >
                 Submit
               </button>
-              <a
-                href="/expenses/all"
-                className="p-1.5 bg-orange-300 rounded"
-              >
+              <a href="/expenses/all" className="p-1.5 bg-orange-300 rounded">
                 <FaRotateRight
                   className={`${isSpinning && "animate-spin"} size-5`}
                   onClick={() => setIsSpinning(true)}
@@ -133,6 +138,31 @@ export default function AllExpenses() {
             </div>
           </div>
           <div className="flex items-center gap-3">
+            <div>
+              <select
+                name="name"
+                id="name"
+                className="p-2 border rounded text-center"
+                value={name}
+                onChange={(e) => {
+                  setName(e.target.value);
+                  router.push(
+                    `${pathname}?${new URLSearchParams({
+                      ...Object.fromEntries(searchParams.entries()),
+                      name: e.target.value,
+                      page: 1,
+                    }).toString()}`,
+                    { shallow: true }
+                  );
+                }}
+              >
+                {EXPENSE_CATEGORIES.map((expenseCategory, index) => (
+                  <option key={index} value={expenseCategory}>
+                    {expenseCategory}
+                  </option>
+                ))}
+              </select>
+            </div>
             <div>
               <select
                 name="itemsPerPage"
@@ -171,18 +201,19 @@ export default function AllExpenses() {
               <th>Date</th>
               <th>Name</th>
               <th>Payment Method</th>
+              <th>Note</th>
               <th>Amount</th>
             </tr>
           </thead>
           <tbody>
             {loading && (
               <tr>
-                <td colSpan={6}>Loading...</td>
+                <td colSpan={7}>Loading...</td>
               </tr>
             )}
             {!loading && !expenses.length && (
               <tr>
-                <td colSpan={6}>No Expenses Found</td>
+                <td colSpan={7}>No Expenses Found</td>
               </tr>
             )}
             {expenses.map((expense, index) => (
@@ -207,11 +238,12 @@ export default function AllExpenses() {
                 <td>{formatDate(expense?.date)}</td>
                 <td>{expense.name || "Not Found"}</td>
                 <td>{expense.paymentMethod || "Not Found"}</td>
+                <td>{expense.note || "N/A"}</td>
                 <td>{expense.amount || "Not Found"}</td>
               </tr>
             ))}
             <tr>
-              <td colSpan={5} className="font-bold">
+              <td colSpan={6} className="font-bold">
                 Total:
               </td>
               <th>{totalAmount}</th>
@@ -302,6 +334,11 @@ export default function AllExpenses() {
         ref={confirmDialogRef}
         onConfirm={handleDelete}
         message="Are you sure you want to delete this expense?"
+      />
+      <Toast
+        show={toast.show}
+        message={toast.message}
+        onClose={toast.onClose}
       />
     </section>
   );

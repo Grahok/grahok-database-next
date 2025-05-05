@@ -54,6 +54,7 @@ export async function GET(req) {
     const fromDate = url.searchParams.get("fromDate");
     const toDate = url.searchParams.get("toDate");
     const page = parseInt(url.searchParams.get("page")) || 1;
+    const name = url.searchParams.get("name") || "Facebook Payment";
     const itemsPerPage = parseInt(url.searchParams.get("itemsPerPage")) || 0;
 
     const query = {};
@@ -63,6 +64,10 @@ export async function GET(req) {
         $gte: new Date(fromDate),
         $lte: new Date(toDate),
       };
+    }
+
+    if (name) {
+      query.name = name;
     }
     // Count total entries matching the query
     const totalExpenses = await Expense.countDocuments(query);

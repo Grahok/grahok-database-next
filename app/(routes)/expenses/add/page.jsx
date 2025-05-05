@@ -1,6 +1,7 @@
 "use client";
 
 import Toast from "@/components/Toast";
+import EXPENSE_CATEGORIES from "@/constants/expenseCategories";
 import PAYMENT_METHODS from "@/constants/paymentMethods";
 import createExpense from "@/features/expenses/actions/createExpense";
 import { useState } from "react";
@@ -42,13 +43,18 @@ export default function AddExpense() {
 
       <div className="flex flex-col gap-1">
         <label htmlFor="name">Expense Name</label>
-        <input
-          type="text"
+        <select
           name="name"
           id="name"
           className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none"
           required
-        />
+        >
+          {EXPENSE_CATEGORIES.map((name, index) => (
+            <option key={index} value={name}>
+              {name}
+            </option>
+          ))}
+        </select>
       </div>
 
       <div className="flex flex-col gap-1">
@@ -76,7 +82,6 @@ export default function AddExpense() {
       <div className="flex flex-col gap-1">
         <label htmlFor="paymentMethod">Payment Method</label>
         <select
-          type="datetime-local"
           name="paymentMethod"
           id="paymentMethod"
           className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none"
@@ -88,6 +93,15 @@ export default function AddExpense() {
             </option>
           ))}
         </select>
+      </div>
+
+      <div className="flex flex-col gap-1">
+        <label htmlFor="note">Note</label>
+        <textarea
+          name="note"
+          id="note"
+          className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none"
+        ></textarea>
       </div>
 
       <button
