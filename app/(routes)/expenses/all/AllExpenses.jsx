@@ -32,7 +32,7 @@ export default function AllExpenses() {
   const pageParam = Number(searchParams.get("page")) || 1;
   const itemsPerPageParam = Number(searchParams.get("itemsPerPage")) || 20;
   const [itemsPerPage, setItemsPerPage] = useState(itemsPerPageParam);
-  const nameParam = searchParams.get("name") || "Facebook Payment";
+  const nameParam = searchParams.get("name") || "";
   const [name, setName] = useState(nameParam);
   const [isSpinning, setIsSpinning] = useState(false);
   const query = new URLSearchParams(
@@ -156,6 +156,7 @@ export default function AllExpenses() {
                   );
                 }}
               >
+                <option value="">All</option>
                 {EXPENSE_CATEGORIES.map((expenseCategory, index) => (
                   <option key={index} value={expenseCategory}>
                     {expenseCategory}

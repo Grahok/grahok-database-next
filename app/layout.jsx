@@ -6,6 +6,7 @@ import {
   FaChartPie,
   FaCirclePlus,
   FaDatabase,
+  FaDollarSign,
   FaHouse,
   FaUser,
   FaUserPlus,
@@ -143,6 +144,24 @@ export default function RootLayout({ children }) {
                 >
                   <FaCirclePlus />
                   <span>Add Product</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/expenses/all"
+                  className="flex items-center gap-2 p-2 rounded-md hover:bg-gray-200"
+                >
+                  <FaDollarSign />
+                  <span>All Expenses</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/expenses/add"
+                  className="flex items-center gap-2 p-2 rounded-md hover:bg-gray-200"
+                >
+                  <FaDollarSign />
+                  <span>Add Expense</span>
                 </a>
               </li>
               <li>
