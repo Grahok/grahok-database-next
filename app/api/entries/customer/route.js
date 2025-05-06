@@ -16,11 +16,11 @@ export async function GET(req) {
     const page = parseInt(url.searchParams.get("page")) || 1;
     const itemsPerPage = parseInt(url.searchParams.get("itemsPerPage")) || 0;
 
-    const startUTC = new UTCDate(`${fromDate}T00:00:00`);
-    const endUTC = new UTCDate(`${toDate}T23:59:59.999`);
+    const startUTC = new Date(`${fromDate}T00:00:00`);
+    const endUTC = new Date(`${toDate}T23:59:59.999`);
 
-    console.log(fromDate)
-    console.log(toDate)
+    console.log(new Date(`${fromDate}T00:00:00`))
+    console.log(new Date(`${toDate}T23:59:59.999`))
     console.log(startUTC)
     console.log(endUTC)
 
