@@ -3,26 +3,27 @@ import { UTCDate } from "@date-fns/utc";
 import CustomerEntry from "@/models/CustomerEntry";
 import Customer from "@/models/Customer";
 import Product from "@/models/Product";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
 
 export async function GET(req) {
+  dayjs.extend(utc);
   try {
     await connectToDatabase();
 
     const url = new URL(req.url);
-    const fromDate = url.searchParams.get("fromDate");
-    const toDate = url.searchParams.get("toDate");
+    const fromDate = `${url.searchParams.get("fromDate")}T00:00:00`;
+    console.log(fromDate);
+    const toDate = `${url.searchParams.get("toDate")}T23:59:59.999`;
     const search = url.searchParams.get("search");
     const orderStatus = url.searchParams.get("orderStatus");
     const page = parseInt(url.searchParams.get("page")) || 1;
     const itemsPerPage = parseInt(url.searchParams.get("itemsPerPage")) || 0;
 
-    const startUTC = new Date(`${fromDate}T00:00:00`);
-    const endUTC = new Date(`${toDate}T23:59:59.999`);
-
-    console.log(new Date(`${fromDate}T00:00:00`))
-    console.log(new Date(`${toDate}T23:59:59.999`))
-    console.log(startUTC)
-    console.log(endUTC)
+    const startUTC = dayjs(fromDate).utc().toISOString();
+    console.log(startUTC);
+    const endUTC = dayjs(toDate).utc().toISOString();
+    console.log(endUTC);
 
     const query = {};
 
