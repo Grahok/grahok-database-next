@@ -19,7 +19,6 @@ export default function EditEntry({ params }) {
   const [invoiceNumber, setInvoiceNumber] = useState(0);
   const [entry, setEntry] = useState();
   const [orderStatus, setOrderStatus] = useState("Pending");
-  const [customerData, setCustomerData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [selectedProducts, setSelectedProducts] = useState([]);
@@ -245,7 +244,7 @@ export default function EditEntry({ params }) {
           <button
             type="submit"
             className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition cursor-pointer disabled:opacity-50"
-            disabled={loading || !customerData}
+            disabled={loading}
           >
             {loading ? "Updating..." : "Update Entry"}
           </button>

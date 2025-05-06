@@ -17,6 +17,8 @@ import { fetchEntries, deleteEntry } from "./actions";
 import ConfirmDialog from "@/app/(routes)/entries/customer/all/components/ConfirmDialog";
 import formatDate from "@/utils/formatDate";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import firstDateOfCurrentMonth from "@/utils/firstDateOfCurrentMonth";
+import inputDateFormat from "@/utils/inputDateFormat";
 
 export default function AllCustomerEntries() {
   const router = useRouter();
@@ -29,17 +31,19 @@ export default function AllCustomerEntries() {
   const [search, setSearch] = useState("");
   const confirmDialogRef = useRef();
   const searchParams = useSearchParams();
-  const fromDateParam = searchParams.get("fromDate") || "";
-  const toDateParam = searchParams.get("toDate") || "";
+  const fromDateParam =
+    searchParams.get("fromDate") ||
+    firstDateOfCurrentMonth(new Date(Date.now()));
+  const toDateParam =
+    searchParams.get("toDate") || inputDateFormat(new Date(Date.now()));
   const pageParam = Number(searchParams.get("page")) || 1;
   const itemsPerPageParam = Number(searchParams.get("itemsPerPage")) || 20;
   const [itemsPerPage, setItemsPerPage] = useState(itemsPerPageParam);
   const [isSpinning, setIsSpinning] = useState(false);
-  // const query = new URLSearchParams(
-  //   searchParams.toString() || `itemsPerPage=${itemsPerPage}`
-  // );
   const query = new URLSearchParams({
     ...Object.fromEntries(searchParams.entries()),
+    fromDate: fromDateParam,
+    toDate: toDateParam,
     itemsPerPage: itemsPerPageParam,
     page: 1,
   }).toString();
