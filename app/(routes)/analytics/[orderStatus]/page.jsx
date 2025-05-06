@@ -17,6 +17,8 @@ import { fetchEntries, deleteEntry } from "./actions";
 import ConfirmDialog from "@/app/(routes)/entries/customer/all/components/ConfirmDialog";
 import formatDate from "@/utils/formatDate";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import firstDateOfCurrentMonth from "@/utils/firstDateOfCurrentMonth";
+import inputDateFormat from "@/utils/inputDateFormat";
 
 export default function AllCustomerEntries({ params }) {
   const { orderStatus } = React.use(params);
@@ -30,27 +32,30 @@ export default function AllCustomerEntries({ params }) {
   const [search, setSearch] = useState("");
   const confirmDialogRef = useRef();
   const searchParams = useSearchParams();
-  const fromDateParam = searchParams.get("fromDate") || "";
-  const toDateParam = searchParams.get("toDate") || "";
+  const fromDateParam = searchParams.get("fromDate") || firstDateOfCurrentMonth(new Date(Date.now()));
+  const toDateParam = searchParams.get("toDate") || inputDateFormat(new Date(Date.now()));
   const pageParam = Number(searchParams.get("page")) || 1;
   const itemsPerPageParam = Number(searchParams.get("itemsPerPage")) || 20;
   const [itemsPerPage, setItemsPerPage] = useState(itemsPerPageParam);
   const [isSpinning, setIsSpinning] = useState(false);
-  const query = new URLSearchParams(
-    searchParams.toString() || `itemsPerPage=${itemsPerPage}`
-  );
-  const queryParams = `?${query}`;
+  // const query = searchParams.toString() || `orderStatus=${orderStatusParam}&itemsPerPage=${itemsPerPage}`;
+  const queryObj = new URLSearchParams({
+    fromDate: fromDateParam,
+    toDate: toDateParam,
+    page: pageParam,
+    orderStatus,
+    itemsPerPage: itemsPerPageParam,
+  })
+  const queryParams = `?${queryObj.toString()}`;
 
   useEffect(() => {
     (async () => {
       setLoading(true);
       try {
+        console.log(queryParams);
         const response = await fetchEntries(queryParams);
         const { entries, pagination } = await response.json();
-        const filteredEntries = entries.filter(
-          (entry) => entry.orderStatus === orderStatus
-        );
-        setEntries(filteredEntries);
+        setEntries(entries);
         const { totalEntries, totalPages } = pagination;
         setTotalEntries(totalEntries);
         setTotalPages(totalPages);
@@ -153,7 +158,7 @@ export default function AllCustomerEntries({ params }) {
                 Submit
               </button>
               <a
-                href="/entries/customer/all"
+                href={`/analytics/${orderStatus}`}
                 className="p-1.5 bg-orange-300 rounded"
               >
                 <FaRotateRight
@@ -210,7 +215,7 @@ export default function AllCustomerEntries({ params }) {
           </div>
         </form>
       </div>
-      <div className="overflow-x-scroll">
+      <div className="overflow-x-auto">
         <table className="table-auto [&_th,_td]:border [&_th,_td]:p-3 [&_div]:flex [&_div]:justify-self-center text-center">
           <thead>
             <tr className="*:sticky *:top-0 *:bg-gray-200">
@@ -298,16 +303,17 @@ export default function AllCustomerEntries({ params }) {
         </table>
       </div>
       <div className="flex justify-between">
-        <strong>{`Showing ${itemsPerPageParam} items of ${
-          totalEntries || "Loading..."
-        }`}</strong>
+        <strong>{`Showing ${Math.min(
+          totalEntries,
+          itemsPerPageParam
+        )} items of ${totalEntries || "Loading..."}`}</strong>
         <div className="flex gap-2 leading-none">
           <button
             type="button"
             className="bg-blue-600 hover:bg-blue-700 p-2 rounded cursor-pointer text-white"
             onClick={() => {
-              query.set("page", 1);
-              router.push(`${pathname}?${query.toString()}`);
+              queryObj.set("page", 1);
+              router.push(`${pathname}?${queryObj.toString()}`);
             }}
           >
             <LuChevronsLeft />
@@ -316,8 +322,8 @@ export default function AllCustomerEntries({ params }) {
             type="button"
             className="bg-blue-600 hover:bg-blue-700 p-2 rounded cursor-pointer text-white"
             onClick={() => {
-              query.set("page", Math.max(1, pageParam - 1));
-              router.push(`${pathname}?${query.toString()}`);
+              queryObj.set("page", Math.max(1, pageParam - 1));
+              router.push(`${pathname}?${queryObj.toString()}`);
             }}
           >
             <LuChevronLeft />
@@ -341,26 +347,34 @@ export default function AllCustomerEntries({ params }) {
                     : "bg-blue-600 hover:bg-blue-700 text-white"
                 } p-2 rounded cursor-pointer`}
                 onClick={() => {
-                  query.set("page", page);
-                  router.push(`${pathname}?${query.toString()}`);
+                  queryObj.set("page", page);
+                  router.push(`${pathname}?${queryObj.toString()}`);
                 }}
               >
                 {page}
               </button>
             ))}
 
-          <a
-            href={`?page=${pageParam + 1}`}
+          <button
+            type="button"
             className="bg-blue-600 hover:bg-blue-700 p-2 rounded cursor-pointer text-white"
+            onClick={() => {
+              queryObj.set("page", pageParam + 1);
+              router.push(`${pathname}?${queryObj.toString()}`);
+            }}
           >
             <LuChevronRight />
-          </a>
-          <a
-            href={`?page=${totalPages}`}
+          </button>
+          <button
+            type="button"
             className="bg-blue-600 hover:bg-blue-700 p-2 rounded cursor-pointer text-white"
+            onClick={() => {
+              queryObj.set("page", totalPages);
+              router.push(`${pathname}?${queryObj.toString()}`);
+            }}
           >
             <LuChevronsRight />
-          </a>
+          </button>
         </div>
       </div>
 

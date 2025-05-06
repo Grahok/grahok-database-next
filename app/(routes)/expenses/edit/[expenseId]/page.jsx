@@ -5,7 +5,6 @@ import React, { useEffect, useState } from "react";
 import { getExpense, updateExpense } from "./actions";
 import Toast from "@/components/Toast";
 import PAYMENT_METHODS from "@/constants/paymentMethods";
-import { setDate } from "date-fns";
 export default function EditExpense({ params }) {
   const router = useRouter();
   const { expenseId } = React.use(params);

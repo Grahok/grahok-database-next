@@ -12,15 +12,19 @@ export async function GET(req) {
     const fromDate = url.searchParams.get("fromDate");
     const toDate = url.searchParams.get("toDate");
     const search = url.searchParams.get("search");
+    const orderStatus = url.searchParams.get("orderStatus");
     const page = parseInt(url.searchParams.get("page")) || 1;
     const itemsPerPage = parseInt(url.searchParams.get("itemsPerPage")) || 0;
+
+    const startUTC = new UTCDate(`${fromDate}T00:00:00`);
+    const endUTC = new UTCDate(`${toDate}T23:59:59.999`);
 
     const query = {};
 
     if (fromDate && toDate) {
       query.orderDate = {
-        $gte: new UTCDate(`${fromDate}T00:00:00`),
-        $lte: new UTCDate(`${toDate}T23:59:59.999`),
+        $gte: new Date(startUTC),
+        $lte: new Date(endUTC),
       };
     }
     if (search) {
@@ -34,6 +38,10 @@ export async function GET(req) {
       const customerIds = matchedCustomers.map((c) => c._id);
 
       query.customer = { $in: customerIds };
+    }
+
+    if (orderStatus) {
+      query.orderStatus = orderStatus;
     }
 
     // Count total entries matching the query

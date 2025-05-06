@@ -1,3 +1,7 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+
 export default function AnalyticsCard({
   Icon,
   children,
@@ -5,10 +9,16 @@ export default function AnalyticsCard({
   totalAmount,
   loading,
   orderStatus = "",
+  queryParams,
 }) {
+  const router = useRouter();
   return (
     <a
-      href={orderStatus ? `analytics/${orderStatus}` : "/entries/customer/all"}
+      href={
+        orderStatus
+          ? `analytics/${orderStatus+queryParams}`
+          : `/entries/customer/all${queryParams}`
+      }
       className="flex flex-col gap-6 border p-5 rounded-md"
     >
       <div className="flex items-center gap-3">

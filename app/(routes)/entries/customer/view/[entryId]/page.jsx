@@ -11,7 +11,7 @@ import combineDateWithCurrentTime from "@/utils/combineDateWithCurrentTime";
 import React from "react";
 import { getCustomerEntry } from "./actions/getCustomerEntry";
 import { FaPencil } from "react-icons/fa6";
-import { useRouter } from "next/navigation";
+import inputDateFormat from "@/utils/inputDateFormat";
 
 export default function EditEntry({ params }) {
   const { entryId } = React.use(params);
@@ -24,7 +24,6 @@ export default function EditEntry({ params }) {
   const [error, setError] = useState("");
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [overallDiscount, setOverallDiscount] = useState(0);
-  const router = useRouter();
   useEffect(() => {
     (async () => {
       try {
@@ -34,13 +33,13 @@ export default function EditEntry({ params }) {
         setEntry({
           ...entry,
           orderDate: entry.orderDate
-            ? new Date(entry.orderDate).toISOString().split("T")[0]
+            ? inputDateFormat(entry.orderDate)
             : "",
           entryDate: entry.entryDate
-            ? new Date(entry.entryDate).toISOString().split("T")[0]
+            ? inputDateFormat(entry.entryDate)
             : "",
           paymentDate: entry.paymentDate
-            ? new Date(entry.paymentDate).toISOString().split("T")[0]
+            ? inputDateFormat(entry.paymentDate)
             : "",
         });
         setInvoiceNumber(entry.invoiceNumber);
@@ -79,10 +78,6 @@ export default function EditEntry({ params }) {
   const [toast, setToast] = useState({ show: false, message: "" });
   const [shippingMethod, setShippingMethod] = useState("Steadfast");
   const [note, setNote] = useState("");
-
-  const handleCustomerChange = (data) => {
-    setCustomerData(data);
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -207,7 +202,6 @@ export default function EditEntry({ params }) {
         {/* Customer Section */}
         <CustomerForm
           entry={entry}
-          onCustomerChange={handleCustomerChange}
           isEditable={isEditable}
         />
 

@@ -123,6 +123,7 @@ export default function Analytics() {
           totalQuantity={totalObj.totalCount}
           totalAmount={totalObj.totalPaidByCustomer}
           loading={loading}
+          queryParams={queryParams}
         >
           Total Parcels
         </AnalyticsCard>
@@ -132,6 +133,7 @@ export default function Analytics() {
           totalAmount={statusTotals.Pending?.totalPaidByCustomer || 0}
           loading={loading}
           orderStatus="Pending"
+          queryParams={queryParams}
         >
           Pending
         </AnalyticsCard>
@@ -141,6 +143,7 @@ export default function Analytics() {
           totalAmount={statusTotals.Confirmed?.totalPaidByCustomer || 0}
           loading={loading}
           orderStatus="Confirmed"
+          queryParams={queryParams}
         >
           Confirmed
         </AnalyticsCard>
@@ -150,6 +153,7 @@ export default function Analytics() {
           totalAmount={statusTotals.Cancelled?.totalPaidByCustomer || 0}
           loading={loading}
           orderStatus="Cancelled"
+          queryParams={queryParams}
         >
           Cancelled
         </AnalyticsCard>
@@ -159,6 +163,7 @@ export default function Analytics() {
           totalAmount={statusTotals.Shipped?.totalPaidByCustomer || 0}
           loading={loading}
           orderStatus="Shipped"
+          queryParams={queryParams}
         >
           Shipped
         </AnalyticsCard>
@@ -168,6 +173,7 @@ export default function Analytics() {
           totalAmount={statusTotals.Delivered?.totalPaidByCustomer || 0}
           loading={loading}
           orderStatus="Delivered"
+          queryParams={query}
         >
           Delivered
         </AnalyticsCard>

@@ -1,58 +1,6 @@
-"use client";
+import inputDateFormat from "@/utils/inputDateFormat";
 
-import { useEffect, useState } from "react";
-import { FaChevronDown } from "react-icons/fa6";
-import { getCustomers } from "@/app/(routes)/customers/all/actions";
-
-export default function CustomerForm({ entry, isEditable, onCustomerChange }) {
-  const [selectedCustomerId, setSelectedCustomerId] = useState(null);
-  const [name, setName] = useState("");
-  const [mobileNumber, setMobileNumber] = useState("");
-  const [address, setAddress] = useState("");
-  const [customers, setCustomers] = useState([]);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [search, setSearch] = useState("");
-
-  // Load customer list
-  useEffect(() => {
-    async function loadCustomers() {
-      try {
-        const response = await getCustomers();
-        const { customers } = await response.json();
-        setCustomers(customers);
-      } catch (error) {
-        console.error("Error fetching customers:", error);
-      }
-    }
-
-    loadCustomers();
-  }, []);
-
-  // Filter customers for dropdown
-  const filtered = customers.filter((c) =>
-    [c.name, c.mobileNumber]
-      .join(" ")
-      .toLowerCase()
-      .includes(search.toLowerCase())
-  );
-
-  const handleCustomerSelect = (customer) => {
-    setSelectedCustomerId(customer._id);
-    setName(customer.name);
-    setMobileNumber(customer.mobileNumber);
-    setAddress(customer.address);
-    setDropdownOpen(false);
-    setSearch("");
-  };
-
-  useEffect(() => {
-    onCustomerChange({
-      _id: selectedCustomerId,
-      name,
-      mobileNumber,
-      address,
-    });
-  }, [name, mobileNumber, address, selectedCustomerId]);
+export default function CustomerForm({ entry, isEditable }) {
 
   return (
     <section className="bg-white p-6 rounded-lg shadow space-y-6">
@@ -65,8 +13,7 @@ export default function CustomerForm({ entry, isEditable, onCustomerChange }) {
             type="text"
             className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none disabled:bg-gray-100 disabled:cursor-not-allowed"
             placeholder="Customer Name"
-            value={entry?.customer?.name || "Customer Not Found"}
-            onChange={(e) => setName(e.target.value)}
+            defaultValue={entry?.customer?.name || "Customer Not Found"}
             disabled
           />
         </div>
@@ -77,8 +24,7 @@ export default function CustomerForm({ entry, isEditable, onCustomerChange }) {
             type="text"
             className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none disabled:bg-gray-100 disabled:cursor-not-allowed"
             placeholder="Mobile Number"
-            value={entry?.customer?.mobileNumber || "Customer Not Found"}
-            onChange={(e) => setMobileNumber(e.target.value)}
+            defaultValue={entry?.customer?.mobileNumber || "Customer Not Found"}
             disabled
           />
         </div>
@@ -89,8 +35,7 @@ export default function CustomerForm({ entry, isEditable, onCustomerChange }) {
             type="text"
             className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none disabled:bg-gray-100 disabled:cursor-not-allowed"
             placeholder="Address"
-            value={entry?.customer?.address || "Customer Not Found"}
-            onChange={(e) => setAddress(e.target.value)}
+            defaultValue={entry?.customer?.address || "Customer Not Found"}
             disabled
           />
         </div>

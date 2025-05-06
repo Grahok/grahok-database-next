@@ -35,9 +35,14 @@ export default function AllCustomerEntries() {
   const itemsPerPageParam = Number(searchParams.get("itemsPerPage")) || 20;
   const [itemsPerPage, setItemsPerPage] = useState(itemsPerPageParam);
   const [isSpinning, setIsSpinning] = useState(false);
-  const query = new URLSearchParams(
-    searchParams.toString() || `itemsPerPage=${itemsPerPage}`
-  );
+  // const query = new URLSearchParams(
+  //   searchParams.toString() || `itemsPerPage=${itemsPerPage}`
+  // );
+  const query = new URLSearchParams({
+    ...Object.fromEntries(searchParams.entries()),
+    itemsPerPage: itemsPerPageParam,
+    page: 1,
+  }).toString();
   const queryParams = `?${query}`;
 
   useEffect(() => {
@@ -206,7 +211,7 @@ export default function AllCustomerEntries() {
           </div>
         </form>
       </div>
-      <div className="overflow-x-scroll">
+      <div className="overflow-x-auto">
         <table className="table-auto [&_th,_td]:border [&_th,_td]:p-3 [&_div]:flex [&_div]:justify-self-center text-center max-w-full">
           <thead>
             <tr className="*:sticky *:top-0 *:bg-gray-200">
@@ -294,9 +299,10 @@ export default function AllCustomerEntries() {
         </table>
       </div>
       <div className="flex justify-between">
-        <strong>{`Showing ${Math.min(totalEntries, itemsPerPageParam)} items of ${
-          totalEntries || "Loading..."
-        }`}</strong>
+        <strong>{`Showing ${Math.min(
+          totalEntries,
+          itemsPerPageParam
+        )} items of ${totalEntries || "Loading..."}`}</strong>
         <div className="flex gap-2 leading-none">
           <button
             type="button"

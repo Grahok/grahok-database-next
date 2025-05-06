@@ -1,10 +1,11 @@
-import { format } from "date-fns";
-
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
 export default function formatDate(dateStr) {
   if (!dateStr) {
     return;
   } else {
-    const date = new Date(dateStr);
-    return format(date, "dd/MM/yyyy");
+    dayjs.extend(utc);
+    const output = dayjs.utc(dateStr).local().format("DD/MM/YYYY");
+    return output;
   }
 }
