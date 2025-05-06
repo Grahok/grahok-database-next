@@ -3,34 +3,28 @@ import { UTCDate } from "@date-fns/utc";
 import CustomerEntry from "@/models/CustomerEntry";
 import Customer from "@/models/Customer";
 import Product from "@/models/Product";
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
 
 export async function GET(req) {
-  dayjs.extend(utc);
   try {
     await connectToDatabase();
 
     const url = new URL(req.url);
-    const fromDate = `${url.searchParams.get("fromDate")}T00:00:00`;
-    console.log(fromDate);
-    const toDate = `${url.searchParams.get("toDate")}T23:59:59.999`;
+    const fromDate = url.searchParams.get("fromDate");
+    const toDate = url.searchParams.get("toDate");
     const search = url.searchParams.get("search");
     const orderStatus = url.searchParams.get("orderStatus");
     const page = parseInt(url.searchParams.get("page")) || 1;
     const itemsPerPage = parseInt(url.searchParams.get("itemsPerPage")) || 0;
 
-    const startUTC = dayjs(new Date(fromDate)).utc().toISOString();
-    console.log(startUTC);
-    const endUTC = dayjs(new Date(toDate)).utc().toISOString();
-    console.log(endUTC);
+    const startUTC = new UTCDate(`${fromDate}T00:00:00`);
+    const endUTC = new UTCDate(`${toDate}T23:59:59.999`);
 
     const query = {};
 
     if (fromDate && toDate) {
       query.orderDate = {
-        $gte: startUTC,
-        $lte: endUTC,
+        $gte: new Date(startUTC),
+        $lte: new Date(endUTC),
       };
     }
     if (search) {

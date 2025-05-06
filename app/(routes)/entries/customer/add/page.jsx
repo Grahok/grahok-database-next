@@ -120,6 +120,8 @@ export default function AddEntry() {
         netProfit,
       };
 
+      console.log(entry)
+
       // 💾 Post the entry
       const entryRes = await fetch("/api/entries/customer", {
         method: "POST",
@@ -146,7 +148,7 @@ export default function AddEntry() {
       setError(err.message || "Something went wrong.");
     } finally {
       setLoading(false);
-      window.location.reload();
+      // window.location.reload();
     }
   };
 
