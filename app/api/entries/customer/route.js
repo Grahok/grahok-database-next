@@ -20,9 +20,9 @@ export async function GET(req) {
     const page = parseInt(url.searchParams.get("page")) || 1;
     const itemsPerPage = parseInt(url.searchParams.get("itemsPerPage")) || 0;
 
-    const startUTC = dayjs(fromDate).utc().toISOString();
+    const startUTC = dayjs(new Date(fromDate)).utc().toISOString();
     console.log(startUTC);
-    const endUTC = dayjs(toDate).utc().toISOString();
+    const endUTC = dayjs(new Date(toDate)).utc().toISOString();
     console.log(endUTC);
 
     const query = {};
