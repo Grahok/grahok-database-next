@@ -173,7 +173,7 @@ export default function Analytics() {
           totalAmount={statusTotals.Delivered?.totalPaidByCustomer || 0}
           loading={loading}
           orderStatus="Delivered"
-          queryParams={query}
+          queryParams={queryParams}
         >
           Delivered
         </AnalyticsCard>
