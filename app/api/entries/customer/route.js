@@ -19,12 +19,17 @@ export async function GET(req) {
     const startUTC = new UTCDate(`${fromDate}T00:00:00`);
     const endUTC = new UTCDate(`${toDate}T23:59:59.999`);
 
+    console.log(fromDate)
+    console.log(toDate)
+    console.log(startUTC)
+    console.log(endUTC)
+
     const query = {};
 
     if (fromDate && toDate) {
       query.orderDate = {
-        $gte: new Date(startUTC),
-        $lte: new Date(endUTC),
+        $gte: startUTC,
+        $lte: endUTC,
       };
     }
     if (search) {
