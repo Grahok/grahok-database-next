@@ -148,7 +148,7 @@ export default function AddEntry() {
       setError(err.message || "Something went wrong.");
     } finally {
       setLoading(false);
-      // window.location.reload();
+      window.location.reload();
     }
   };
 

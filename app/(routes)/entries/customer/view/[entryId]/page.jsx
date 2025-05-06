@@ -31,12 +31,8 @@ export default function EditEntry({ params }) {
 
         setEntry({
           ...entry,
-          orderDate: entry.orderDate
-            ? inputDateFormat(entry.orderDate)
-            : "",
-          entryDate: entry.entryDate
-            ? inputDateFormat(entry.entryDate)
-            : "",
+          orderDate: entry.orderDate ? inputDateFormat(entry.orderDate) : "",
+          entryDate: entry.entryDate ? inputDateFormat(entry.entryDate) : "",
           paymentDate: entry.paymentDate
             ? inputDateFormat(entry.paymentDate)
             : "",
@@ -154,6 +150,7 @@ export default function EditEntry({ params }) {
       setError(err.message || "Something went wrong.");
     } finally {
       setLoading(false);
+      window.history.back();
     }
   };
 
@@ -199,10 +196,7 @@ export default function EditEntry({ params }) {
 
       <form onSubmit={handleSubmit} className="space-y-10">
         {/* Customer Section */}
-        <CustomerForm
-          entry={entry}
-          isEditable={isEditable}
-        />
+        <CustomerForm entry={entry} isEditable={isEditable} />
 
         {/* Product Section */}
         <ProductSection
