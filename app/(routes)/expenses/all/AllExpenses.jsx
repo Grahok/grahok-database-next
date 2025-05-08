@@ -194,7 +194,7 @@ export default function AllExpenses() {
         </form>
       </div>
       <div className="overflow-x-auto">
-        <table className="table-auto [&_th,_td]:border [&_th,_td]:p-3 [&_div]:flex [&_div]:justify-self-center text-center max-w-full">
+        <table className="table-auto w-full [&_th,_td]:border [&_th,_td]:p-3 [&_div]:flex [&_div]:justify-self-center text-center max-w-full">
           <thead>
             <tr className="*:sticky *:top-0 *:bg-gray-200">
               <th>ID</th>
