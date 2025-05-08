@@ -94,6 +94,7 @@ export default function EditEntry({ params }) {
 
       const entry = {
         invoiceNumber,
+        cnNumber,
         orderStatus,
         orderDate: combineDateWithCurrentTime(e.target.orderDate.value),
         entryDate: combineDateWithCurrentTime(e.target.entryDate.value),
@@ -146,12 +147,12 @@ export default function EditEntry({ params }) {
           show: false,
         }));
       }, 2000);
+      window.history.back();
     } catch (err) {
       console.error(err);
       setError(err.message || "Something went wrong.");
     } finally {
       setLoading(false);
-      window.history.back();
     }
   };
 
