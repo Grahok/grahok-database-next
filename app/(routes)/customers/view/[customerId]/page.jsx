@@ -171,12 +171,6 @@ export default function CustomerDeatils({ params }) {
                       >
                         <FaEye />
                       </a>
-                      <a
-                        className="p-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition duration-200"
-                        href={`/entries/customer/edit/${entry._id}`}
-                      >
-                        <FaPencil />
-                      </a>
                       <button
                         className="p-2 bg-red-600 text-white rounded-md cursor-pointer hover:bg-red-700 transition duration-200"
                         onClick={() => openConfirmDialog(entry._id)}
