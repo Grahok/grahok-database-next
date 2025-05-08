@@ -132,21 +132,21 @@ export default function CustomerDeatils({ params }) {
             <tbody className=" [&_tr:nth-child(even)]:bg-gray-100">
               {entries.length === 0 && !loading && !error && (
                 <tr>
-                  <td colSpan="6" className="text-center">
+                  <td colSpan={6} className="text-center">
                     No entries found.
                   </td>
                 </tr>
               )}
               {error && (
                 <tr>
-                  <td colSpan="6" className="text-center text-red-500">
+                  <td colSpan={6} className="text-center text-red-500">
                     {error}
                   </td>
                 </tr>
               )}
               {loading && (
                 <tr>
-                  <td colSpan="6" className="text-center">
+                  <td colSpan={6} className="text-center">
                     Loading...
                   </td>
                 </tr>

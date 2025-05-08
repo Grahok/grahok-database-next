@@ -195,12 +195,12 @@ export default function AllCustomerEntries({ params }) {
         <tbody>
           {loading && (
             <tr>
-              <td colSpan={16}>Loading...</td>
+              <td colSpan={17}>Loading...</td>
             </tr>
           )}
           {!loading && !entries.length && (
             <tr>
-              <td colSpan={16}>No Entries Found</td>
+              <td colSpan={17}>No Entries Found</td>
             </tr>
           )}
           {entries.map((entry, index) => (

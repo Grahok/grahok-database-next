@@ -232,18 +232,18 @@ export default function AllCustomerEntries() {
               <th>Courier Tax</th>
               <th>Total Profit</th>
               <th>Order Status</th>
-              <td>CN Number</td>
+              <th>CN Number</th>
             </tr>
           </thead>
           <tbody>
             {loading && (
               <tr>
-                <td colSpan={16}>Loading...</td>
+                <td colSpan={17}>Loading...</td>
               </tr>
             )}
             {!loading && !entries.length && (
               <tr>
-                <td colSpan={16}>No Entries Found</td>
+                <td colSpan={17}>No Entries Found</td>
               </tr>
             )}
             {entries.map((entry, index) => (

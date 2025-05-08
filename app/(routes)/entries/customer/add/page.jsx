@@ -184,7 +184,7 @@ export default function AddEntry() {
               ))}
             </select>
           </div>
-          {orderStatus === "Shipped" || "Delivered" && (
+          {["Shipped", "Delivered"].includes(orderStatus) && (
             <input
               type="text"
               name="cnNumber"

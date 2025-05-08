@@ -32,8 +32,11 @@ export default function AllCustomerEntries({ params }) {
   const [search, setSearch] = useState("");
   const confirmDialogRef = useRef();
   const searchParams = useSearchParams();
-  const fromDateParam = searchParams.get("fromDate") || firstDateOfCurrentMonth(new Date(Date.now()));
-  const toDateParam = searchParams.get("toDate") || inputDateFormat(new Date(Date.now()));
+  const fromDateParam =
+    searchParams.get("fromDate") ||
+    firstDateOfCurrentMonth(new Date(Date.now()));
+  const toDateParam =
+    searchParams.get("toDate") || inputDateFormat(new Date(Date.now()));
   const pageParam = Number(searchParams.get("page")) || 1;
   const itemsPerPageParam = Number(searchParams.get("itemsPerPage")) || 20;
   const [itemsPerPage, setItemsPerPage] = useState(itemsPerPageParam);
@@ -45,7 +48,7 @@ export default function AllCustomerEntries({ params }) {
     page: pageParam,
     orderStatus,
     itemsPerPage: itemsPerPageParam,
-  })
+  });
   const queryParams = `?${queryObj.toString()}`;
 
   useEffect(() => {
@@ -235,17 +238,18 @@ export default function AllCustomerEntries({ params }) {
               <th>Courier Tax</th>
               <th>Total Profit</th>
               <th>Order Status</th>
+              <th>CN Number</th>
             </tr>
           </thead>
           <tbody>
             {loading && (
               <tr>
-                <td colSpan={16}>Loading...</td>
+                <td colSpan={17}>Loading...</td>
               </tr>
             )}
             {!loading && !entries.length && (
               <tr>
-                <td colSpan={16}>No Entries Found</td>
+                <td colSpan={17}>No Entries Found</td>
               </tr>
             )}
             {entries.map((entry, index) => (
@@ -281,6 +285,7 @@ export default function AllCustomerEntries({ params }) {
                 <td>{entry.courierTax}</td>
                 <td>{entry.netProfit}</td>
                 <td>{entry.orderStatus}</td>
+                <td>{entry.cnNumber || "N/A"}</td>
               </tr>
             ))}
             <tr>
@@ -297,6 +302,7 @@ export default function AllCustomerEntries({ params }) {
               <th>{totalOtherCost}</th>
               <th>{totalCourierTax}</th>
               <th>{totalProfit}</th>
+              <th>N/A</th>
               <th>N/A</th>
             </tr>
           </tbody>
