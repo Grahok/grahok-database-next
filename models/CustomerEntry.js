@@ -14,6 +14,7 @@ const productSchema = new mongoose.Schema({
 const customerEntrySchema = new mongoose.Schema(
   {
     invoiceNumber: Number,
+    cnNumber: String,
     orderStatus: {
       type: String,
       enum: ORDER_STATUSES,

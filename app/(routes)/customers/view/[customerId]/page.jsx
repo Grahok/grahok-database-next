@@ -117,7 +117,7 @@ export default function CustomerDeatils({ params }) {
         </section>
         <section>
           <h1 className="text-2xl font-semibold">Previous Orders</h1>
-          <table className="w-full mt-4 border-collapse [&_th]:bg-gray-200 border border-gray-200 [&_th,_td]:border [&_th]:border-gray-200 [&_td]:border-gray-200 [&_th]:p-2 [&_td]:p-2">
+          <table className="w-full mt-4 border-collapse [&_th]:bg-gray-200 border border-gray-200 [&_th,_td]:border [&_th]:border-gray-200 [&_td]:border-gray-200 [&_th]:p-2 [&_td]:p-2 text-center">
             <thead>
               <tr>
                 <th>SL</th>
@@ -125,6 +125,7 @@ export default function CustomerDeatils({ params }) {
                 <th>Order Date</th>
                 <th>Amount</th>
                 <th>Status</th>
+                <th>CN Number</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -161,8 +162,9 @@ export default function CustomerDeatils({ params }) {
                   </td>
                   <td>{entry.paidByCustomer}</td>
                   <td>{entry.orderStatus}</td>
+                  <td>{entry.cnNumber || "N/A"}</td>
                   <td>
-                    <div className="flex gap-1">
+                    <div className="flex justify-center gap-1">
                       <a
                         className="p-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200"
                         href={`/entries/customer/view/${entry._id}`}

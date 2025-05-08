@@ -113,12 +113,24 @@ export default function EditExpense({ params }) {
           ))}
         </select>
       </div>
+
+      <div className="flex flex-col gap-1">
+        <label htmlFor="note">Note</label>
+        <textarea
+          name="note"
+          id="note"
+          className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none"
+          defaultValue={expense?.note}
+        ></textarea>
+      </div>
+
       <button
         type="submit"
         className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition cursor-pointer disabled:opacity-50"
       >
         Update Expense
       </button>
+
       <Toast
         show={toast.show}
         message={toast.message}

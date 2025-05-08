@@ -40,20 +40,19 @@ export default function AllCustomerEntries() {
   const itemsPerPageParam = Number(searchParams.get("itemsPerPage")) || 20;
   const [itemsPerPage, setItemsPerPage] = useState(itemsPerPageParam);
   const [isSpinning, setIsSpinning] = useState(false);
-  const query = new URLSearchParams({
+  const queryObj = new URLSearchParams({
     ...Object.fromEntries(searchParams.entries()),
     fromDate: fromDateParam,
     toDate: toDateParam,
     itemsPerPage: itemsPerPageParam,
-    page: 1,
-  }).toString();
-  const queryParams = `?${query}`;
+    page: pageParam,
+  });
 
   useEffect(() => {
     (async () => {
       setLoading(true);
       try {
-        const response = await fetchEntries(queryParams);
+        const response = await fetchEntries(`?${queryObj.toString()}`);
         const { entries, pagination } = await response.json();
         const { totalEntries, totalPages } = pagination;
         setTotalEntries(totalEntries);
@@ -195,14 +194,12 @@ export default function AllCustomerEntries() {
                 onChange={(e) => {
                   const value = Number(e.target.value);
                   setItemsPerPage(value);
-                  router.push(
-                    `${pathname}?${new URLSearchParams({
-                      ...Object.fromEntries(searchParams.entries()),
-                      itemsPerPage: value,
-                      page: 1,
-                    }).toString()}`,
-                    { shallow: true }
-                  );
+                  const newQuery = new URLSearchParams(Object.fromEntries(searchParams.entries()));
+                  newQuery.set("itemsPerPage", value);
+                  newQuery.set("page", 1);
+                  router.push(`${pathname}?${newQuery.toString()}`, {
+                    shallow: true,
+                  });
                 }}
               >
                 <option value={20}>20</option>
@@ -235,6 +232,7 @@ export default function AllCustomerEntries() {
               <th>Courier Tax</th>
               <th>Total Profit</th>
               <th>Order Status</th>
+              <td>CN Number</td>
             </tr>
           </thead>
           <tbody>
@@ -281,6 +279,7 @@ export default function AllCustomerEntries() {
                 <td>{entry.courierTax}</td>
                 <td>{entry.netProfit}</td>
                 <td>{entry.orderStatus}</td>
+                <td>{entry.cnNumber || "N/A"}</td>
               </tr>
             ))}
             <tr>
@@ -298,6 +297,7 @@ export default function AllCustomerEntries() {
               <th>{totalCourierTax}</th>
               <th>{totalProfit}</th>
               <th>N/A</th>
+              <th>N/A</th>
             </tr>
           </tbody>
         </table>
@@ -311,9 +311,14 @@ export default function AllCustomerEntries() {
           <button
             type="button"
             className="bg-blue-600 hover:bg-blue-700 p-2 rounded cursor-pointer text-white"
-            onClick={() => {
-              query.set("page", 1);
-              router.push(`${pathname}?${query.toString()}`);
+            onClick={(e) => {
+              const newQuery = new URLSearchParams(
+                Object.fromEntries(searchParams.entries())
+              );
+              newQuery.set("page", 1);
+              router.push(`${pathname}?${newQuery.toString()}`, {
+                shallow: true,
+              });
             }}
           >
             <LuChevronsLeft />
@@ -321,9 +326,14 @@ export default function AllCustomerEntries() {
           <button
             type="button"
             className="bg-blue-600 hover:bg-blue-700 p-2 rounded cursor-pointer text-white"
-            onClick={() => {
-              query.set("page", Math.max(1, pageParam - 1));
-              router.push(`${pathname}?${query.toString()}`);
+            onClick={(e) => {
+              const newQuery = new URLSearchParams(
+                Object.fromEntries(searchParams.entries())
+              );
+              newQuery.set("page", Math.max(1, pageParam - 1));
+              router.push(`${pathname}?${newQuery.toString()}`, {
+                shallow: true,
+              });
             }}
           >
             <LuChevronLeft />
@@ -346,9 +356,14 @@ export default function AllCustomerEntries() {
                     ? "border-2 border-blue-600"
                     : "bg-blue-600 hover:bg-blue-700 text-white"
                 } p-2 rounded cursor-pointer`}
-                onClick={() => {
-                  query.set("page", page);
-                  router.push(`${pathname}?${query.toString()}`);
+                onClick={(e) => {
+                  const newQuery = new URLSearchParams(
+                    Object.fromEntries(searchParams.entries())
+                  );
+                  newQuery.set("page", page);
+                  router.push(`${pathname}?${newQuery.toString()}`, {
+                    shallow: true,
+                  });
                 }}
               >
                 {page}
@@ -358,9 +373,14 @@ export default function AllCustomerEntries() {
           <button
             type="button"
             className="bg-blue-600 hover:bg-blue-700 p-2 rounded cursor-pointer text-white"
-            onClick={() => {
-              query.set("page", pageParam + 1);
-              router.push(`${pathname}?${query.toString()}`);
+            onClick={(e) => {
+              const newQuery = new URLSearchParams(
+                Object.fromEntries(searchParams.entries())
+              );
+              newQuery.set("page", Math.min(totalPages, pageParam + 1));
+              router.push(`${pathname}?${newQuery.toString()}`, {
+                shallow: true,
+              });
             }}
           >
             <LuChevronRight />
@@ -368,9 +388,14 @@ export default function AllCustomerEntries() {
           <button
             type="button"
             className="bg-blue-600 hover:bg-blue-700 p-2 rounded cursor-pointer text-white"
-            onClick={() => {
-              query.set("page", totalPages);
-              router.push(`${pathname}?${query.toString()}`);
+            onClick={(e) => {
+              const newQuery = new URLSearchParams(
+                Object.fromEntries(searchParams.entries())
+              );
+              newQuery.set("page", totalPages);
+              router.push(`${pathname}?${newQuery.toString()}`, {
+                shallow: true,
+              });
             }}
           >
             <LuChevronsRight />

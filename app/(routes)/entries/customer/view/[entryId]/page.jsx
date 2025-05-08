@@ -17,6 +17,7 @@ export default function EditEntry({ params }) {
   const { entryId } = React.use(params);
   const [isEditable, setIsEditable] = useState(false);
   const [invoiceNumber, setInvoiceNumber] = useState(0);
+  const [cnNumber, setCnNumber] = useState("");
   const [entry, setEntry] = useState();
   const [orderStatus, setOrderStatus] = useState("Pending");
   const [loading, setLoading] = useState(false);
@@ -38,6 +39,7 @@ export default function EditEntry({ params }) {
             : "",
         });
         setInvoiceNumber(entry.invoiceNumber);
+        setCnNumber(entry.cnNumber);
         setOrderStatus(entry.orderStatus);
         setShippingCustomer(entry.shippingCustomer);
         setShippingMerchant(entry.shippingMerchant);
@@ -144,7 +146,6 @@ export default function EditEntry({ params }) {
           show: false,
         }));
       }, 2000);
-      window.history.back();
     } catch (err) {
       console.error(err);
       setError(err.message || "Something went wrong.");
@@ -167,30 +168,44 @@ export default function EditEntry({ params }) {
             <FaPencil />
           </button>
         </div>
-        <div className="flex gap-2">
-          <input
-            type="number"
-            placeholder="Invoice Number"
-            className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none disabled:bg-gray-100 disabled:cursor-not-allowed"
-            value={invoiceNumber || ""}
-            onChange={(e) => setInvoiceNumber(Number(e.target.value))}
-            disabled={!isEditable}
-          />
+        <div className="flex flex-col gap-2">
+          <div className="flex gap-2">
+            <input
+              type="number"
+              placeholder="Invoice Number"
+              className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none disabled:bg-gray-100 disabled:cursor-not-allowed"
+              value={invoiceNumber || ""}
+              onChange={(e) => setInvoiceNumber(Number(e.target.value))}
+              disabled={!isEditable}
+            />
 
-          <select
-            name="orderStatus"
-            id="orderStatus"
-            className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none disabled:bg-gray-100 disabled:cursor-not-allowed"
-            value={orderStatus}
-            onChange={(e) => setOrderStatus(e.target.value)}
-            disabled={!isEditable}
-          >
-            {ORDER_STATUSES.map((orderStatus, index) => (
-              <option key={index} value={orderStatus}>
-                {orderStatus}
-              </option>
-            ))}
-          </select>
+            <select
+              name="orderStatus"
+              id="orderStatus"
+              className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none disabled:bg-gray-100 disabled:cursor-not-allowed"
+              value={orderStatus}
+              onChange={(e) => setOrderStatus(e.target.value)}
+              disabled={!isEditable}
+            >
+              {ORDER_STATUSES.map((orderStatus, index) => (
+                <option key={index} value={orderStatus}>
+                  {orderStatus}
+                </option>
+              ))}
+            </select>
+          </div>
+          {orderStatus === "Shipped" && (
+            <input
+              type="text"
+              name="cnNumber"
+              id="cnNumber"
+              placeholder="CN Number"
+              className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none disabled:bg-gray-100 disabled:cursor-not-allowed"
+              value={cnNumber}
+              onChange={(e) => setCnNumber(e.target.value)}
+              disabled={!isEditable}
+            />
+          )}
         </div>
       </header>
 

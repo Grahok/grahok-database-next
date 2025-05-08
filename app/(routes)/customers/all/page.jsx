@@ -32,7 +32,7 @@ export default function AllCustomers() {
         setLoading(false);
       } catch (error) {
         console.error("Error fetching customers:", error);
-        setLoading(false)
+        setLoading(false);
       }
     })();
   }, []);
@@ -57,67 +57,74 @@ export default function AllCustomers() {
   return (
     <div className="w-full flex flex-col gap-3">
       <div className="flex items-center justify-between gap-6">
-              <h1 className="text-3xl font-bold">All Customers:</h1>
-              <div className="flex items-center gap-3">
-              <form className="flex items-center md:items-end gap-6 rounded-lg w-full max-w-2xl border border-gray-400 px-4 py-2">
-              <div className="flex items-center gap-2 w-full md:w-1/2">
-                <label
-                  htmlFor="fromDate"
-                  className="font-medium text-gray-700 mb-1"
-                >
-                  From:
-                </label>
-                <input
-                  className="p-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-                  type="date"
-                  name="fromDate"
-                  id="fromDate"
-                />
-              </div>
-              <div className="flex items-center gap-2 w-full md:w-1/2">
-                <label
-                  htmlFor="toDate"
-                  className="font-medium text-gray-700 mb-1"
-                >
-                  To:
-                </label>
-                <input
-                  className="p-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-                  type="date"
-                  name="toDate"
-                  id="toDate"
-                />
-              </div>
-              <button
-                type="submit"
-                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-1.5 px-3 rounded-md transition w-full md:w-auto"
+        <h1 className="text-3xl font-bold">All Customers:</h1>
+        <div className="flex items-center gap-3">
+          <form className="flex items-center md:items-end gap-6 rounded-lg w-full max-w-2xl border border-gray-400 px-4 py-2">
+            <div className="flex items-center gap-2 w-full md:w-1/2">
+              <label
+                htmlFor="fromDate"
+                className="font-medium text-gray-700 mb-1"
               >
-                Search
-              </button>
-            </form>
-                <div className="w-full flex items-center gap-2 border focus-within:ring-1 rounded overflow-clip p-1.5 border-gray-300 focus:ring-2 focus:ring-blue-500 transition">
-                  <input
-                    type="search"
-                    name="search-bar"
-                    id="search-bar"
-                    className="px-2 focus:outline-0"
-                    placeholder="Search..."
-                  />
-                  <button type="submit" className="cursor-pointer bg-blue-600 text-white p-2 rounded-l">
-                    <FaMagnifyingGlass />
-                  </button>
-                </div>
-                <div>
-                  <select name="itemsPerPage" id="itemsPerPage" className="p-2 border rounded text-center">
-                    <option value={5}>5</option>
-                    <option value={10}>10</option>
-                    <option value={20}>20</option>
-                    <option value={50}>50</option>
-                    <option value={100}>100</option>
-                  </select>
-                </div>
-              </div>
+                From:
+              </label>
+              <input
+                className="p-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+                type="date"
+                name="fromDate"
+                id="fromDate"
+              />
             </div>
+            <div className="flex items-center gap-2 w-full md:w-1/2">
+              <label
+                htmlFor="toDate"
+                className="font-medium text-gray-700 mb-1"
+              >
+                To:
+              </label>
+              <input
+                className="p-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+                type="date"
+                name="toDate"
+                id="toDate"
+              />
+            </div>
+            <button
+              type="submit"
+              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-1.5 px-3 rounded-md transition w-full md:w-auto"
+            >
+              Search
+            </button>
+          </form>
+          <div className="w-full flex items-center gap-2 border focus-within:ring-1 rounded overflow-clip p-1.5 border-gray-300 focus:ring-2 focus:ring-blue-500 transition">
+            <input
+              type="search"
+              name="search-bar"
+              id="search-bar"
+              className="px-2 focus:outline-0"
+              placeholder="Search..."
+            />
+            <button
+              type="submit"
+              className="cursor-pointer bg-blue-600 text-white p-2 rounded-l"
+            >
+              <FaMagnifyingGlass />
+            </button>
+          </div>
+          <div>
+            <select
+              name="itemsPerPage"
+              id="itemsPerPage"
+              className="p-2 border rounded text-center"
+            >
+              <option value={5}>5</option>
+              <option value={10}>10</option>
+              <option value={20}>20</option>
+              <option value={50}>50</option>
+              <option value={100}>100</option>
+            </select>
+          </div>
+        </div>
+      </div>
       <table className="table-auto [&_th,_td]:border [&_th,_td]:p-3 [&_div]:flex [&_div]:justify-self-center text-center">
         <thead>
           <tr>

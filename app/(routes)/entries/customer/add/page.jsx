@@ -11,6 +11,7 @@ import combineDateWithCurrentTime from "@/utils/combineDateWithCurrentTime";
 
 export default function AddEntry() {
   const [invoiceNumber, setInvoiceNumber] = useState(0);
+  const [cnNumber, setCnNumber] = useState("");
   const [orderStatus, setOrderStatus] = useState("Pending");
   const [customerData, setCustomerData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -88,6 +89,7 @@ export default function AddEntry() {
 
       const entry = {
         invoiceNumber,
+        cnNumber,
         orderStatus,
         customer: customerId,
         orderDate: combineDateWithCurrentTime(e.target.orderDate.value),
@@ -120,7 +122,7 @@ export default function AddEntry() {
         netProfit,
       };
 
-      console.log(entry)
+      console.log(entry);
 
       // 💾 Post the entry
       const entryRes = await fetch("/api/entries/customer", {
@@ -143,12 +145,12 @@ export default function AddEntry() {
           show: false,
         }));
       }, 2000);
+      window.location.reload();
     } catch (err) {
-      console.error(err);
+      console.error(err.error || err.message);
       setError(err.message || "Something went wrong.");
     } finally {
       setLoading(false);
-      window.location.reload();
     }
   };
 
@@ -156,28 +158,42 @@ export default function AddEntry() {
     <main className="min-h-screen bg-gray-50 text-gray-800 flex flex-col gap-8">
       <header className="flex justify-between items-center gap-6">
         <h1 className="text-3xl font-bold">Add New Entry</h1>
-        <div className="flex gap-2">
-          <input
-            type="number"
-            placeholder="Invoice Number"
-            className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none"
-            onChange={(e) => setInvoiceNumber(Number(e.target.value))}
-            autoFocus
-          />
+        <div className="flex flex-col gap-2">
+          <div className="flex gap-2">
+            <input
+              type="number"
+              name="inVoiceNumber"
+              id="invoiceNumber"
+              placeholder="Invoice Number"
+              className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none"
+              onChange={(e) => setInvoiceNumber(Number(e.target.value))}
+              autoFocus
+            />
 
-          <select
-            name="orderStatus"
-            id="orderStatus"
-            className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none"
-            value={orderStatus}
-            onChange={(e) => setOrderStatus(e.target.value)}
-          >
-            {ORDER_STATUSES.map((orderStatus, index) => (
-              <option key={index} value={orderStatus}>
-                {orderStatus}
-              </option>
-            ))}
-          </select>
+            <select
+              name="orderStatus"
+              id="orderStatus"
+              className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none"
+              value={orderStatus}
+              onChange={(e) => setOrderStatus(e.target.value)}
+            >
+              {ORDER_STATUSES.map((orderStatus, index) => (
+                <option key={index} value={orderStatus}>
+                  {orderStatus}
+                </option>
+              ))}
+            </select>
+          </div>
+          {orderStatus === "Shipped" && (
+            <input
+              type="text"
+              name="cnNumber"
+              id="cnNumber"
+              placeholder="CN Number"
+              className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none"
+              onChange={(e) => setCnNumber(e.target.value)}
+            />
+          )}
         </div>
       </header>
 

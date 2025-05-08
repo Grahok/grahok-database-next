@@ -7,8 +7,6 @@ import Product from "@/models/Product";
 export async function GET(req) {
   try {
     await connectToDatabase();
-    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    console.log(timeZone)
     const url = new URL(req.url);
     const fromDate = url.searchParams.get("fromDate");
     const toDate = url.searchParams.get("toDate");
