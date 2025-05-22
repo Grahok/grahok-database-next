@@ -1,5 +1,5 @@
-export async function getCustomers() {
-  const response = await fetch("/api/customers", {
+export async function getCustomers(searchParams = "") {
+  const response = await fetch(`/api/customers${searchParams}`, {
     method: "GET",
     headers: { "Content-Type": "application/json" },
     cache: "no-store",

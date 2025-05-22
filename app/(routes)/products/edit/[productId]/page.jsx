@@ -35,7 +35,8 @@ export default function EditProduct({ params }) {
     try {
       const response = await updateProduct(productId, productData);
       if (response.ok) {
-        router.push("/products/all");
+        // router.push("/products/all");
+        router.back();
       }
     } catch (error) {
       console.log("Error Updating Product", error);

@@ -118,7 +118,7 @@ export default function Home() {
           <FaUpRightFromSquare className="hidden group-hover:block transition-transform duration-300 ease-in-out size-5 flex-shrink-0" />
         </a>
       </section>
-      <strong className="text-right">Created for 💵 by Shakil Ahmmed | Chitti V2.2</strong>
+      <strong className="text-right">Created for 💵 by Shakil Ahmmed | Chitti V2.3</strong>
     </section>
   );
 }

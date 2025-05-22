@@ -32,15 +32,39 @@ export async function POST(req) {
   }
 }
 
-export async function GET() {
+
+export async function GET(req) {
   try {
     await connectToDatabase();
+    const url = new URL(req.url);
+    const search = url.searchParams.get("search");
+    const page = parseInt(url.searchParams.get("page")) || 1;
+    const itemsPerPage = parseInt(url.searchParams.get("itemsPerPage")) || 0;
 
-    const products = await Product.find().sort({ name: 1 });
+    const query = {};
+
+    if (search) {
+      query.name = { $regex: search, $options: "i" };
+    }
+
+    // Count total entries matching the query
+    const totalProducts = await Product.countDocuments(query);
+    const totalPages = Math.ceil(totalProducts / itemsPerPage) || 1;
+
+    // Fetch paginated entries
+    const products = await Product.find(query)
+      .sort({ name: 1 })
+      .skip((page - 1) * itemsPerPage)
+      .limit(itemsPerPage);
+
     return new Response(
       JSON.stringify({
-        message: "Products fetched successfully",
-        products: products,
+        message: "Fetching Products Successful",
+        products,
+        pagination: {
+          totalProducts,
+          totalPages,
+        },
       }),
       {
         status: 200,
@@ -54,7 +78,10 @@ export async function GET() {
         message: "Failed to fetch products",
         error: error.message,
       }),
-      { status: 500, headers: { "Content-type": "application/json" } }
+      {
+        status: 500,
+        headers: { "Content-type": "application/json" },
+      }
     );
   }
 }

@@ -14,7 +14,7 @@ import { ORDER_STATUSES } from "@/constants/orderStatuses";
 import inputDateFormat from "@/utils/inputDateFormat";
 import firstDateOfCurrentMonth from "@/utils/firstDateOfCurrentMonth";
 import { useSearchParams } from "next/navigation";
-import { fetchEntries } from "../../entries/customer/all/components/actions";
+import { fetchEntries } from "../../entries/customer/all/actions";
 
 export default function Analytics() {
   const searchParams = useSearchParams();
