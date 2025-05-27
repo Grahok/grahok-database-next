@@ -310,7 +310,7 @@ export default function AllCustomerEntries({ params }) {
       </div>
       <div className="flex justify-between">
         <strong>{`Showing ${Math.min(
-          totalEntries,
+          totalEntries - ((pageParam - 1) * itemsPerPage),
           itemsPerPageParam
         )} items of ${totalEntries || "Loading..."}`}</strong>
         <div className="flex gap-2 leading-none">
