@@ -4,18 +4,18 @@ import Product from "@/models/Product";
 import { connectToDatabase } from "@/lib/mongoose";
 
 export async function GET(_, { params }) {
-  const { entryId } = await params;
+  const { vendorId } = await params;
   try {
     await connectToDatabase();
 
-    const entry = await VendorEntry.findById(entryId)
+    const entries = await VendorEntry.find({vendor: vendorId})
       .populate("vendor", "name mobileNumber address")
       .populate("products.product", "name");
 
     return new Response(
       JSON.stringify({
         message: "✅ Entry Fetched Successfully",
-        entry: entry,
+        entries,
       }),
       {
         status: 200,

@@ -1,55 +1,13 @@
-"use client";
+import baseUrl from "@/constants/baseUrl";
+import { FaBullseye, FaDollarSign, FaEye, FaHashtag, FaMobile, FaPencil, FaTrash, FaUser } from "react-icons/fa6";
 
-import { useEffect, useRef, useState } from "react";
-import {
-  FaBullseye,
-  FaDollarSign,
-  FaEye,
-  FaHashtag,
-  FaMobile,
-  FaPencil,
-  FaTrash,
-  FaUser,
-} from "react-icons/fa6";
-import { fetchEntries, deleteEntry } from "./actions";
-import ConfirmDialog from "@/app/(routes)/entries/vendor/all/components/ConfirmDialog";
-
-export default function AllVendorEntries() {
-  const [entries, setEntries] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [selectedEntryId, setSelectedEntryId] = useState("");
-  const confirmDialogRef = useRef();
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const response = await fetchEntries();
-        const { entries } = await response.json();
-        setEntries(entries);
-      } catch (error) {
-        console.error("Error fetching entries:", error);
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, []);
-
-  function openConfirmDialog(entryId) {
-    setSelectedEntryId(entryId);
-    confirmDialogRef.current.open();
-  }
-
-  async function handleDelete() {
-    try {
-      await deleteEntry(selectedEntryId);
-      setEntries((prev) =>
-        prev.filter((entry) => entry._id !== selectedEntryId)
-      );
-      console.log("Entry deleted successfully");
-    } catch (error) {
-      console.error("Error deleting entry:", error);
-    }
-  }
+export default async function AllVendorEntries() {
+  const response = await fetch(`${baseUrl}/api/entries/vendor`, {
+    method: "GET",
+    headers: { "Content-type": "application/json" },
+    cache: "no-store",
+  });
+  const { entries } = await response.json();
 
   const totalDiscount = entries.reduce((acc, entry) => {
     return acc + entry.totalDiscount;
@@ -112,7 +70,7 @@ export default function AllVendorEntries() {
           </tr>
         </thead>
         <tbody>
-          {loading && (
+          {/* {loading && (
             <tr>
               <td colSpan={7}>Loading...</td>
             </tr>
@@ -121,7 +79,7 @@ export default function AllVendorEntries() {
             <tr>
               <td colSpan={7}>No Entries Found</td>
             </tr>
-          )}
+          )} */}
           {entries.map((entry, index) => (
             <tr key={entry._id} className="hover:bg-gray-100">
               <td>{index + 1}</td>
@@ -141,7 +99,7 @@ export default function AllVendorEntries() {
                   </a>
                   <button
                     className="p-1.5 bg-red-600 text-white rounded-md cursor-pointer"
-                    onClick={() => openConfirmDialog(entry._id)}
+                    // onClick={() => openConfirmDialog(entry._id)}
                   >
                     <FaTrash size={12} />
                   </button>
@@ -164,11 +122,11 @@ export default function AllVendorEntries() {
           </tr>
         </tbody>
       </table>
-      <ConfirmDialog
+      {/* <ConfirmDialog
         ref={confirmDialogRef}
         onConfirm={handleDelete}
         message="Are you sure you want to delete this entry?"
-      />
+      /> */}
     </section>
   );
 }

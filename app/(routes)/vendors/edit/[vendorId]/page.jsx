@@ -35,7 +35,7 @@ export default function EditVendor({ params }) {
     try {
       const response = await updateVendor(vendorId, vendorData);
       if (response.ok) {
-        router.push("/vendors/all");
+        router.back();
       }
     } catch (error) {
       console.log("Error Updating Vendor", error);

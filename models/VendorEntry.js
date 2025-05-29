@@ -11,10 +11,10 @@ const productSchema = new mongoose.Schema({
   subtotal: Number,
 });
 
-// const paymentSchema = new mongoose.Schema({
-//   paymentDate: Date,
-//   amount: Number,
-// })
+const paymentSchema = new mongoose.Schema({
+  paymentDate: Date,
+  amount: Number,
+})
 
 export const vendorEntrySchema = new mongoose.Schema(
   {
@@ -45,7 +45,7 @@ export const vendorEntrySchema = new mongoose.Schema(
     totalDiscount: Number,
     overallDiscount: Number,
     totalPayment: Number,
-    // payments: [paymentSchema],
+    payments: [paymentSchema],
     alreadyPaid: Number,
     duePayment: Number,
   },
