@@ -17,6 +17,7 @@ export default function AddCustomer() {
 
       setTimeout(() => {
         setToast((prev) => ({
+          ...prev,
           show: false,
         }));
       }, 2000);

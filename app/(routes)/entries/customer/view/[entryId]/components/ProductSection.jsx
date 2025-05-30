@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { FaChevronDown, FaTrashCan } from "react-icons/fa6";
 
 export default function ProductSection({
-  entry,
   isEditable,
   selectedProducts,
   setSelectedProducts,
@@ -102,6 +101,7 @@ export default function ProductSection({
                 type="button"
                 key={product._id}
                 role="option"
+                aria-selected={dropdownOpen}
                 onClick={() => handleProductSelect(product)}
                 className="w-full text-left px-4 py-2 flex items-center gap-2 hover:bg-gray-100 focus:bg-gray-200 disabled:hover:bg-red-100 disabled:line-through"
                 disabled={!Boolean(product.inStock)}

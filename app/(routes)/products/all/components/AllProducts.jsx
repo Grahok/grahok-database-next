@@ -14,8 +14,6 @@ import {
 import { fetchProducts, deleteProduct } from "../actions";
 import ConfirmDialog from "@/app/(routes)/entries/customer/add/components/ConfirmDialog";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import inputDateFormat from "@/utils/inputDateFormat";
-import firstDateOfCurrentMonth from "@/utils/firstDateOfCurrentMonth";
 import { LuChevronLeft, LuChevronRight, LuChevronsLeft, LuChevronsRight } from "react-icons/lu";
 
 export default function AllProducts() {

@@ -1,34 +1,14 @@
-"use client";
-
-import React, { useEffect, useState } from "react";
 import { FaArrowLeft } from "react-icons/fa6";
 import { getVendorEntry } from "./actions/getVendorEntry";
+import inputDateFormat from "@/utils/inputDateFormat";
 
-export default function ViewEntry({ params }) {
-  const { entryId } = React.use(params);
+export default async function ViewEntry({ params }) {
+  const { entryId } = await params;
 
-  const [entry, setEntry] = useState();
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const response = await getVendorEntry(entryId);
-        const { entry } = await response.json();
-
-        setEntry({
-          ...entry,
-          orderDate: entry.orderDate
-            ? new Date(entry.orderDate).toISOString().split("T")[0]
-            : "",
-          entryDate: entry.entryDate
-            ? new Date(entry.entryDate).toISOString().split("T")[0]
-            : "",
-        });
-      } catch (error) {
-        console.error("Error loading entry:", error);
-      }
-    })();
-  }, []);
+  const response = await getVendorEntry(entryId);
+  const { entry } = await response.json();
+  entry.orderDate = inputDateFormat(entry.orderDate);
+  entry.entryDate = inputDateFormat(entry.entryDate);
 
   return (
     <main className="min-h-screen p-6 bg-gray-50 text-gray-800 flex flex-col gap-8">

@@ -1,9 +1,10 @@
+import ConfirmDialog from "@/components/ConfirmDialog";
 import baseUrl from "@/constants/baseUrl";
 import formatDate from "@/utils/formatDate";
-import { FaEye, FaPencil, FaTrash } from "react-icons/fa6";
+import { FaEye, FaPencil, FaPlus, FaTrash } from "react-icons/fa6";
 
 export default async function VendorOrders({ vendorId }) {
-  const response = await fetch(`${baseUrl}/api/entries/vendor/${vendorId}`, {
+  const response = await fetch(`${baseUrl}/api/entries/vendor/byVendor/${vendorId}`, {
     method: "GET",
     headers: { "Content-Type": "application/json" },
     cache: "no-store",
@@ -16,9 +17,9 @@ export default async function VendorOrders({ vendorId }) {
       {entries?.map((entry, index) => (
         <tr key={entry._id}>
           <td>{index + 1}</td>
+          <td>{entry.invoiceNumber}</td>
           <td>{formatDate(entry?.orderDate)}</td>
           <td>{formatDate(entry?.entryDate)}</td>
-          <td>{entry.orderStatus}</td>
           <td>{entry.totalPayment}</td>
           <td>{entry.alreadyPaid}</td>
           <td>{entry.duePayment}</td>
@@ -36,8 +37,18 @@ export default async function VendorOrders({ vendorId }) {
               >
                 <FaPencil />
               </a>
-              <button className="p-2 bg-red-600 text-white rounded-md cursor-pointer hover:bg-red-700 transition duration-200">
+              <ConfirmDialog
+                className="p-2 bg-red-600 text-white rounded-md cursor-pointer hover:bg-red-700 transition duration-200"
+                message="Do you really want to delete this order?"
+                label="Delete"
+              >
                 <FaTrash />
+              </ConfirmDialog>
+              <button
+                type="button"
+                className="p-2 bg-blue-600 text-white rounded-md cursor-pointer hover:bg-blue-700 transition duration-200"
+              >
+                <FaPlus />
               </button>
             </div>
           </td>

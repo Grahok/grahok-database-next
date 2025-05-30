@@ -1,4 +1,4 @@
-import { FaCheck, FaCross, FaXmark } from "react-icons/fa6";
+import { FaCheck, FaXmark } from "react-icons/fa6";
 
 const Toast = ({ message, show }) => {
   return (

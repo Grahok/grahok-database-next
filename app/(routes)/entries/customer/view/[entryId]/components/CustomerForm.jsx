@@ -1,5 +1,3 @@
-import inputDateFormat from "@/utils/inputDateFormat";
-
 export default function CustomerForm({ entry, isEditable }) {
 
   return (

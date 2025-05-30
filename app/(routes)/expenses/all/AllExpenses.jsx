@@ -11,7 +11,7 @@ import {
 import formatDate from "@/utils/formatDate";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import ConfirmDialog from "@/components/ConfirmDialog";
-import getExpenses from "@/features/expenses/actions/getExpenses";
+import getExpenses from "@/features/expenses/actions/fetchExpenses";
 import deleteExpense from "@/features/expenses/actions/deleteExpense";
 import Toast from "@/components/Toast";
 import EXPENSE_CATEGORIES from "@/constants/expenseCategories";

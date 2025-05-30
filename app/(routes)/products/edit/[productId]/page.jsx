@@ -9,7 +9,7 @@ export default function EditProduct({ params }) {
   const router = useRouter();
   const { productId } = React.use(params);
   const [product, setProduct] = useState();
-  const [toast, showtoast] = useState({ show: false, message: "" });
+  const [toast, setToast] = useState({ show: false, message: "" });
   useEffect(() => {
     (async () => {
       const response = await getProduct(productId);

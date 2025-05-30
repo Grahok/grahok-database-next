@@ -2,7 +2,6 @@ import { SHIPPING_METHODS } from "@/constants/shippingMethods";
 
 export default function SummarySection({
   isEditable,
-  entry,
   shippingCustomer,
   setShippingCustomer,
   shippingMerchant,

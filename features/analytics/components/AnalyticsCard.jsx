@@ -1,7 +1,3 @@
-"use client";
-
-import { useRouter } from "next/navigation";
-
 export default function AnalyticsCard({
   Icon,
   children,
@@ -11,7 +7,6 @@ export default function AnalyticsCard({
   orderStatus = "",
   queryParams,
 }) {
-  const router = useRouter();
   return (
     <a
       href={

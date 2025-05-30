@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FaEye,
   FaMagnifyingGlass,
@@ -14,7 +14,7 @@ import {
   LuChevronsRight,
 } from "react-icons/lu";
 import { fetchEntries, deleteEntry } from "./actions";
-import ConfirmDialog from "@/app/(routes)/entries/customer/all/components/ConfirmDialog";
+import ConfirmDialog from "@/components/ConfirmDialog";
 import formatDate from "@/utils/formatDate";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import firstDateOfCurrentMonth from "@/utils/firstDateOfCurrentMonth";
@@ -28,9 +28,7 @@ export default function AllCustomerEntries({ params }) {
   const [totalEntries, setTotalEntries] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [selectedEntryId, setSelectedEntryId] = useState("");
   const [search, setSearch] = useState("");
-  const confirmDialogRef = useRef();
   const searchParams = useSearchParams();
   const fromDateParam =
     searchParams.get("fromDate") ||
@@ -41,7 +39,6 @@ export default function AllCustomerEntries({ params }) {
   const itemsPerPageParam = Number(searchParams.get("itemsPerPage")) || 20;
   const [itemsPerPage, setItemsPerPage] = useState(itemsPerPageParam);
   const [isSpinning, setIsSpinning] = useState(false);
-  // const query = searchParams.toString() || `orderStatus=${orderStatusParam}&itemsPerPage=${itemsPerPage}`;
   const queryObj = new URLSearchParams({
     fromDate: fromDateParam,
     toDate: toDateParam,
@@ -55,7 +52,6 @@ export default function AllCustomerEntries({ params }) {
     (async () => {
       setLoading(true);
       try {
-        console.log(queryParams);
         const response = await fetchEntries(queryParams);
         const { entries, pagination } = await response.json();
         setEntries(entries);
@@ -70,16 +66,11 @@ export default function AllCustomerEntries({ params }) {
     })();
   }, [searchParams]);
 
-  function openConfirmDialog(entryId) {
-    setSelectedEntryId(entryId);
-    confirmDialogRef.current.open();
-  }
-
-  async function handleDelete() {
+  async function handleDelete(entryId) {
     try {
-      await deleteEntry(selectedEntryId);
+      await deleteEntry(entryId);
       setEntries((prev) =>
-        prev.filter((entry) => entry._id !== selectedEntryId)
+        prev.filter((entry) => entry._id !== entryId)
       );
       console.log("Entry deleted successfully");
     } catch (error) {
@@ -263,12 +254,14 @@ export default function AllCustomerEntries({ params }) {
                     >
                       <FaEye size={12} />
                     </a>
-                    <button
+                    <ConfirmDialog
                       className="p-1.5 bg-red-600 text-white rounded-md cursor-pointer"
-                      onClick={() => openConfirmDialog(entry._id)}
+                      onConfirm={() => handleDelete(entry._id)}
+                      message="Are you sure you want to delete this entry?"
+                      label="Delete"
                     >
                       <FaTrash size={12} />
-                    </button>
+                    </ConfirmDialog>
                   </div>
                 </td>
                 <td>{formatDate(entry.orderDate)}</td>
@@ -383,12 +376,6 @@ export default function AllCustomerEntries({ params }) {
           </button>
         </div>
       </div>
-
-      <ConfirmDialog
-        ref={confirmDialogRef}
-        onConfirm={handleDelete}
-        message="Are you sure you want to delete this entry?"
-      />
     </section>
   );
 }

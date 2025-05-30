@@ -94,6 +94,7 @@ export default function VendorForm({ onVendorChange }) {
                 type="button"
                 key={vendor._id}
                 role="option"
+                aria-selected={dropdownOpen}
                 onClick={() => handleVendorSelect(vendor)}
                 className="w-full text-left px-4 py-2 flex items-center gap-2 hover:bg-gray-100 focus:bg-gray-200"
               >

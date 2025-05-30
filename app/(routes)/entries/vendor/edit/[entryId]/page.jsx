@@ -29,7 +29,7 @@ export default function EditEntry({ params }) {
         if (!res.ok) throw new Error("Failed to fetch entry data.");
         const data = await res.json();
         setEntry(data);
-      } catch (error) {
+      } catch (_) {
         setToast({ show: true, message: "Error loading entry data." });
       }
     };
@@ -61,7 +61,7 @@ export default function EditEntry({ params }) {
         }));
         router.push("/entries/all");
       }, 2000);
-    } catch (err) {
+    } catch (_) {
       setToast({ show: true, message: "Error updating entry." });
     }
   };

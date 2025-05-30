@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import {
   FaBullseye,
   FaEye,
@@ -11,14 +11,13 @@ import {
   FaTrash,
   FaUser,
 } from "react-icons/fa6";
-import { fetchVendors, deleteVendor } from "./actions";
 import ConfirmDialog from "@/app/(routes)/entries/customer/add/components/ConfirmDialog";
+import fetchVendors from "@/features/vendors/actions/fetchVendors";
+import deleteVendor from "@/features/vendors/actions/deleteVendor";
 
 export default function AllVendors() {
   const [vendors, setVendors] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedVendorId, setSelectedVendorId] = useState(null);
-  const confirmDialogRef = useRef();
 
   useEffect(() => {
     (async () => {
@@ -34,16 +33,11 @@ export default function AllVendors() {
     })();
   }, []);
 
-  function openConfirmDialog(vendorId) {
-    setSelectedVendorId(vendorId);
-    confirmDialogRef.current.open();
-  }
-
-  async function handleDelete() {
+  async function handleDelete(vendorId) {
     try {
-      await deleteVendor(selectedVendorId);
+      await deleteVendor(vendorId);
       setVendors((prev) =>
-        prev.filter((vendor) => vendor._id !== selectedVendorId)
+        prev.filter((vendor) => vendor._id !== vendorId)
       );
       console.log("Vendor deleted successfully");
     } catch (error) {
@@ -120,24 +114,20 @@ export default function AllVendors() {
                   >
                     <FaPencil />
                   </a>
-                  <button
-                    className="p-2 bg-red-600 text-white rounded-md cursor-pointer"
-                    onClick={() => openConfirmDialog(vendor._id)}
+                  <ConfirmDialog
+                    className="p-1.5 bg-red-600 text-white rounded-md cursor-pointer"
+                    onConfirm={() => handleDelete(vendor._id)}
+                    message="Are you sure you want to delete this vendor?"
+                    label="Delete"
                   >
-                    <FaTrash />
-                  </button>
+                    <FaTrash size={12} />
+                  </ConfirmDialog>
                 </div>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
-
-      <ConfirmDialog
-        ref={confirmDialogRef}
-        onConfirm={handleDelete}
-        message="Are you sure you want to delete this vendor?"
-      />
     </div>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import {
   FaBullseye,
   FaCalendar,
@@ -14,13 +14,19 @@ import {
   FaTrash,
   FaUser,
 } from "react-icons/fa6";
-import { getCustomers, deleteCustomer } from "../actions";
-import ConfirmDialog from "@/app/(routes)/entries/customer/all/components/ConfirmDialog";
+import ConfirmDialog from "@/components/ConfirmDialog";
 import formatDate from "@/utils/formatDate";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import inputDateFormat from "@/utils/inputDateFormat";
 import firstDateOfCurrentMonth from "@/utils/firstDateOfCurrentMonth";
-import { LuChevronLeft, LuChevronRight, LuChevronsLeft, LuChevronsRight } from "react-icons/lu";
+import {
+  LuChevronLeft,
+  LuChevronRight,
+  LuChevronsLeft,
+  LuChevronsRight,
+} from "react-icons/lu";
+import getCustomers from "@/features/customers/actions/getCustomers";
+import deleteCustomer from "@/features/customers/actions/deleteCustomer";
 
 export default function AllCustomers() {
   const router = useRouter();
@@ -29,9 +35,7 @@ export default function AllCustomers() {
   const [totalCustomers, setTotalCustomers] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [selectedCustomerId, setSelectedCustomerId] = useState("");
   const [search, setSearch] = useState("");
-  const confirmDialogRef = useRef();
   const searchParams = useSearchParams();
   const fromDateParam =
     searchParams.get("fromDate") ||
@@ -68,16 +72,11 @@ export default function AllCustomers() {
     })();
   }, [searchParams]);
 
-  function openConfirmDialog(customerId) {
-    setSelectedCustomerId(customerId);
-    confirmDialogRef.current.open();
-  }
-
-  async function handleDelete() {
+  async function handleDelete(customerId) {
     try {
-      await deleteCustomer(selectedCustomerId);
+      await deleteCustomer(customerId);
       setCustomers((prev) =>
-        prev.filter((customer) => customer._id !== selectedCustomerId)
+        prev.filter((customer) => customer._id !== customerId)
       );
       console.log("Customer deleted successfully");
     } catch (error) {
@@ -257,12 +256,14 @@ export default function AllCustomers() {
                     >
                       <FaPencil />
                     </a>
-                    <button
-                      className="p-2 bg-red-600 text-white rounded-md cursor-pointer"
-                      onClick={() => openConfirmDialog(customer._id)}
+                    <ConfirmDialog
+                      className="p-1.5 bg-red-600 text-white rounded-md cursor-pointer"
+                      onConfirm={() => handleDelete(customer._id)}
+                      message="Are you sure you want to delete this customer?"
+                      label="Delete"
                     >
-                      <FaTrash />
-                    </button>
+                      <FaTrash size={12} />
+                    </ConfirmDialog>
                   </div>
                 </td>
               </tr>
@@ -370,12 +371,6 @@ export default function AllCustomers() {
           </button>
         </div>
       </div>
-
-      <ConfirmDialog
-        ref={confirmDialogRef}
-        onConfirm={handleDelete}
-        message="Are you sure you want to delete this customer?"
-      />
     </div>
   );
 }

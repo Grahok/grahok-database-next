@@ -3,18 +3,16 @@
 import { fetchEntries } from "@/app/(routes)/customers/view/[customerId]/actions";
 import Toast from "@/app/(routes)/entries/customer/add/components/Toast";
 import ConfirmDialog from "@/app/(routes)/entries/customer/add/components/ConfirmDialog";
-import React, { useEffect, useRef, useState } from "react";
-import { FaEye, FaPencil, FaPhone, FaTrash } from "react-icons/fa6";
+import React, { useEffect, useState } from "react";
+import { FaEye, FaPhone, FaTrash } from "react-icons/fa6";
 
 export default function CustomerDeatils({ params }) {
   const { customerId } = React.use(params);
   const [customer, setCustomer] = useState();
   const [toast, setToast] = useState({ show: false, message: "" });
   const [entries, setEntries] = useState([]);
-  const [selectedEntryId, setSelectedEntryId] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const confirmDialogRef = useRef();
 
   useEffect(() => {
     (async () => {
@@ -27,7 +25,7 @@ export default function CustomerDeatils({ params }) {
         if (!response.ok) throw new Error("Failed to fetch customer data.");
         const { customer } = await response.json();
         setCustomer(customer);
-      } catch (error) {
+      } catch (_) {
         setToast({ show: true, message: "Error loading customer data." });
       }
     })();
@@ -39,7 +37,7 @@ export default function CustomerDeatils({ params }) {
         const response = await fetchEntries(customerId);
         const { entries } = await response.json();
         setEntries(entries);
-      } catch (error) {
+      } catch (_) {
         setError("Failed to fetch entries.");
       } finally {
         setLoading(false);
@@ -47,16 +45,11 @@ export default function CustomerDeatils({ params }) {
     })();
   }, []);
 
-  function openConfirmDialog(entryId) {
-    setSelectedEntryId(entryId); // Store the selected entry ID
-    confirmDialogRef.current.open(); // Open the confirmation dialog
-  }
-
-  async function handleDelete() {
+  async function handleDelete(entryId) {
     try {
-      await deleteEntry(selectedEntryId); // Use the stored entry ID
+      await deleteEntry(entryId); // Use the stored entry ID
       setEntries((prev) =>
-        prev.filter((entry) => entry._id !== selectedEntryId)
+        prev.filter((entry) => entry._id !== entryId)
       );
       console.log("Entry deleted successfully");
     } catch (error) {
@@ -171,12 +164,14 @@ export default function CustomerDeatils({ params }) {
                       >
                         <FaEye />
                       </a>
-                      <button
-                        className="p-2 bg-red-600 text-white rounded-md cursor-pointer hover:bg-red-700 transition duration-200"
-                        onClick={() => openConfirmDialog(entry._id)}
+                      <ConfirmDialog
+                        className="p-1.5 bg-red-600 text-white rounded-md cursor-pointer"
+                        onConfirm={() => handleDelete(entry._id)}
+                        message="Are you sure you want to delete this entry?"
+                        label="Delete"
                       >
-                        <FaTrash />
-                      </button>
+                        <FaTrash size={12} />
+                      </ConfirmDialog>
                     </div>
                   </td>
                 </tr>
@@ -193,11 +188,6 @@ export default function CustomerDeatils({ params }) {
               show: false,
             }))
           }
-        />
-        <ConfirmDialog
-          ref={confirmDialogRef}
-          onConfirm={handleDelete}
-          message="Are you sure you want to delete this entry?"
         />
       </main>
     </main>

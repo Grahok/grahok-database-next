@@ -29,9 +29,9 @@ export default async function ViewVendor({ params }) {
                 <thead>
                   <tr>
                     <th>SL</th>
+                    <th>Invoice Number</th>
                     <th>Order Date</th>
                     <th>Entry Date</th>
-                    <th>Status</th>
                     <th>Total Payment</th>
                     <th>Paid</th>
                     <th>Due</th>
@@ -49,22 +49,6 @@ export default async function ViewVendor({ params }) {
                     <VendorOrders vendorId={vendorId} />
                   </Suspense>
                 </tbody>
-
-                {/* <Toast
-          show={toast.show}
-          message={toast.message}
-          onClose={() =>
-            setToast((prev) => ({
-              ...prev,
-              show: false,
-            }))
-          }
-        />
-        <ConfirmDialog
-          ref={confirmDialogRef}
-          onConfirm={handleDelete}
-          message="Are you sure you want to delete this entry?"
-        /> */}
               </table>
             </div>
           </div>
@@ -83,6 +67,7 @@ export default async function ViewVendor({ params }) {
                 <thead>
                   <tr>
                     <th>SL</th>
+                    <th>Invoice Number</th>
                     <th>Payment Date</th>
                     <th>Amount</th>
                     <th>Actions</th>
@@ -99,22 +84,6 @@ export default async function ViewVendor({ params }) {
                     <VendorPayments vendorId={vendorId} />
                   </Suspense>
                 </tbody>
-
-                {/* <Toast
-          show={toast.show}
-          message={toast.message}
-          onClose={() =>
-            setToast((prev) => ({
-              ...prev,
-              show: false,
-            }))
-          }
-        />
-        <ConfirmDialog
-          ref={confirmDialogRef}
-          onConfirm={handleDelete}
-          message="Are you sure you want to delete this entry?"
-        /> */}
               </table>
             </div>
           </div>
