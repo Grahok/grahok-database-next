@@ -1,3 +1,5 @@
+"use client"
+
 import ConfirmDialog from "@/components/ConfirmDialog";
 import formatDate from "@/utils/formatDate";
 import { useEffect, useState } from "react";
@@ -31,7 +33,7 @@ export default function VendorPayments({ vendorId }) {
         console.error(error);
       }
     })();
-  });
+  }, []);
   return (
     <>
       {payments?.map((payment, index) => (
