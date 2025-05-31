@@ -79,3 +79,31 @@ export async function POST(req) {
     );
   }
 }
+
+export async function PUT(req) {
+  const { invoiceNumber, paymentData } = await req.json();
+  console.log(invoiceNumber, paymentData);
+  try {
+    await connectToDatabase();
+    const updatedEntry = await VendorEntry.findOneAndUpdate(
+      { invoiceNumber: invoiceNumber },
+      { $push: { payments: paymentData } },
+      { new: true }
+    );
+    return new Response(
+      JSON.stringify({
+        message: "✅ Entry updated successfully",
+        updatedEntry,
+      }),
+      { status: 200, headers: { "Content-type": "application/json" } }
+    );
+  } catch (error) {
+    return new Response(
+      JSON.stringify({
+        message: "❌ Error updating entry",
+        error: error.message,
+      }),
+      { status: 500, headers: { "Content-type": "application/json" } }
+    );
+  }
+}

@@ -11,9 +11,9 @@ import {
   FaTrash,
   FaUser,
 } from "react-icons/fa6";
-import ConfirmDialog from "@/app/(routes)/entries/customer/add/components/ConfirmDialog";
 import fetchVendors from "@/features/vendors/actions/fetchVendors";
 import deleteVendor from "@/features/vendors/actions/deleteVendor";
+import ConfirmDialog from "@/components/ConfirmDialog";
 
 export default function AllVendors() {
   const [vendors, setVendors] = useState([]);

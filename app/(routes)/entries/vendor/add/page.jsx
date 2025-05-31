@@ -2,22 +2,20 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Toast from "@/app/(routes)/entries/vendor/add/components/Toast";
-import SummarySection from "@/app/(routes)/entries/vendor/add/components/SummarySection";
-import ProductSection from "@/app/(routes)/entries/vendor/add/components/ProductSection";
-import VendorForm from "@/app/(routes)/entries/vendor/add/components/VendorForm";
-import { ORDER_STATUSES } from "@/constants/orderStatuses";
-import PreviousPayments from "./components/PreviousPayments";
+import SummarySection from "@/features/entries/vendor/add/components/SummarySection";
+import ProductSection from "@/features/entries/vendor/add/components/ProductSection";
+import VendorForm from "@/features/entries/vendor/add/components/VendorForm";
+import Toast from "@/components/Toast";
 
-export default function AddEntry() {
+export default function AddVendorEntry() {
   const router = useRouter();
 
   const [invoiceNumber, setInvoiceNumber] = useState(0);
-  const [orderStatus, setOrderStatus] = useState("Pending");
   const [vendorData, setVendorData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [selectedProducts, setSelectedProducts] = useState([]);
+  const [note, setNote] = useState("");
   const [overallDiscount, setOverallDiscount] = useState(0);
   const subtotal = selectedProducts.reduce(
     (sum, row) => sum + row.quantity * row.purchasePrice - row.discount,
@@ -84,7 +82,6 @@ export default function AddEntry() {
 
       const entry = {
         invoiceNumber,
-        orderStatus,
         vendor: vendorId,
         orderDate: e.target.orderDate.value,
         entryDate: e.target.entryDate.value,
@@ -100,6 +97,7 @@ export default function AddEntry() {
         shippingCharge,
         shippingMethod,
         otherCost,
+        note,
         courierTax,
         totalQuantity,
         totalPurchasePrice,
@@ -144,30 +142,15 @@ export default function AddEntry() {
   return (
     <main className="min-h-screen bg-gray-50 text-gray-800 flex flex-col gap-8">
       <header className="flex justify-between items-center gap-6">
-        <h1 className="text-3xl font-bold">Add New Entry</h1>
-        <div className="flex gap-2">
-          <input
-            type="number"
-            placeholder="Invoice Number"
-            className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none"
-            onChange={(e) => setInvoiceNumber(Number(e.target.value))}
-            autoFocus
-          />
-
-          <select
-            name="orderStatus"
-            id="orderStatus"
-            className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none"
-            value={orderStatus}
-            onChange={(e) => setOrderStatus(e.target.value)}
-          >
-            {ORDER_STATUSES.map((orderStatus, index) => (
-              <option key={index} value={orderStatus}>
-                {orderStatus}
-              </option>
-            ))}
-          </select>
-        </div>
+        <h1 className="text-3xl font-bold">Add Vendor Entry</h1>
+        <input
+          type="number"
+          id="invoiceNumber"
+          placeholder="Invoice Number"
+          className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none"
+          onChange={(e) => setInvoiceNumber(Number(e.target.value))}
+          autoFocus
+        />
       </header>
 
       <form onSubmit={handleSubmit} className="space-y-10">
@@ -188,6 +171,8 @@ export default function AddEntry() {
           setCourierTax={setCourierTax}
           otherCost={otherCost}
           setOtherCost={setOtherCost}
+          note={note}
+          setNote={setNote}
           overallDiscount={overallDiscount}
           setOverallDiscount={setOverallDiscount}
           subtotal={subtotal}
@@ -195,7 +180,6 @@ export default function AddEntry() {
           totalPayment={totalPayment}
           setShippingMethod={setShippingMethod}
         />
-        <PreviousPayments alreadyPaid={alreadyPaid} duePayment={duePayment} />
 
         {/* Error or Loading Feedback */}
         {error && <div className="text-red-600">{error}</div>}

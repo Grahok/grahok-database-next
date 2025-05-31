@@ -2,8 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { getProduct, updateProduct } from "./actions";
 import Toast from "@/components/Toast";
+import { fetchProduct } from "@/features/products/actions/fetchProduct";
 
 export default function EditProduct({ params }) {
   const router = useRouter();
@@ -12,18 +12,13 @@ export default function EditProduct({ params }) {
   const [toast, setToast] = useState({ show: false, message: "" });
   useEffect(() => {
     (async () => {
-      const response = await getProduct(productId);
+      const response = await fetchProduct(productId);
       try {
         const { product } = await response.json();
         setProduct(product);
       } catch (error) {
         console.error("Error fetching Product", error);
         setError("Error fetching product");
-      }
-      {
-        /* finally {
-        setLoading(false);
-      } */
       }
     })();
   }, []);

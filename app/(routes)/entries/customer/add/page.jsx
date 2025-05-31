@@ -3,11 +3,11 @@
 import { ORDER_STATUSES } from "@/constants/orderStatuses";
 
 import { useState } from "react";
-import Toast from "@/app/(routes)/entries/customer/add/components/Toast";
-import SummarySection from "@/app/(routes)/entries/customer/add/components/SummarySection";
-import ProductSection from "@/app/(routes)/entries/customer/add/components/ProductSection";
-import CustomerForm from "@/app/(routes)/entries/customer/add/components/CustomerForm";
+import SummarySection from "@/features/entries/customer/add/components/SummarySection";
+import ProductSection from "@/features/entries/customer/add/components/ProductSection";
+import CustomerForm from "@/features/entries/customer/add/components/CustomerForm";
 import combineDateWithCurrentTime from "@/utils/combineDateWithCurrentTime";
+import Toast from "@/components/Toast";
 
 export default function AddEntry() {
   const [invoiceNumber, setInvoiceNumber] = useState(0);

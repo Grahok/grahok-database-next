@@ -1,6 +1,6 @@
 "use client";
 
-import Toast from "@/app/(routes)/entries/customer/add/components/Toast";
+import Toast from "@/components/Toast";
 import { useState } from "react";
 
 async function handleSubmit(e) {

@@ -9,7 +9,7 @@ import {
   FaTrash,
 } from "react-icons/fa6";
 import { fetchEntries, deleteEntry } from "./actions";
-import ConfirmDialog from "@/app/(routes)/entries/customer/all/components/ConfirmDialog";
+import ConfirmDialog from "@/app/components/ConfirmDialog";
 import formatDate from "@/utils/formatDate";
 import { useSearchParams } from "next/navigation";
 

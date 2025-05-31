@@ -1,7 +1,5 @@
-"use client";
-
+import Analytics from "@/features/analytics/components/Analytics";
 import { Suspense } from "react";
-import Analytics from "./components/Analytics";
 
 export default function AnalyticsWrapper() {
   return (

@@ -1,7 +1,6 @@
-import { Suspense } from "react";
-import VendorDetails from "./components/VendorDetails";
-import VendorOrders from "./components/VendorOrders";
-import VendorPayments from "./components/VendorPayments";
+import VendorDetails from "@/features/vendors/view/components/VendorDetails";
+import VendorOrders from "@/features/vendors/view/components/VendorOrders";
+import VendorPayments from "@/features/vendors/view/components/VendorPayments";
 
 export default async function ViewVendor({ params }) {
   const { vendorId } = await params;
@@ -39,15 +38,7 @@ export default async function ViewVendor({ params }) {
                   </tr>
                 </thead>
                 <tbody className=" [&_tr:nth-child(even)]:bg-gray-100">
-                  <Suspense
-                    fallback={
-                      <tr>
-                        <td colSpan={6}>Loading...</td>
-                      </tr>
-                    }
-                  >
-                    <VendorOrders vendorId={vendorId} />
-                  </Suspense>
+                  <VendorOrders vendorId={vendorId} />
                 </tbody>
               </table>
             </div>
@@ -74,15 +65,7 @@ export default async function ViewVendor({ params }) {
                   </tr>
                 </thead>
                 <tbody className=" [&_tr:nth-child(even)]:bg-gray-100">
-                  <Suspense
-                    fallback={
-                      <tr>
-                        <td colSpan={6}>Loading...</td>
-                      </tr>
-                    }
-                  >
-                    <VendorPayments vendorId={vendorId} />
-                  </Suspense>
+                  <VendorPayments vendorId={vendorId} />
                 </tbody>
               </table>
             </div>

@@ -1,17 +1,7 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
-import {
-  FaBoxesStacked,
-  FaCartPlus,
-  FaChartPie,
-  FaCirclePlus,
-  FaDatabase,
-  FaDollarSign,
-  FaHouse,
-  FaUser,
-  FaUserPlus,
-} from "react-icons/fa6";
-import Image from "next/image";
+import AppSidebar from "@/components/AppSidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 
 const inter = Inter({
   subsets: [
@@ -33,153 +23,18 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} antialiased p-6 flex gap-6 min-h-dvh`}>
-        <aside className="min-w-fit">
-          <nav>
-            <ul className="flex flex-col gap-2">
-              <li>
-                <a href="/" className="size-16 flex justify-self-center">
-                  <Image
-                    src="/icon.png"
-                    alt="Grahok Logo"
-                    width={64}
-                    height={64}
-                  />
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/"
-                  className="flex items-center gap-2 p-2 rounded-md hover:bg-gray-200"
-                >
-                  <FaHouse />
-                  <span>Home</span>
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/entries/customer/all"
-                  className="flex items-center gap-2 p-2 rounded-md hover:bg-gray-200"
-                >
-                  <FaDatabase />
-                  <span>All Customer Entries</span>
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/entries/vendor/all"
-                  className="flex items-center gap-2 p-2 rounded-md hover:bg-gray-200"
-                >
-                  <FaDatabase />
-                  <span>All Vendor Entries</span>
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/entries/customer/add"
-                  className="flex items-center gap-2 p-2 rounded-md hover:bg-gray-200"
-                >
-                  <FaCartPlus />
-                  <span>Add Customer Entry</span>
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/entries/vendor/add"
-                  className="flex items-center gap-2 p-2 rounded-md hover:bg-gray-200"
-                >
-                  <FaCartPlus />
-                  <span>Add Vendor Entry</span>
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/customers/all"
-                  className="flex items-center gap-2 p-2 rounded-md hover:bg-gray-200"
-                >
-                  <FaUser />
-                  <span>All Customers</span>
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/customers/add"
-                  className="flex items-center gap-2 p-2 rounded-md hover:bg-gray-200"
-                >
-                  <FaUserPlus />
-                  <span>Add Customer</span>
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/vendors/all"
-                  className="flex items-center gap-2 p-2 rounded-md hover:bg-gray-200"
-                >
-                  <FaUser />
-                  <span>All Vendors</span>
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/vendors/add"
-                  className="flex items-center gap-2 p-2 rounded-md hover:bg-gray-200"
-                >
-                  <FaUserPlus />
-                  <span>Add Vendor</span>
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/products/all"
-                  className="flex items-center gap-2 p-2 rounded-md hover:bg-gray-200"
-                >
-                  <FaBoxesStacked />
-                  <span>All Products</span>
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/products/add"
-                  className="flex items-center gap-2 p-2 rounded-md hover:bg-gray-200"
-                >
-                  <FaCirclePlus />
-                  <span>Add Product</span>
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/expenses/all"
-                  className="flex items-center gap-2 p-2 rounded-md hover:bg-gray-200"
-                >
-                  <FaDollarSign />
-                  <span>All Expenses</span>
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/expenses/add"
-                  className="flex items-center gap-2 p-2 rounded-md hover:bg-gray-200"
-                >
-                  <FaDollarSign />
-                  <span>Add Expense</span>
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/analytics"
-                  className="flex items-center gap-2 p-2 rounded-md hover:bg-gray-200"
-                >
-                  <FaChartPie />
-                  <span>Analytics</span>
-                </a>
-              </li>
-            </ul>
-          </nav>
-        </aside>
-        <main className="p-6 bg-gray-50 text-gray-800 flex flex-col gap-6 w-full">
-          <h1 className="text-4xl font-bold text-blue-600 text-center">Grahok Database</h1>
-          {children}
-        </main>
+      <body
+        className={`${inter.className} antialiased flex gap-6 min-h-dvh`}
+      >
+        <SidebarProvider>
+          <AppSidebar />
+          <main className="bg-gray-50 text-gray-800 flex flex-col gap-6 p-6 w-full">
+            <h1 className="text-4xl font-bold text-blue-600 text-center">
+              Grahok Database
+            </h1>
+            {children}
+          </main>
+        </SidebarProvider>
       </body>
     </html>
   );

@@ -3,15 +3,15 @@
 import { ORDER_STATUSES } from "@/constants/orderStatuses";
 
 import { useEffect, useState } from "react";
-import Toast from "@/app/(routes)/entries/customer/view/[entryId]/components/Toast";
-import SummarySection from "@/app/(routes)/entries/customer/view/[entryId]/components/SummarySection";
-import ProductSection from "@/app/(routes)/entries/customer/view/[entryId]/components/ProductSection";
-import CustomerForm from "@/app/(routes)/entries/customer/view/[entryId]/components/CustomerForm";
+import SummarySection from "@/features/entries/customer/view/components/SummarySection";
+import ProductSection from "@/features/entries/customer/view/components/ProductSection";
+import CustomerForm from "@/features/entries/customer/view/components/CustomerForm";
 import combineDateWithCurrentTime from "@/utils/combineDateWithCurrentTime";
 import React from "react";
-import { getCustomerEntry } from "./actions/getCustomerEntry";
 import { FaPencil } from "react-icons/fa6";
 import inputDateFormat from "@/utils/inputDateFormat";
+import { getCustomerEntry } from "@/features/entries/customer/view/actions/getCustomerEntry";
+import Toast from "@/components/Toast";
 
 export default function EditEntry({ params }) {
   const { entryId } = React.use(params);

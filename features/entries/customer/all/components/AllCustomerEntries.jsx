@@ -1,38 +1,31 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
-  FaBullseye,
-  FaCalendar,
   FaEye,
-  FaHashtag,
-  FaLocationDot,
   FaMagnifyingGlass,
-  FaPencil,
-  FaPhone,
   FaRotateRight,
   FaTrash,
-  FaUser,
 } from "react-icons/fa6";
-import ConfirmDialog from "@/components/ConfirmDialog";
-import formatDate from "@/utils/formatDate";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import inputDateFormat from "@/utils/inputDateFormat";
-import firstDateOfCurrentMonth from "@/utils/firstDateOfCurrentMonth";
 import {
   LuChevronLeft,
   LuChevronRight,
   LuChevronsLeft,
   LuChevronsRight,
 } from "react-icons/lu";
-import getCustomers from "@/features/customers/actions/fetchCustomers";
-import deleteCustomer from "@/features/customers/actions/deleteCustomer";
+import formatDate from "@/utils/formatDate";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import firstDateOfCurrentMonth from "@/utils/firstDateOfCurrentMonth";
+import inputDateFormat from "@/utils/inputDateFormat";
+import fetchCustomerEntries from "../../actions/fetchCustomerEntries";
+import deleteCustomerEntry from "../../actions/deleteCustomerEntry";
+import ConfirmDialog from "@/components/ConfirmDialog";
 
-export default function AllCustomers() {
+export default function AllCustomerEntries() {
   const router = useRouter();
   const pathname = usePathname();
-  const [customers, setCustomers] = useState([]);
-  const [totalCustomers, setTotalCustomers] = useState(0);
+  const [entries, setEntries] = useState([]);
+  const [totalEntries, setTotalEntries] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -58,12 +51,12 @@ export default function AllCustomers() {
     (async () => {
       setLoading(true);
       try {
-        const response = await getCustomers(`?${queryObj.toString()}`);
-        const { customers, pagination } = await response.json();
-        const { totalCustomers, totalPages } = pagination;
-        setTotalCustomers(totalCustomers);
+        const response = await fetchCustomerEntries(`?${queryObj.toString()}`);
+        const { entries, pagination } = await response.json();
+        const { totalEntries, totalPages } = pagination;
+        setTotalEntries(totalEntries);
         setTotalPages(totalPages);
-        setCustomers(customers);
+        setEntries(entries);
       } catch (error) {
         console.error("Error fetching entries:", error);
       } finally {
@@ -72,22 +65,52 @@ export default function AllCustomers() {
     })();
   }, [searchParams]);
 
-  async function handleDelete(customerId) {
+  async function handleDelete(entryId) {
     try {
-      await deleteCustomer(customerId);
-      setCustomers((prev) =>
-        prev.filter((customer) => customer._id !== customerId)
+      await deleteCustomerEntry(entryId);
+      setEntries((prev) =>
+        prev.filter((entry) => entry._id !== entryId)
       );
-      console.log("Customer deleted successfully");
+      console.log("Entry deleted successfully");
     } catch (error) {
-      console.error("Error deleting customer:", error);
+      console.error("Error deleting entry:", error);
     }
   }
+  const totalProfit = entries.reduce((acc, entry) => {
+    return acc + entry.netProfit;
+  }, 0);
+  const totalDiscount = entries.reduce((acc, entry) => {
+    return acc + entry.totalDiscount;
+  }, 0);
+  const totalShippingCustomer = entries.reduce((acc, entry) => {
+    return acc + entry.shippingCustomer;
+  }, 0);
+  const totalShippingMerchant = entries.reduce((acc, entry) => {
+    return acc + entry.shippingMerchant;
+  }, 0);
+  const totalOtherCost = entries.reduce((acc, entry) => {
+    return acc + entry.otherCost;
+  }, 0);
+  const totalCourierTax = entries.reduce((acc, entry) => {
+    return acc + entry.courierTax;
+  }, 0);
+  const totalPurchasePrice = entries.reduce((acc, entry) => {
+    return acc + entry.totalPurchasePrice;
+  }, 0);
+  const totalSellPrice = entries.reduce((acc, entry) => {
+    return acc + entry.totalSellPrice;
+  }, 0);
+  const totalPaidByCustomer = entries.reduce((acc, entry) => {
+    return acc + entry.paidByCustomer;
+  }, 0);
+  const totalQuantity = entries.reduce((acc, entry) => {
+    return acc + entry.totalQuantity;
+  }, 0);
 
   return (
-    <div className="w-full flex flex-col gap-3">
+    <section className="w-full flex flex-col gap-3">
       <div className="flex items-center justify-between gap-6">
-        <h1 className="text-3xl font-bold">All Customers:</h1>
+        <h1 className="text-3xl font-bold">All Customer Entries:</h1>
         <form className="flex items-center gap-3 flex-wrap justify-end">
           <div className="flex items-center md:items-end gap-6 rounded-lg border border-gray-400 px-4 py-2">
             <div className="flex items-center gap-2 w-full md:w-1/2">
@@ -127,7 +150,10 @@ export default function AllCustomers() {
               >
                 Submit
               </button>
-              <a href="/customers/all" className="p-1.5 bg-orange-300 rounded">
+              <a
+                href="/entries/customer/all"
+                className="p-1.5 bg-orange-300 rounded"
+              >
                 <FaRotateRight
                   className={`${isSpinning && "animate-spin"} size-5`}
                   onClick={() => setIsSpinning(true)}
@@ -147,7 +173,7 @@ export default function AllCustomers() {
                 placeholder="Search..."
               />
               <button
-                type="submit"
+                type="button"
                 className="p-2 bg-blue-600 hover:bg-blue-700 text-white rounded cursor-pointer"
               >
                 <FaMagnifyingGlass />
@@ -182,100 +208,103 @@ export default function AllCustomers() {
           </div>
         </form>
       </div>
-      <div>
-        <table className="w-full [&_th,_td]:border [&_th,_td]:p-3 [&_div]:flex [&_div]:justify-self-center text-center">
+      <div className="overflow-x-auto">
+        <table className="table-auto [&_th,_td]:border [&_th,_td]:p-3 [&_div]:flex [&_div]:justify-self-center text-center max-w-full">
           <thead>
-            <tr>
-              <th>
-                <div className="flex gap-1 items-center">
-                  <FaHashtag />
-                  <span>ID</span>
-                </div>
-              </th>
-              <th>
-                <div className="flex gap-1 items-center">
-                  <FaCalendar />
-                  <span>Entry Date</span>
-                </div>
-              </th>
-              <th>
-                <div className="flex gap-1 items-center">
-                  <FaUser />
-                  <span>Name</span>
-                </div>
-              </th>
-              <th>
-                <div className="flex gap-1 items-center">
-                  <FaPhone />
-                  <span>Mobile Number</span>
-                </div>
-              </th>
-              <th>
-                <div className="flex gap-1 items-center">
-                  <FaLocationDot />
-                  <span>Address</span>
-                </div>
-              </th>
-              <th>
-                <div className="flex gap-1 items-center">
-                  <FaBullseye />
-                  <span>Actions</span>
-                </div>
-              </th>
+            <tr className="*:sticky *:top-0 *:bg-gray-200">
+              <th>ID</th>
+              <th>Actions</th>
+              <th>Order Date</th>
+              <th>Customer</th>
+              <th>Mobile Number</th>
+              <th>Total Purchase Price</th>
+              <th>Total Sell Price</th>
+              <th>Paid By Customer</th>
+              <th>Total Quantity</th>
+              <th>Total Discount</th>
+              <th>Shipping Customer</th>
+              <th>Shipping Merchant</th>
+              <th>Other Cost</th>
+              <th>Courier Tax</th>
+              <th>Total Profit</th>
+              <th>Order Status</th>
+              <th>CN Number</th>
             </tr>
           </thead>
           <tbody>
             {loading && (
               <tr>
-                <td colSpan={6}>Loading...</td>
+                <td colSpan={17}>Loading...</td>
               </tr>
             )}
-            {!loading && !customers.length && (
+            {!loading && !entries.length && (
               <tr>
-                <td colSpan={6}>No Customer Found</td>
+                <td colSpan={17}>No Entries Found</td>
               </tr>
             )}
-            {customers.map((customer, index) => (
-              <tr key={customer._id} className="hover:bg-gray-100">
-                <td>{(pageParam - 1) * itemsPerPage + (index + 1)}</td>
-                <td>{formatDate(customer.entryDate)}</td>
-                <td>{customer.name}</td>
-                <td>{customer.mobileNumber}</td>
-                <td>{customer.address}</td>
+            {entries.map((entry, index) => (
+              <tr key={entry._id} className="hover:bg-gray-100">
+                <td>{(pageParam - 1) * itemsPerPageParam + (index + 1)}</td>
                 <td>
                   <div className="flex gap-1">
                     <a
-                      href={`/customers/view/${customer._id}`}
-                      className="p-2 bg-blue-600 text-white rounded-md cursor-pointer"
+                      href={`/entries/customer/view/${entry._id}`}
+                      className="p-1.5 bg-blue-600 text-white rounded-md"
                     >
-                      <FaEye />
-                    </a>
-                    <a
-                      href={`/customers/edit/${customer._id}`}
-                      className="p-2 bg-green-600 text-white rounded-md cursor-pointer"
-                    >
-                      <FaPencil />
+                      <FaEye size={12} />
                     </a>
                     <ConfirmDialog
                       className="p-1.5 bg-red-600 text-white rounded-md cursor-pointer"
                       onConfirm={() => handleDelete(customer._id)}
-                      message="Are you sure you want to delete this customer?"
+                      message="Are you sure you want to delete this entry?"
                       label="Delete"
                     >
                       <FaTrash size={12} />
                     </ConfirmDialog>
                   </div>
                 </td>
+                <td>{formatDate(entry.orderDate)}</td>
+                <td>{entry.customer?.name || "Customer Not Found"}</td>
+                <td>{entry.customer?.mobileNumber || "Customer Not Found"}</td>
+                <td>{entry.totalPurchasePrice}</td>
+                <td>{entry.totalSellPrice}</td>
+                <td>{entry.paidByCustomer}</td>
+                <td>{entry.totalQuantity}</td>
+                <td>{entry.totalDiscount}</td>
+                <td>{entry.shippingCustomer}</td>
+                <td>{entry.shippingMerchant}</td>
+                <td>{entry.otherCost}</td>
+                <td>{entry.courierTax}</td>
+                <td>{entry.netProfit}</td>
+                <td>{entry.orderStatus}</td>
+                <td>{entry.cnNumber || "N/A"}</td>
               </tr>
             ))}
+            <tr>
+              <td colSpan={5} className="font-bold">
+                Total:
+              </td>
+              <th>{totalPurchasePrice}</th>
+              <th>{totalSellPrice}</th>
+              <th>{totalPaidByCustomer}</th>
+              <th>{totalQuantity}</th>
+              <th>{totalDiscount}</th>
+              <th>{totalShippingCustomer}</th>
+              <th>{totalShippingMerchant}</th>
+              <th>{totalOtherCost}</th>
+              <th>{totalCourierTax}</th>
+              <th>{totalProfit}</th>
+              <th>N/A</th>
+              <th>N/A</th>
+            </tr>
           </tbody>
         </table>
       </div>
       <div className="flex justify-between">
         <strong>{`Showing ${Math.min(
-          totalCustomers,
+          totalEntries,
           itemsPerPageParam
-        )} items of ${totalCustomers || "Loading..."}`}</strong>
+        )} items of ${totalEntries || "Loading..."}`}</strong>
         <div className="flex gap-2 leading-none">
           <button
             type="button"
@@ -371,6 +400,6 @@ export default function AllCustomers() {
           </button>
         </div>
       </div>
-    </div>
+    </section>
   );
 }

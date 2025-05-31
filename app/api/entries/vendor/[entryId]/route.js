@@ -4,7 +4,7 @@ import Product from "@/models/Product";
 import { connectToDatabase } from "@/lib/mongoose";
 
 export async function GET(_, { params }) {
-  const { entryId } = params;
+  const { entryId } = await params;
   try {
     await connectToDatabase();
 
@@ -38,7 +38,7 @@ export async function GET(_, { params }) {
 }
 
 export async function DELETE(_, { params }) {
-  const { entryId } = params;
+  const { entryId } = await params;
 
   try {
     await connectToDatabase();

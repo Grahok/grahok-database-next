@@ -1,10 +1,10 @@
 "use client";
 
-import { fetchEntries } from "@/app/(routes)/customers/view/[customerId]/actions";
-import Toast from "@/app/(routes)/entries/customer/add/components/Toast";
-import ConfirmDialog from "@/app/(routes)/entries/customer/add/components/ConfirmDialog";
 import React, { useEffect, useState } from "react";
-import { FaEye, FaPhone, FaTrash } from "react-icons/fa6";
+import { FaEye, FaPencil, FaPhone, FaTrash } from "react-icons/fa6";
+import fetchCustomerEntriesByCustomerId from "@/features/entries/customer/actions/fetchCustomerEntryByCustomerId";
+import ConfirmDialog from "@/components/ConfirmDialog";
+import Toast from "@/components/Toast";
 
 export default function CustomerDeatils({ params }) {
   const { customerId } = React.use(params);
@@ -34,7 +34,7 @@ export default function CustomerDeatils({ params }) {
   useEffect(() => {
     (async () => {
       try {
-        const response = await fetchEntries(customerId);
+        const response = await fetchCustomerEntriesByCustomerId(customerId);
         const { entries } = await response.json();
         setEntries(entries);
       } catch (_) {
@@ -48,9 +48,7 @@ export default function CustomerDeatils({ params }) {
   async function handleDelete(entryId) {
     try {
       await deleteEntry(entryId); // Use the stored entry ID
-      setEntries((prev) =>
-        prev.filter((entry) => entry._id !== entryId)
-      );
+      setEntries((prev) => prev.filter((entry) => entry._id !== entryId));
       console.log("Entry deleted successfully");
     } catch (error) {
       console.error("Error deleting entry:", error);
@@ -80,13 +78,22 @@ export default function CustomerDeatils({ params }) {
               />
               <div className="flex flex-col items-center justify-center gap-2">
                 <h3 className="text-xl font-semibold">{customer?.name}</h3>
-                <a
-                  className="px-2 py-1 bg-green-600 hover:bg-green-700 text-white rounded flex items-center gap-2 transition duration-200"
-                  href={`tel:${customer?.mobileNumber}`}
-                >
-                  <FaPhone size={14} />
-                  Call
-                </a>
+                <div className="flex items-center gap-3">
+                  <a
+                    className="px-2 py-1 bg-green-600 hover:bg-green-700 text-white rounded flex items-center gap-2 transition duration-200"
+                    href={`tel:${customer?.mobileNumber}`}
+                  >
+                    <FaPhone size={14} />
+                    Call
+                  </a>
+                  <a
+                    className="px-2 py-1 bg-green-600 hover:bg-green-700 text-white rounded flex items-center gap-2 transition duration-200"
+                    href={`/customers/edit/${customer?._id}`}
+                  >
+                    <FaPencil size={14} />
+                    Edit
+                  </a>
+                </div>
               </div>
             </div>
 

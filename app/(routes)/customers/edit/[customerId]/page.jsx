@@ -1,9 +1,9 @@
 "use client";
 
+import Toast from "@/components/Toast";
+import fetchCustomer from "@/features/customers/actions/fetchCustomer";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { getCustomer, updateCustomer } from "./actions";
-import Toast from "@/components/Toast";
 
 export default function EditCustomer({ params }) {
   const router = useRouter();
@@ -12,18 +12,13 @@ export default function EditCustomer({ params }) {
   const [toast, setToast] = useState({ show: false, message: "" });
   useEffect(() => {
     (async () => {
-      const response = await getCustomer(customerId);
+      const response = await fetchCustomer(customerId);
       try {
         const { customer } = await response.json();
         setCustomer(customer);
       } catch (error) {
         console.error("Error fetching Customer", error);
         setError("Error fetching customer");
-      }
-      {
-        /* finally {
-        setLoading(false);
-      } */
       }
     })();
   }, []);
