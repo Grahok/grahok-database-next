@@ -1,6 +1,5 @@
 "use client";
 
-import baseUrl from "@/constants/baseUrl";
 import { useEffect, useState } from "react";
 import {
   FaBullseye,
@@ -18,7 +17,7 @@ export default function AllVendorEntries() {
   useEffect(() => {
     (async () => {
       try {
-        const response = await fetch(`${baseUrl}/api/entries/vendor`, {
+        const response = await fetch(`/api/entries/vendor`, {
           method: "GET",
           headers: { "Content-type": "application/json" },
           cache: "no-store",
