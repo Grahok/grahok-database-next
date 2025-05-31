@@ -13,12 +13,13 @@ import {
   LuChevronsLeft,
   LuChevronsRight,
 } from "react-icons/lu";
-import { fetchEntries, deleteEntry } from "./actions";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import formatDate from "@/utils/formatDate";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import firstDateOfCurrentMonth from "@/utils/firstDateOfCurrentMonth";
 import inputDateFormat from "@/utils/inputDateFormat";
+import fetchCustomerEntries from "@/features/entries/customer/actions/fetchCustomerEntries";
+import deleteCustomerEntry from "@/features/entries/customer/actions/deleteCustomerEntry";
 
 export default function AllCustomerEntries({ params }) {
   const { orderStatus } = React.use(params);
@@ -52,7 +53,7 @@ export default function AllCustomerEntries({ params }) {
     (async () => {
       setLoading(true);
       try {
-        const response = await fetchEntries(queryParams);
+        const response = await fetchCustomerEntries(queryParams);
         const { entries, pagination } = await response.json();
         setEntries(entries);
         const { totalEntries, totalPages } = pagination;
@@ -68,7 +69,7 @@ export default function AllCustomerEntries({ params }) {
 
   async function handleDelete(entryId) {
     try {
-      await deleteEntry(entryId);
+      await deleteCustomerEntry(entryId);
       setEntries((prev) =>
         prev.filter((entry) => entry._id !== entryId)
       );

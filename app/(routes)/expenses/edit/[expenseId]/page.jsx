@@ -2,9 +2,10 @@
 
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { getExpense, updateExpense } from "./actions";
 import Toast from "@/components/Toast";
 import PAYMENT_METHODS from "@/constants/paymentMethods";
+import { getExpense } from "@/features/expenses/actions/fetchExpense";
+import updateExpense from "@/features/expenses/actions/updateExpense";
 export default function EditExpense({ params }) {
   const router = useRouter();
   const { expenseId } = React.use(params);
@@ -19,11 +20,6 @@ export default function EditExpense({ params }) {
       } catch (error) {
         console.error("Error fetching Expense", error);
         setError("Error fetching expense");
-      }
-      {
-        /* finally {
-        setLoading(false);
-      } */
       }
     })();
   }, []);
