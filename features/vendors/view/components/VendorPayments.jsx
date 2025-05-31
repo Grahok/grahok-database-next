@@ -1,27 +1,37 @@
 import ConfirmDialog from "@/components/ConfirmDialog";
-import baseUrl from "@/constants/baseUrl";
 import formatDate from "@/utils/formatDate";
+import { useEffect, useState } from "react";
 import { FaEye, FaPencil, FaTrash } from "react-icons/fa6";
 
-export default async function VendorPayments({ vendorId }) {
-  const response = await fetch(
-    `${baseUrl}/api/entries/vendor/byVendor/${vendorId}`,
-    {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-      cache: "no-store",
-    }
-  );
+export default function VendorPayments({ vendorId }) {
+  const [payments, setPayments] = useState([]);
+  useEffect(() => {
+    (async () => {
+      try {
+        const response = await fetch(
+          `/api/entries/vendor/byVendor/${vendorId}`,
+          {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+            cache: "no-store",
+          }
+        );
 
-  const { entries } = await response.json();
-  const payments = Array.isArray(entries)
-    ? entries.flatMap((entry) =>
-        entry.payments.map((payment) => ({
-          ...payment,
-          invoiceNumber: entry.invoiceNumber,
-        }))
-      )
-    : [];
+        const { entries } = await response.json();
+        const payments = Array.isArray(entries)
+          ? entries.flatMap((entry) =>
+              entry.payments.map((payment) => ({
+                ...payment,
+                invoiceNumber: entry.invoiceNumber,
+              }))
+            )
+          : [];
+        setPayments(payments);
+      } catch (error) {
+        console.error(error);
+      }
+    })();
+  });
   return (
     <>
       {payments?.map((payment, index) => (

@@ -1,7 +1,6 @@
 "use client"
 
 import { FaPencil, FaPhone } from "react-icons/fa6";
-import baseUrl from "@/constants/baseUrl";
 import { useEffect, useState } from "react";
 
 export default function VendorDetails({ vendorId }) {
@@ -9,7 +8,7 @@ export default function VendorDetails({ vendorId }) {
   useEffect(() => {
     (async () => {
       try {
-        const response = await fetch(`${baseUrl}/api/vendors/${vendorId}`, {
+        const response = await fetch(`/api/vendors/${vendorId}`, {
           method: "GET",
           headers: { "Content-type": "application/json" },
           cache: "no-store",
