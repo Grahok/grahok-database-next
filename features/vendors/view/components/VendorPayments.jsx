@@ -44,13 +44,13 @@ export default async function VendorPayments({ vendorId }) {
               >
                 <FaPencil />
               </a>
-              {/* <ConfirmDialog
+              <ConfirmDialog
                 className="p-2 bg-red-600 text-white rounded-md cursor-pointer hover:bg-red-700 transition duration-200"
                 message="Do you really want to delete this payment?"
                 label="Delete"
               >
                 <FaTrash />
-              </ConfirmDialog> */}
+              </ConfirmDialog>
             </div>
           </td>
         </tr>

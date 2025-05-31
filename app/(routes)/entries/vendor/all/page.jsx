@@ -1,13 +1,35 @@
-import baseUrl from "@/constants/baseUrl";
-import { FaBullseye, FaDollarSign, FaEye, FaHashtag, FaMobile, FaPencil, FaTrash, FaUser } from "react-icons/fa6";
+"use client";
 
-export default async function AllVendorEntries() {
-  const response = await fetch(`${baseUrl}/api/entries/vendor`, {
-    method: "GET",
-    headers: { "Content-type": "application/json" },
-    cache: "no-store",
-  });
-  const { entries } = await response.json();
+import baseUrl from "@/constants/baseUrl";
+import { useEffect, useState } from "react";
+import {
+  FaBullseye,
+  FaDollarSign,
+  FaEye,
+  FaHashtag,
+  FaMobile,
+  FaPencil,
+  FaTrash,
+  FaUser,
+} from "react-icons/fa6";
+
+export default function AllVendorEntries() {
+  const [entries, setEntries] = useState([]);
+  useEffect(() => {
+    (async () => {
+      try {
+        const response = await fetch(`${baseUrl}/api/entries/vendor`, {
+          method: "GET",
+          headers: { "Content-type": "application/json" },
+          cache: "no-store",
+        });
+        const { entries } = await response.json();
+        setEntries(entries);
+      } catch (error) {
+        console.error(error);
+      }
+    })();
+  }, []);
 
   const totalDiscount = entries.reduce((acc, entry) => {
     return acc + entry.totalDiscount;

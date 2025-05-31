@@ -1,11 +1,11 @@
 import { FaArrowLeft } from "react-icons/fa6";
-import { getVendorEntry } from "./actions/getVendorEntry";
 import inputDateFormat from "@/utils/inputDateFormat";
+import fetchVendorEntry from "@/features/entries/vendor/actions/fetchVendorEntry";
 
 export default async function ViewEntry({ params }) {
   const { entryId } = await params;
 
-  const response = await getVendorEntry(entryId);
+  const response = await fetchVendorEntry(entryId);
   const { entry } = await response.json();
   entry.orderDate = inputDateFormat(entry.orderDate);
   entry.entryDate = inputDateFormat(entry.entryDate);

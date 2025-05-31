@@ -17,11 +17,13 @@ import {
 import Image from "next/image";
 import grahokLogo from "@/public/logo.png";
 import {
+  BadgeDollarSign,
   Box,
   Boxes,
   ShoppingCartIcon as CartPlus,
   ChevronDown,
   Database,
+  DollarSign,
   Home,
   List,
   PieChart,
@@ -128,6 +130,22 @@ export default function AppSidebar() {
           title: "Add Product",
           url: "/products/add",
           icon: Box,
+        },
+      ],
+    },
+    {
+      type: "group",
+      title: "Expenses",
+      items: [
+        {
+          title: "All Expenses",
+          url: "/expenses/all",
+          icon: BadgeDollarSign,
+        },
+        {
+          title: "Add Expense",
+          url: "/expenses/add",
+          icon: DollarSign,
         },
       ],
     },

@@ -90,6 +90,7 @@ export default function VendorOrders({ vendorId }) {
                 className="p-2 bg-red-600 text-white rounded-md cursor-pointer hover:bg-red-700 transition duration-200"
                 message="Do you really want to delete this order?"
                 label="Delete"
+                onConfirm={() => deleteVendorEntry(entry._id)}
               >
                 <FaTrash />
               </ConfirmDialog>
