@@ -17,8 +17,6 @@ import {
 import ConfirmDialog from "@/components/ConfirmDialog";
 import formatDate from "@/utils/formatDate";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import inputDateFormat from "@/utils/inputDateFormat";
-import firstDateOfCurrentMonth from "@/utils/firstDateOfCurrentMonth";
 import {
   LuChevronLeft,
   LuChevronRight,
@@ -27,6 +25,7 @@ import {
 } from "react-icons/lu";
 import getCustomers from "@/features/customers/actions/fetchCustomers";
 import deleteCustomer from "@/features/customers/actions/deleteCustomer";
+import { LoaderPinwheel } from "lucide-react";
 
 export default function AllCustomers() {
   const router = useRouter();
@@ -37,19 +36,12 @@ export default function AllCustomers() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const searchParams = useSearchParams();
-  const fromDateParam =
-    searchParams.get("fromDate") ||
-    firstDateOfCurrentMonth(new Date(Date.now()));
-  const toDateParam =
-    searchParams.get("toDate") || inputDateFormat(new Date(Date.now()));
   const pageParam = Number(searchParams.get("page")) || 1;
   const itemsPerPageParam = Number(searchParams.get("itemsPerPage")) || 20;
   const [itemsPerPage, setItemsPerPage] = useState(itemsPerPageParam);
   const [isSpinning, setIsSpinning] = useState(false);
   const queryObj = new URLSearchParams({
     ...Object.fromEntries(searchParams.entries()),
-    fromDate: fromDateParam,
-    toDate: toDateParam,
     itemsPerPage: itemsPerPageParam,
     page: pageParam,
   });
@@ -89,52 +81,6 @@ export default function AllCustomers() {
       <div className="flex items-center justify-between gap-6">
         <h1 className="text-3xl font-bold">All Customers:</h1>
         <form className="flex items-center gap-3 flex-wrap justify-end">
-          <div className="flex items-center md:items-end gap-6 rounded-lg border border-gray-400 px-4 py-2">
-            <div className="flex items-center gap-2 w-full md:w-1/2">
-              <label
-                htmlFor="fromDate"
-                className="font-medium text-gray-700 mb-1"
-              >
-                From:
-              </label>
-              <input
-                className="p-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-                type="date"
-                name="fromDate"
-                id="fromDate"
-                defaultValue={fromDateParam}
-              />
-            </div>
-            <div className="flex items-center gap-2 w-full md:w-1/2">
-              <label
-                htmlFor="toDate"
-                className="font-medium text-gray-700 mb-1"
-              >
-                To:
-              </label>
-              <input
-                className="p-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-                type="date"
-                name="toDate"
-                id="toDate"
-                defaultValue={toDateParam}
-              />
-            </div>
-            <div className="flex items-center gap-2">
-              <button
-                type="submit"
-                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-1.5 px-3 rounded-md transition w-full md:w-auto"
-              >
-                Submit
-              </button>
-              <a href="/customers/all" className="p-1.5 bg-orange-300 rounded">
-                <FaRotateRight
-                  className={`${isSpinning && "animate-spin"} size-5`}
-                  onClick={() => setIsSpinning(true)}
-                />
-              </a>
-            </div>
-          </div>
           <div className="flex items-center gap-3">
             <div className="w-full flex items-center gap-2 rounded border border-gray-300 focus-within:ring-2 focus-within:ring-blue-500 transition leading-none">
               <input
@@ -153,6 +99,12 @@ export default function AllCustomers() {
                 <FaMagnifyingGlass />
               </button>
             </div>
+            <a href="/customers/all" className="p-1.5 bg-orange-300 rounded">
+              <FaRotateRight
+                className={`${isSpinning && "animate-spin"} size-5`}
+                onClick={() => setIsSpinning(true)}
+              />
+            </a>
             <div>
               <select
                 name="itemsPerPage"
@@ -183,7 +135,7 @@ export default function AllCustomers() {
         </form>
       </div>
       <div>
-        <table className="w-full [&_th,_td]:border [&_th,_td]:p-3 [&_div]:flex [&_div]:justify-self-center text-center">
+        <table className="w-full table-auto [&_th,_td]:border [&_th,_td]:p-3 [&_div]:flex [&_div]:justify-self-center text-center">
           <thead>
             <tr>
               <th>
@@ -226,9 +178,18 @@ export default function AllCustomers() {
           </thead>
           <tbody>
             {loading && (
-              <tr>
-                <td colSpan={6}>Loading...</td>
-              </tr>
+              <>
+                <tr>
+                  <td colSpan={6} className="bg-gray-50">
+                    <div className="flex justify-center">
+                      <LoaderPinwheel
+                        className="animate-spin text-blue-400"
+                        size={100}
+                      />
+                    </div>
+                  </td>
+                </tr>
+              </>
             )}
             {!loading && !customers.length && (
               <tr>

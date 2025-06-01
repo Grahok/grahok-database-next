@@ -8,14 +8,14 @@ export async function GET(_, { params }) {
   try {
     await connectToDatabase();
 
-    const entries = await VendorEntry.findById(entryId)
+    const entry = await VendorEntry.findById(entryId)
       .populate("vendor", "name mobileNumber address")
-      .populate("products.product", "name");
+      .populate("products.product", "name inStock");
 
     return new Response(
       JSON.stringify({
         message: "✅ Entry Fetched Successfully",
-        entries,
+        entry,
       }),
       {
         status: 200,

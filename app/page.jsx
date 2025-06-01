@@ -1,124 +1,107 @@
 import {
-  FaBoxesStacked,
-  FaCirclePlus,
-  FaDatabase,
-  FaUpRightFromSquare,
-  FaUser,
-  FaUserPlus,
-} from "react-icons/fa6";
+  HomeIcon,
+  DatabaseIcon,
+  ShoppingCartIcon,
+  UsersIcon,
+  UserIcon,
+  BadgeDollarSignIcon,
+  DollarSignIcon,
+  ShieldIcon,
+  ListIcon,
+  BoxesIcon,
+  BoxIcon,
+} from "lucide-react";
+import LinkCard from "@/features/home/components/LinkCard";
 
 export default function Home() {
+  const items = [
+    {
+      title: "All Customer Entries",
+      url: "/entries/customer/all",
+      icon: DatabaseIcon,
+    },
+    {
+      title: "Add Customer Entry",
+      url: "/entries/customer/add",
+      icon: ShoppingCartIcon,
+    },
+    {
+      title: "All Vendor Entries",
+      url: "/entries/vendor/all",
+      icon: DatabaseIcon,
+    },
+    {
+      title: "Add Vendor Entry",
+      url: "/entries/vendor/add",
+      icon: ShoppingCartIcon,
+    },
+    {
+      title: "All Customers",
+      url: "/customers/all",
+      icon: UsersIcon,
+    },
+    {
+      title: "Add Customer",
+      url: "/customers/add",
+      icon: UserIcon,
+    },
+    {
+      title: "All Vendors",
+      url: "/vendors/all",
+      icon: UsersIcon,
+    },
+    {
+      title: "Add Vendor",
+      url: "/vendors/add",
+      icon: UserIcon,
+    },
+    {
+      title: "All Products",
+      url: "/products/all",
+      icon: BoxesIcon,
+    },
+    {
+      title: "Add Product",
+      url: "/product/add",
+      icon: BoxIcon,
+    },
+    {
+      title: "All Expenses",
+      url: "/expenses/all",
+      icon: BadgeDollarSignIcon,
+    },
+    {
+      title: "Add Expense",
+      url: "/expenses/add",
+      icon: DollarSignIcon,
+    },
+    {
+      title: "Fraud Checker",
+      url: "/fraud-checker",
+      icon: ShieldIcon,
+    },
+    {
+      title: "Courier List",
+      url: "/courier-list",
+      icon: ListIcon,
+    },
+  ];
+
   return (
     <section className="flex flex-col justify-between gap-6 grow">
-      <section className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-6">
-        <a
-          href="/entries/customer/all"
-          className="flex items-center justify-between gap-3 bg-gray-100 p-4 rounded-lg shadow-md hover:bg-gray-200 transition group h-20"
-        >
-          <div className="flex items-center gap-3 flex-1">
-            <FaDatabase className="size-5 flex-shrink-0" />
-            <p className="whitespace-normal leading-tight">
-              All Customer Entries
-            </p>
-          </div>
-          <FaUpRightFromSquare className="hidden group-hover:block transition-transform duration-300 ease-in-out size-5 flex-shrink-0" />
-        </a>
-        <a
-          href="/entries/customer/add"
-          className="flex items-center justify-between gap-3 bg-gray-100 p-4 rounded-lg shadow-md hover:bg-gray-200 transition group h-20"
-        >
-          <div className="flex items-center gap-3 flex-1">
-            <FaCirclePlus className="size-5 flex-shrink-0" />
-            <p className="whitespace-normal leading-tight">
-              Add Customer Entry
-            </p>
-          </div>
-          <FaUpRightFromSquare className="hidden group-hover:block transition-transform duration-300 ease-in-out size-5 flex-shrink-0" />
-        </a>
-        <a
-          href="/entries/vendor/all"
-          className="flex items-center justify-between gap-3 bg-gray-100 p-4 rounded-lg shadow-md hover:bg-gray-200 transition group h-20"
-        >
-          <div className="flex items-center gap-3 flex-1">
-            <FaDatabase className="size-5 flex-shrink-0" />
-            <p className="whitespace-normal leading-tight">
-              All Vendor Entries
-            </p>
-          </div>
-          <FaUpRightFromSquare className="hidden group-hover:block transition-transform duration-300 ease-in-out size-5 flex-shrink-0" />
-        </a>
-        <a
-          href="/entries/vendor/add"
-          className="flex items-center justify-between gap-3 bg-gray-100 p-4 rounded-lg shadow-md hover:bg-gray-200 transition group h-20"
-        >
-          <div className="flex items-center gap-3 flex-1">
-            <FaCirclePlus className="size-5 flex-shrink-0" />
-            <p className="whitespace-normal leading-tight">Add Vendor Entry</p>
-          </div>
-          <FaUpRightFromSquare className="hidden group-hover:block transition-transform duration-300 ease-in-out size-5 flex-shrink-0" />
-        </a>
-        <a
-          href="/customers/all"
-          className="flex items-center justify-between gap-3 bg-gray-100 p-4 rounded-lg shadow-md hover:bg-gray-200 transition group h-20"
-        >
-          <div className="flex items-center gap-3 flex-1">
-            <FaUser className="size-5 flex-shrink-0" />
-            <p className="whitespace-normal leading-tight">All Customers</p>
-          </div>
-          <FaUpRightFromSquare className="hidden group-hover:block transition-transform duration-300 ease-in-out size-5 flex-shrink-0" />
-        </a>
-        <a
-          href="/customers/add"
-          className="flex items-center justify-between gap-3 bg-gray-100 p-4 rounded-lg shadow-md hover:bg-gray-200 transition group h-20"
-        >
-          <div className="flex items-center gap-3 flex-1">
-            <FaUserPlus className="size-5 flex-shrink-0" />
-            <p className="whitespace-normal leading-tight">Add Customer</p>
-          </div>
-          <FaUpRightFromSquare className="hidden group-hover:block transition-transform duration-300 ease-in-out size-5 flex-shrink-0" />
-        </a>
-        <a
-          href="/vendors/all"
-          className="flex items-center justify-between gap-3 bg-gray-100 p-4 rounded-lg shadow-md hover:bg-gray-200 transition group h-20"
-        >
-          <div className="flex items-center gap-3 flex-1">
-            <FaUser className="size-5 flex-shrink-0" />
-            <p className="whitespace-normal leading-tight">All Vendors</p>
-          </div>
-          <FaUpRightFromSquare className="hidden group-hover:block transition-transform duration-300 ease-in-out size-5 flex-shrink-0" />
-        </a>
-        <a
-          href="/vendors/add"
-          className="flex items-center justify-between gap-3 bg-gray-100 p-4 rounded-lg shadow-md hover:bg-gray-200 transition group h-20"
-        >
-          <div className="flex items-center gap-3 flex-1">
-            <FaUserPlus className="size-5 flex-shrink-0" />
-            <p className="whitespace-normal leading-tight">Add Vendor</p>
-          </div>
-          <FaUpRightFromSquare className="hidden group-hover:block transition-transform duration-300 ease-in-out size-5 flex-shrink-0" />
-        </a>
-        <a
-          href="/products/all"
-          className="flex items-center justify-between gap-3 bg-gray-100 p-4 rounded-lg shadow-md hover:bg-gray-200 transition group h-20"
-        >
-          <div className="flex items-center gap-3 flex-1">
-            <FaBoxesStacked className="size-5 flex-shrink-0" />
-            <p className="whitespace-normal leading-tight">All Products</p>
-          </div>
-          <FaUpRightFromSquare className="hidden group-hover:block transition-transform duration-300 ease-in-out size-5 flex-shrink-0" />
-        </a>
-        <a
-          href="/products/add"
-          className="flex items-center justify-between gap-3 bg-gray-100 p-4 rounded-lg shadow-md hover:bg-gray-200 transition group h-20"
-        >
-          <div className="flex items-center gap-3 flex-1">
-            <FaCirclePlus className="size-5 flex-shrink-0" />
-            <p className="whitespace-normal leading-tight">Add Product</p>
-          </div>
-          <FaUpRightFromSquare className="hidden group-hover:block transition-transform duration-300 ease-in-out size-5 flex-shrink-0" />
-        </a>
+      <section className="grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-6">
+        {items.map((item, index) => (
+          <LinkCard
+            key={index}
+            title={item.title}
+            url={item.url}
+            icon={item.icon}
+          />
+        ))}
       </section>
-      <strong className="text-right">Created for 💵 by Shakil Ahmmed | Chitti V3.0</strong>
+      <strong className="text-right">
+        Created for 💵 by Shakil Ahmmed | Chitti V3.1
+      </strong>
     </section>
   );
 }

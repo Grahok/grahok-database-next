@@ -14,6 +14,7 @@ import {
 import fetchVendors from "@/features/vendors/actions/fetchVendors";
 import deleteVendor from "@/features/vendors/actions/deleteVendor";
 import ConfirmDialog from "@/components/ConfirmDialog";
+import { LoaderPinwheel } from "lucide-react";
 
 export default function AllVendors() {
   const [vendors, setVendors] = useState([]);
@@ -36,9 +37,7 @@ export default function AllVendors() {
   async function handleDelete(vendorId) {
     try {
       await deleteVendor(vendorId);
-      setVendors((prev) =>
-        prev.filter((vendor) => vendor._id !== vendorId)
-      );
+      setVendors((prev) => prev.filter((vendor) => vendor._id !== vendorId));
       console.log("Vendor deleted successfully");
     } catch (error) {
       console.error("Error deleting vendor:", error);
@@ -86,7 +85,14 @@ export default function AllVendors() {
         <tbody>
           {loading && (
             <tr>
-              <td colSpan={9}>Loading...</td>
+              <td colSpan={9} className="bg-gray-50">
+                <div className="flex justify-center">
+                  <LoaderPinwheel
+                    className="animate-spin text-blue-400"
+                    size={100}
+                  />
+                </div>
+              </td>
             </tr>
           )}
           {!loading && !vendors.length && (

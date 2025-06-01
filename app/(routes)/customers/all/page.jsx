@@ -1,7 +1,7 @@
 "use client";
 
+import AllCustomers from "@/features/customers/all/components/AllCustomers";
 import { Suspense } from "react";
-import AllCustomers from "./components/AllCustomers";
 
 export default function AllCustomerEntriesWrapper() {
   return (

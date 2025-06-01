@@ -1,5 +1,6 @@
 "use client";
 
+import { LoaderPinwheel } from "lucide-react";
 import { useEffect, useState } from "react";
 import {
   FaBullseye,
@@ -14,6 +15,7 @@ import {
 
 export default function AllVendorEntries() {
   const [entries, setEntries] = useState([]);
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     (async () => {
       try {
@@ -26,6 +28,8 @@ export default function AllVendorEntries() {
         setEntries(entries);
       } catch (error) {
         console.error(error);
+      } finally {
+        setLoading(false);
       }
     })();
   }, []);
@@ -91,16 +95,23 @@ export default function AllVendorEntries() {
           </tr>
         </thead>
         <tbody>
-          {/* {loading && (
+          {loading && (
             <tr>
-              <td colSpan={7}>Loading...</td>
+              <td colSpan={7} className="bg-gray-50">
+                <div className="flex justify-center">
+                  <LoaderPinwheel
+                    className="animate-spin text-blue-400"
+                    size={100}
+                  />
+                </div>
+              </td>
             </tr>
           )}
           {!loading && !entries.length && (
             <tr>
               <td colSpan={7}>No Entries Found</td>
             </tr>
-          )} */}
+          )}
           {entries.map((entry, index) => (
             <tr key={entry._id} className="hover:bg-gray-100">
               <td>{index + 1}</td>

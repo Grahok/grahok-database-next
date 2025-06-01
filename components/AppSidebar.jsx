@@ -177,7 +177,7 @@ export default function AppSidebar() {
           <Image src={grahokLogo} height={75} alt="" />
         </a>
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className="scrollbar-none">
         <SidebarMenu className="px-3 flex flex-col gap-4">
           {sidebarItems.map((item, index) => {
             if (item.type === "item") {

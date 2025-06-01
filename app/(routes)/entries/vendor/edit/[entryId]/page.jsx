@@ -59,7 +59,7 @@ export default function EditEntry({ params }) {
           ...prev,
           show: false,
         }));
-        router.push("/entries/all");
+        router.back();
       }, 2000);
     } catch (_) {
       setToast({ show: true, message: "Error updating entry." });

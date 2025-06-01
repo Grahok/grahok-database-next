@@ -20,6 +20,7 @@ import inputDateFormat from "@/utils/inputDateFormat";
 import fetchCustomerEntries from "../../actions/fetchCustomerEntries";
 import deleteCustomerEntry from "../../actions/deleteCustomerEntry";
 import ConfirmDialog from "@/components/ConfirmDialog";
+import { LoaderPinwheel } from "lucide-react";
 
 export default function AllCustomerEntries() {
   const router = useRouter();
@@ -68,9 +69,7 @@ export default function AllCustomerEntries() {
   async function handleDelete(entryId) {
     try {
       await deleteCustomerEntry(entryId);
-      setEntries((prev) =>
-        prev.filter((entry) => entry._id !== entryId)
-      );
+      setEntries((prev) => prev.filter((entry) => entry._id !== entryId));
       console.log("Entry deleted successfully");
     } catch (error) {
       console.error("Error deleting entry:", error);
@@ -234,7 +233,14 @@ export default function AllCustomerEntries() {
           <tbody>
             {loading && (
               <tr>
-                <td colSpan={17}>Loading...</td>
+                <td colSpan={17} className="bg-gray-50">
+                  <div className="flex justify-center">
+                    <LoaderPinwheel
+                      className="animate-spin text-blue-400"
+                      size={100}
+                    />
+                  </div>
+                </td>
               </tr>
             )}
             {!loading && !entries.length && (

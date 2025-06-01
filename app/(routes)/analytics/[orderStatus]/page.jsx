@@ -20,6 +20,7 @@ import firstDateOfCurrentMonth from "@/utils/firstDateOfCurrentMonth";
 import inputDateFormat from "@/utils/inputDateFormat";
 import fetchCustomerEntries from "@/features/entries/customer/actions/fetchCustomerEntries";
 import deleteCustomerEntry from "@/features/entries/customer/actions/deleteCustomerEntry";
+import { LoaderPinwheel } from "lucide-react";
 
 export default function AllCustomerEntries({ params }) {
   const { orderStatus } = React.use(params);
@@ -236,7 +237,13 @@ export default function AllCustomerEntries({ params }) {
           <tbody>
             {loading && (
               <tr>
-                <td colSpan={17}>Loading...</td>
+                <td colSpan={17} className="bg-gray-50">
+                    <div className="flex justify-center">
+                      <LoaderPinwheel
+                        className="animate-spin text-blue-400"
+                        size={100}
+                      />
+                    </div></td>
               </tr>
             )}
             {!loading && !entries.length && (

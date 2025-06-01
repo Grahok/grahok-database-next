@@ -5,6 +5,7 @@ import { FaEye, FaPencil, FaPhone, FaTrash } from "react-icons/fa6";
 import fetchCustomerEntriesByCustomerId from "@/features/entries/customer/actions/fetchCustomerEntryByCustomerId";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import Toast from "@/components/Toast";
+import { LoaderPinwheel } from "lucide-react";
 
 export default function CustomerDeatils({ params }) {
   const { customerId } = React.use(params);
@@ -146,8 +147,13 @@ export default function CustomerDeatils({ params }) {
               )}
               {loading && (
                 <tr>
-                  <td colSpan={6} className="text-center">
-                    Loading...
+                  <td colSpan={6} className="bg-gray-50">
+                    <div className="flex justify-center">
+                      <LoaderPinwheel
+                        className="animate-spin text-blue-400"
+                        size={100}
+                      />
+                    </div>
                   </td>
                 </tr>
               )}

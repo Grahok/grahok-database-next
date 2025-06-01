@@ -15,6 +15,7 @@ import getExpenses from "@/features/expenses/actions/fetchExpenses";
 import deleteExpense from "@/features/expenses/actions/deleteExpense";
 import Toast from "@/components/Toast";
 import EXPENSE_CATEGORIES from "@/constants/expenseCategories";
+import { LoaderPinwheel } from "lucide-react";
 
 export default function AllExpenses() {
   const router = useRouter();
@@ -209,7 +210,14 @@ export default function AllExpenses() {
           <tbody>
             {loading && (
               <tr>
-                <td colSpan={7}>Loading...</td>
+                <td colSpan={7} className="bg-gray-50">
+                  <div className="flex justify-center">
+                    <LoaderPinwheel
+                      className="animate-spin text-blue-400"
+                      size={100}
+                    />
+                  </div>
+                </td>
               </tr>
             )}
             {!loading && !expenses.length && (

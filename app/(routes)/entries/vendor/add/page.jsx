@@ -129,7 +129,7 @@ export default function AddVendorEntry() {
           ...prev,
           show: false,
         }));
-        router.push("/entries/vendor/all");
+        router.back();
       }, 2000);
     } catch (err) {
       console.error(err);

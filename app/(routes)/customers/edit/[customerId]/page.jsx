@@ -2,6 +2,7 @@
 
 import Toast from "@/components/Toast";
 import fetchCustomer from "@/features/customers/actions/fetchCustomer";
+import { updateCustomer } from "@/features/customers/actions/updateCustomer";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
@@ -30,7 +31,7 @@ export default function EditCustomer({ params }) {
     try {
       const response = await updateCustomer(customerId, customerData);
       if (response.ok) {
-        router.push("/customers/all");
+        router.back();
       }
     } catch (error) {
       console.log("Error Updating Customer", error);

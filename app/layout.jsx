@@ -28,7 +28,7 @@ export default function RootLayout({ children }) {
       >
         <SidebarProvider>
           <AppSidebar />
-          <main className="bg-gray-50 text-gray-800 flex flex-col gap-6 p-6 w-full">
+          <main className="bg-gray-50 text-gray-800 flex flex-col gap-8 p-6 w-full">
             <h1 className="text-4xl font-bold text-blue-600 text-center">
               Grahok Database
             </h1>

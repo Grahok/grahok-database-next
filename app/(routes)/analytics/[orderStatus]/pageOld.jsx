@@ -12,6 +12,7 @@ import { fetchEntries, deleteEntry } from "./actions";
 import ConfirmDialog from "@/app/components/ConfirmDialog";
 import formatDate from "@/utils/formatDate";
 import { useSearchParams } from "next/navigation";
+import { LoaderPinwheel } from "lucide-react";
 
 export default function AllCustomerEntries({ params }) {
   const { orderStatus } = React.use(params);
@@ -195,7 +196,14 @@ export default function AllCustomerEntries({ params }) {
         <tbody>
           {loading && (
             <tr>
-              <td colSpan={17}>Loading...</td>
+              <td colSpan={17} className="bg-gray-50">
+                <div className="flex justify-center">
+                  <LoaderPinwheel
+                    className="animate-spin text-blue-400"
+                    size={100}
+                  />
+                </div>
+              </td>
             </tr>
           )}
           {!loading && !entries.length && (

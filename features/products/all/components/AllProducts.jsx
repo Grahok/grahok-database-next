@@ -21,6 +21,7 @@ import {
 import ConfirmDialog from "@/components/ConfirmDialog";
 import fetchProducts from "../../actions/fetchProducts";
 import deleteProduct from "../../actions/deleteProducts";
+import { LoaderPinwheel } from "lucide-react";
 
 export default function AllProducts() {
   const router = useRouter();
@@ -94,13 +95,13 @@ export default function AllProducts() {
               >
                 <FaMagnifyingGlass />
               </button>
-              </div>
-              <a href="/customers/all" className="p-1.5 bg-orange-300 rounded">
-                <FaRotateRight
-                  className={`${isSpinning && "animate-spin"} size-5`}
-                  onClick={() => setIsSpinning(true)}
-                />
-              </a>
+            </div>
+            <a href="/customers/all" className="p-1.5 bg-orange-300 rounded">
+              <FaRotateRight
+                className={`${isSpinning && "animate-spin"} size-5`}
+                onClick={() => setIsSpinning(true)}
+              />
+            </a>
             <div>
               <select
                 name="itemsPerPage"
@@ -174,7 +175,14 @@ export default function AllProducts() {
         <tbody>
           {loading && (
             <tr>
-              <td colSpan={6}>Loading...</td>
+              <td colSpan={6} className="bg-gray-50">
+                <div className="flex justify-center">
+                  <LoaderPinwheel
+                    className="animate-spin text-blue-400"
+                    size={100}
+                  />
+                </div>
+              </td>
             </tr>
           )}
           {!loading && !products.length && (

@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import ConfirmDialog from "@/components/ConfirmDialog";
 import formatDate from "@/utils/formatDate";
@@ -44,12 +44,6 @@ export default function VendorPayments({ vendorId }) {
           <td>{payment.amount}</td>
           <td>
             <div className="flex gap-1 justify-center">
-              <a
-                className="p-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200"
-                href={`/entries/vendor/view/${payment._id}`}
-              >
-                <FaEye />
-              </a>
               <a
                 className="p-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition duration-200"
                 href={`/entries/vendor/edit/${payment._id}`}

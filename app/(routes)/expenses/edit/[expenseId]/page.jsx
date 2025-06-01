@@ -31,7 +31,7 @@ export default function EditExpense({ params }) {
     try {
       const response = await updateExpense(expenseId, expenseData);
       if (response.ok) {
-        router.push("/expenses/all");
+        router.back();
       }
     } catch (error) {
       console.log("Error Updating Expense", error);

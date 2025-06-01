@@ -82,23 +82,12 @@ export async function GET(req) {
   try {
     await connectToDatabase();
     const url = new URL(req.url);
-    const fromDate = url.searchParams.get("fromDate");
-    const toDate = url.searchParams.get("toDate");
     const search = url.searchParams.get("search");
     const page = parseInt(url.searchParams.get("page")) || 1;
     const itemsPerPage = parseInt(url.searchParams.get("itemsPerPage")) || 0;
 
-    const startUTC = new UTCDate(`${fromDate}T00:00:00`);
-    const endUTC = new UTCDate(`${toDate}T23:59:59.999`);
-
     const query = {};
 
-    if (fromDate && toDate) {
-      query.entryDate = {
-        $gte: new Date(startUTC),
-        $lte: new Date(endUTC),
-      };
-    }
     if (search) {
       query.$or = [
         { name: { $regex: search, $options: "i" } },
