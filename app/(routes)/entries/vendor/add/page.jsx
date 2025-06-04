@@ -69,8 +69,8 @@ export default function AddVendorEntry() {
           throw new Error("Failed to create new vendor.");
         }
 
-        const newVendor = await res.json();
-        vendorId = newVendor._id;
+        const { vendor } = await res.json();
+        vendorId = vendor._id;
       }
 
       const totalQuantity = Number(

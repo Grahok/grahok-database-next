@@ -48,36 +48,6 @@ export async function POST(req) {
   }
 }
 
-// export async function GET() {
-//   try {
-//     await connectToDatabase();
-//     const customers = await Customer.find().sort({ entryDate: -1 });
-
-//     return new Response(
-//       JSON.stringify({
-//         message: "✅ Customers fetched successfully",
-//         customers: customers,
-//       }),
-//       {
-//         status: 200,
-//         headers: { "Content-type": "application/json" },
-//       }
-//     );
-//   } catch (error) {
-//     console.error("❌ Error fetching customers:", error);
-//     return new Response(
-//       JSON.stringify({
-//         message: "❌ Error Fetching customers",
-//         error: error.message,
-//       }),
-//       {
-//         status: 500,
-//         headers: { "Content-type": "application/json" },
-//       }
-//     );
-//   }
-// }
-
 export async function GET(req) {
   try {
     await connectToDatabase();
@@ -101,7 +71,7 @@ export async function GET(req) {
 
     // Fetch paginated entries
     const customers = await Customer.find(query)
-      .sort({ orderDate: -1 })
+      .sort({ entryDate: -1 })
       .skip((page - 1) * itemsPerPage)
       .limit(itemsPerPage);
 

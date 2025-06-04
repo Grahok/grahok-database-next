@@ -8,15 +8,7 @@ export default async function ViewVendor({ params }) {
   return (
     <main>
       <header>
-        <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold">View Vendor</h1>
-          <a
-            href="/vendors/all"
-            className="px-4 py-2 rounded-md bg-blue-600 text-white cursor-pointer hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-          >
-            All Vendors
-          </a>
-        </div>
       </header>
       <main className="grid grid-cols-1 gap-x-16 gap-y-8 p-4 xl:grid-cols-[1fr_2fr]">
         <VendorDetails vendorId={vendorId} />
@@ -43,33 +35,7 @@ export default async function ViewVendor({ params }) {
               </table>
             </div>
           </div>
-          <div>
-            <div className="flex justify-between">
-              <h1 className="text-2xl font-semibold">Payments</h1>
-              <button
-                type="button"
-                className="px-4 py-2 rounded-md bg-blue-600 text-white cursor-pointer hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-              >
-                Add Payment
-              </button>
-            </div>
-            <div className="overflow-x-auto">
-              <table className="w-full text-center mt-4 border-collapse [&_th]:bg-gray-200 border border-gray-200 [&_th,_td]:border [&_th]:border-gray-200 [&_td]:border-gray-200 [&_th]:p-2 [&_td]:p-2">
-                <thead>
-                  <tr>
-                    <th>SL</th>
-                    <th>Invoice Number</th>
-                    <th>Payment Date</th>
-                    <th>Amount</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody className=" [&_tr:nth-child(even)]:bg-gray-100">
-                  <VendorPayments vendorId={vendorId} />
-                </tbody>
-              </table>
-            </div>
-          </div>
+          <VendorPayments vendorId={vendorId} />
         </section>
       </main>
     </main>

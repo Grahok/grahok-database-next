@@ -11,7 +11,7 @@ import {
   BoxesIcon,
   BoxIcon,
 } from "lucide-react";
-import LinkCard from "@/features/home/components/LinkCard";
+import LinkCard from "@/components/LinkCard";
 
 export default function Home() {
   const items = [

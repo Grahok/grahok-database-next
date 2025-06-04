@@ -17,6 +17,7 @@ import formatDate from "@/utils/formatDate";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FaEye, FaPencil, FaPlus, FaTrash } from "react-icons/fa6";
+import AddVendorPaymentForm from "./AddVendorPaymentForm";
 
 export default function VendorOrders({ vendorId }) {
   const [entries, setEntries] = useState();
@@ -80,12 +81,6 @@ export default function VendorOrders({ vendorId }) {
               >
                 <FaEye />
               </a>
-              <a
-                className="p-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition duration-200"
-                href={`/entries/vendor/edit/${entry._id}`}
-              >
-                <FaPencil />
-              </a>
               <ConfirmDialog
                 className="p-2 bg-red-600 text-white rounded-md cursor-pointer hover:bg-red-700 transition duration-200"
                 message="Do you really want to delete this order?"
@@ -100,52 +95,9 @@ export default function VendorOrders({ vendorId }) {
                 <FaTrash />
               </ConfirmDialog>
 
-              <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-                <DialogTrigger className="p-2 bg-blue-600 text-white rounded-md cursor-pointer hover:bg-blue-700 transition duration-200">
-                  <FaPlus />
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Add Payment</DialogTitle>
-                  </DialogHeader>
-                  <form
-                    className="flex flex-col gap-4 *:flex *:flex-col *:gap-1"
-                    onSubmit={addNewPayment}
-                  >
-                    <div>
-                      <Label htmlFor="invoiceNumber" className="font-semibold">
-                        Invoice Number
-                      </Label>
-                      <Input
-                        type="text"
-                        id="invoiceNumber"
-                        name="invoiceNumber"
-                        defaultValue={entry.invoiceNumber}
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="paymentDate" className="font-semibold">
-                        Payment Date
-                      </Label>
-                      <Input type="date" id="paymentDate" name="paymentDate" />
-                    </div>
-                    <div>
-                      <Label htmlFor="amount" className="font-semibold">
-                        Amount
-                      </Label>
-                      <Input
-                        type="number"
-                        id="amount"
-                        name="amount"
-                        autoFocus
-                      />
-                    </div>
-                    <DialogFooter>
-                      <Button type="submit">Add Payment</Button>
-                    </DialogFooter>
-                  </form>
-                </DialogContent>
-              </Dialog>
+              <AddVendorPaymentForm entry={entry} onSubmit={addNewPayment}>
+                <FaPlus />
+              </AddVendorPaymentForm>
             </div>
           </td>
         </tr>

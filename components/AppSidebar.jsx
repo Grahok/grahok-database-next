@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   Sidebar,
@@ -165,7 +164,7 @@ export default function AppSidebar() {
     {
       type: "item",
       title: "Courier List",
-      url: "courier-list",
+      url: "/courier-list",
       icon: List,
     },
   ];
@@ -192,11 +191,19 @@ export default function AppSidebar() {
                 </SidebarMenuItem>
               );
             } else if (item.type === "group") {
+              // Determine if any child is active
+              const isGroupActive = item.items.some((subItem) =>
+                isActive(subItem.url)
+              );
               return (
-                <Collapsible defaultOpen className="group/collapsible" key={index}>
+                <Collapsible
+                  defaultOpen={isGroupActive}
+                  className="group/collapsible"
+                  key={index}
+                >
                   <SidebarMenuItem className="flex flex-col gap-2">
                     <CollapsibleTrigger asChild>
-                      <div className="flex items-center justify-between gap-3 w-full">
+                      <div className="flex items-center justify-between gap-3 w-full cursor-pointer">
                         {item.title}
                         <ChevronDown
                           size={18}

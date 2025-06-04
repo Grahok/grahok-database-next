@@ -137,11 +137,11 @@ export default function AllVendorEntries() {
                   </button>
                 </div>
               </td>
-              <td>{entry.vendor.name}</td>
-              <td>{entry.vendor.mobileNumber}</td>
-              <td>{entry.totalPurchasePrice}</td>
-              <td>{entry.totalQuantity}</td>
-              <td>{entry.totalDiscount}</td>
+              <td>{entry?.vendor?.name || "Vendor Not Found"}</td>
+              <td>{entry?.vendor?.mobileNumber || "Vendor Not Found"}</td>
+              <td>{entry?.totalPurchasePrice}</td>
+              <td>{entry?.totalQuantity}</td>
+              <td>{entry?.totalDiscount}</td>
             </tr>
           ))}
           <tr>

@@ -338,12 +338,6 @@ export default function AllExpenses() {
           </button>
         </div>
       </div>
-
-      <ConfirmDialog
-        ref={confirmDialogRef}
-        onConfirm={handleDelete}
-        message="Are you sure you want to delete this expense?"
-      />
       <Toast
         show={toast.show}
         message={toast.message}

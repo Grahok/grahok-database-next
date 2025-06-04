@@ -1,8 +1,10 @@
 "use client";
 
 import createCustomer from "@/features/customers/actions/createCustomer";
+import { useState } from "react";
 
 export default function AddCustomer() {
+  const [toast, setToast] = useState();
   async function handleSubmit(e) {
     e.preventDefault();
     const formData = new FormData(e.target);

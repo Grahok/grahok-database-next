@@ -1,7 +1,7 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
 import AppSidebar from "@/components/AppSidebar";
-import { SidebarProvider } from "@/components/ui/sidebar";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 
 const inter = Inter({
   subsets: [
@@ -29,9 +29,12 @@ export default function RootLayout({ children }) {
         <SidebarProvider>
           <AppSidebar />
           <main className="bg-gray-50 text-gray-800 flex flex-col gap-8 p-6 w-full">
-            <h1 className="text-4xl font-bold text-blue-600 text-center">
+            <div className="flex items-center gap-3">
+              <SidebarTrigger className="block md:hidden" />
+            <h1 className="text-4xl font-bold text-blue-600 text-center grow">
               Grahok Database
             </h1>
+            </div>
             {children}
           </main>
         </SidebarProvider>
