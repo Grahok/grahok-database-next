@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
 import baseUrl from "@/constants/baseUrl";
