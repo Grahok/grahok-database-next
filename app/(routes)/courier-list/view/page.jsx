@@ -5,7 +5,7 @@ import { columns } from "./columns";
 import { DataTable } from "./data-table";
 
 export default async function ViewCourierInfo() {
-  const response = await fetch("/api/courierInfo", {
+  const response = await fetch(`${baseUrl}/api/courierInfo`, {
     method: "GET",
     headers: { "Content-type": "application/json" },
     cache: "no-store",
