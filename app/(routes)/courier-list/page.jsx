@@ -13,11 +13,6 @@ export default function CourierList() {
       url: "/courier-list/add",
       icon: ShoppingCartIcon,
     },
-    {
-      title: "All Courier Info",
-      url: "/courier-list/all",
-      icon: DatabaseIcon,
-    },
   ];
   return (
     <section className="flex flex-col gap-6">

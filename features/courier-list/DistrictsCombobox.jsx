@@ -12,18 +12,15 @@ export default function DistrictsCombobox({ districts, onDistrictSelect }) {
   };
 
   return (
-    <div className="flex flex-col">
-      <label className="text-sm font-medium">Select District</label>
-      <UniversalCombobox
-        data={districts}
-        value={selectedDistrict}
-        onValueChange={handleDistrictChange}
-        placeholder="Choose a district..."
-        searchPlaceholder="Search districts..."
-        emptyMessage="No districts found."
-        displayValue={(district) => district.label}
-        searchValue={(district) => district.label}
-      />
-    </div>
+    <UniversalCombobox
+      data={districts}
+      value={selectedDistrict}
+      onValueChange={handleDistrictChange}
+      placeholder="Choose a district..."
+      searchPlaceholder="Search districts..."
+      emptyMessage="No districts found."
+      displayValue={(district) => district.label}
+      searchValue={(district) => district.label}
+    />
   );
 }

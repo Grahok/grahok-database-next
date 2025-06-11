@@ -1,10 +1,9 @@
 "use client";
 
-import { ArrowUpDown, EyeIcon, PencilIcon, TrashIcon } from "lucide-react";
+import { EyeIcon, PencilIcon, TrashIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import formatDate from "@/utils/formatDate";
 import Link from "next/link";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import deleteCustomer from "@/features/customers/actions/deleteCustomer";
@@ -26,7 +25,7 @@ export const columns = [
       <Checkbox
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select customer"
+        aria-label="Select One"
       />
     ),
     enableSorting: false,
@@ -43,45 +42,61 @@ export const columns = [
       return pageIndex * pageSize + rowIndex + 1;
     },
     enableGlobalFilter: false,
+    enableHiding: false,
   },
   {
-    accessorKey: "entryDate",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Entry Date
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-    cell: ({ row }) => {
-      const entryDate = row.getValue("entryDate");
-      const formatted = formatDate(entryDate);
-
-      return formatted;
-    },
-    enableGlobalFilter: false,
+    accessorKey: "courierName",
+    id: "courierName",
+    header: "Courier Name",
+    enableHiding: false,
   },
   {
-    accessorKey: "name",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Name
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
+    accessorKey: "branchName",
+    id: "branchName",
+    header: "Branch Name",
+  },
+  {
+    accessorKey: "branchId",
+    id: "branchId",
+    header: "Branch Id",
+  },
+  {
+    accessorKey: "branchCode",
+    id: "branchCode",
+    header: "Branch Code",
+  },
+  {
+    accessorKey: "address.division",
+    id: "division",
+    header: "Division",
+    enableHiding: true,
+  },
+  {
+    accessorKey: "address.district",
+    id: "district",
+    header: "District",
+    enableHiding: true,
+  },
+  {
+    accessorKey: "address.upazilla",
+    id: "upazilla",
+    header: "Upazilla",
+    enableHiding: true,
+  },
+  {
+    accessorKey: "address.location",
+    id: "location",
+    header: "Location",
   },
   {
     accessorKey: "mobileNumber",
+    id: "mobileNumber",
     header: "Mobile Number",
+  },
+  {
+    accessorKey: "courierCondition",
+    id: "courierCondition",
+    header: "Courier Condition",
   },
   {
     id: "actions",
