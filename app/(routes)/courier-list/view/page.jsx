@@ -1,8 +1,8 @@
 export const dynamic = "force-dynamic";
 
+import baseUrl from "@/constants/baseUrl";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
-import baseUrl from "@/constants/baseUrl";
 
 export default async function ViewCourierInfo() {
   const response = await fetch(`${baseUrl}/api/courierInfo`, {
