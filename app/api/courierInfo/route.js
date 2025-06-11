@@ -1,13 +1,11 @@
 import { connectToDatabase } from "@/lib/mongoose";
 import CourierInfo from "@/models/CourierInfo";
 
-export async function GET(req) {
+export async function GET() {
   try {
     await connectToDatabase();
     
-    const url = new URL(req.url);
-    const courierName = url.searchParams.get("courierName");
-    const courierInfo = await CourierInfo.find({courierName});
+    const courierInfo = await CourierInfo.find({});
 
     return new Response(
       JSON.stringify({

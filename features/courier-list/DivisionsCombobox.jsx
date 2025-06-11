@@ -12,18 +12,15 @@ export default function DivisionsCombobox({ divisions, onDivisionSelect }) {
   };
 
   return (
-    <div className="flex flex-col">
-      <label className="text-sm font-medium">Select Division</label>
-      <UniversalCombobox
-        data={divisions}
-        value={selectedDivision}
-        onValueChange={handleDivisionChange}
-        placeholder="Choose a division..."
-        searchPlaceholder="Search divisions..."
-        emptyMessage="No divisions found."
-        displayValue={(division) => division.label}
-        searchValue={(division) => division.label}
-      />
-    </div>
+    <UniversalCombobox
+      data={divisions}
+      value={selectedDivision}
+      onValueChange={handleDivisionChange}
+      placeholder="Choose a division..."
+      searchPlaceholder="Search divisions..."
+      emptyMessage="No divisions found."
+      displayValue={(division) => division.label}
+      searchValue={(division) => division.label}
+    />
   );
 }
