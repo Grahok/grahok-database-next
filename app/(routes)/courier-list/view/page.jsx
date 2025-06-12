@@ -17,7 +17,7 @@ export default function ViewCourierInfo() {
         console.error(error);
       }
     })();
-  });
+  }, []);
 
   return (
     <div className="container mx-auto py-10">
