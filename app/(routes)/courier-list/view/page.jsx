@@ -1,15 +1,11 @@
 export const dynamic = "force-dynamic";
 
-import baseUrl from "@/constants/baseUrl";
+import fetchCourierLists from "@/features/courier-list/actions/fetchCourierLists";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
 
 export default async function ViewCourierInfo() {
-  const response = await fetch(`${baseUrl}/api/courierInfo`, {
-    method: "GET",
-    headers: { "Content-type": "application/json" },
-    cache: "no-store",
-  });
+  const response = await fetchCourierLists();
   const { courierInfo } = await response.json();
 
   return (

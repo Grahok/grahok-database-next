@@ -158,6 +158,12 @@ export function DataTable({ columns, data }) {
       <div className="flex items-center justify-between py-4">
         <div className="flex items-end gap-2">
           <Select
+            value={
+              table
+                .getState()
+                .columnFilters.find((filter) => filter.id === "courierName")
+                ?.value || ""
+            }
             onValueChange={(value) => {
               table.setColumnFilters((old) => [
                 ...old.filter((f) => f.id !== "courierName"),
@@ -179,6 +185,12 @@ export function DataTable({ columns, data }) {
           <AdvancedSearch
             placeholder="Choose a division..."
             data={divisions}
+            value={
+              table
+                .getState()
+                .columnFilters.find((filter) => filter.id === "division")
+                ?.value || ""
+            }
             onValueChange={(value) => {
               const division = divisions.find(
                 (division) => division.value === value
@@ -198,6 +210,12 @@ export function DataTable({ columns, data }) {
           <AdvancedSearch
             placeholder="Choose a district..."
             data={districts}
+            value={
+              table
+                .getState()
+                .columnFilters.find((filter) => filter.id === "district")
+                ?.value || ""
+            }
             onValueChange={(value) => {
               const district = districts.find(
                 (district) => district.value === value
@@ -217,6 +235,12 @@ export function DataTable({ columns, data }) {
           <AdvancedSearch
             placeholder="Choose an upazilla..."
             data={upazillas}
+            value={
+              table
+                .getState()
+                .columnFilters.find((filter) => filter.id === "upazilla")
+                ?.value || ""
+            }
             onValueChange={(value) => {
               const upazilla = upazillas.find(
                 (upazilla) => upazilla.value === value
@@ -233,19 +257,16 @@ export function DataTable({ columns, data }) {
             name="upazilla"
             value={selectedUpazilla.value || ""}
           />
-          <div className="flex gap-3">
-            <Button type="submit">Submit</Button>
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
           <Button
             variant="outline"
             className="group"
-            onClick={() => router.refresh()}
+            onClick={() => table.resetColumnFilters()}
           >
             <RefreshCwIcon className="group-active:animate-spin" />
             Refresh
           </Button>
+        </div>
+        <div className="flex items-center gap-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline">Columns</Button>
