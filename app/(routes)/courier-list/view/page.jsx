@@ -19,19 +19,6 @@ export default function ViewCourierInfo() {
       }
     })();
   });
-export default function ViewCourierInfo() {
-  const [courierInfo, setCourierInfo] = useState([]);
-  useEffect(() => {
-    (async () => {
-      try {
-        const response = await fetchCourierLists();
-        const { courierInfo } = await response.json();
-        setCourierInfo(courierInfo);
-      } catch (error) {
-        console.error(error);
-      }
-    })();
-  });
 
   return (
     <div className="container mx-auto py-10">
