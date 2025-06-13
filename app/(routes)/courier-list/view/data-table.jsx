@@ -32,8 +32,8 @@ import {
   ChevronsLeftIcon,
   ChevronsRightIcon,
   RefreshCwIcon,
+  SearchIcon,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
 import {
   Select,
   SelectContent,
@@ -44,11 +44,13 @@ import {
 import courierNames from "@/constants/courierNames";
 import { useEffect, useState } from "react";
 import AdvancedSearch from "@/components/ui/advanced-search";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export function DataTable({ columns, data }) {
-  const router = useRouter();
   const [sorting, setSorting] = useState([]);
   const [columnFilters, setColumnFilters] = useState([]);
+  const [globalFilter, setGlobalFilter] = useState("");
   const [divisions, setDivisions] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [upazillas, setUpazillas] = useState([]);
@@ -59,6 +61,7 @@ export function DataTable({ columns, data }) {
     division: false,
     district: false,
     upazilla: false,
+    // actions: false,
   });
   const [rowSelection, setRowSelection] = useState({});
 
@@ -142,12 +145,21 @@ export function DataTable({ columns, data }) {
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     onColumnFiltersChange: setColumnFilters,
+    onGlobalFilterChange: setGlobalFilter,
+    globalFilterFn: (row, _, filterValue) => {
+      const search = filterValue.toLowerCase();
+      return (
+        row.getValue("branchName")?.toLowerCase().includes(search) ||
+        row.getValue("location")?.toLowerCase().includes(search)
+      );
+    },
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
     state: {
       sorting,
       columnFilters,
+      globalFilter,
       columnVisibility,
       rowSelection,
     },
@@ -182,6 +194,7 @@ export function DataTable({ columns, data }) {
               ))}
             </SelectContent>
           </Select>
+
           <AdvancedSearch
             placeholder="Choose a division..."
             data={divisions}
@@ -201,11 +214,6 @@ export function DataTable({ columns, data }) {
                 { id: "division", value: division.value },
               ]);
             }}
-          />
-          <input
-            type="hidden"
-            name="division"
-            value={selectedDivision.value || ""}
           />
           <AdvancedSearch
             placeholder="Choose a district..."
@@ -227,11 +235,6 @@ export function DataTable({ columns, data }) {
               ]);
             }}
           />
-          <input
-            type="hidden"
-            name="district"
-            value={selectedDistrict.value || ""}
-          />
           <AdvancedSearch
             placeholder="Choose an upazilla..."
             data={upazillas}
@@ -252,21 +255,25 @@ export function DataTable({ columns, data }) {
               ]);
             }}
           />
-          <input
-            type="hidden"
-            name="upazilla"
-            value={selectedUpazilla.value || ""}
-          />
           <Button
             variant="outline"
             className="group"
-            onClick={() => table.resetColumnFilters()}
+            onClick={() => {
+              table.resetColumnFilters();
+              table.resetGlobalFilter();
+            }}
           >
             <RefreshCwIcon className="group-active:animate-spin" />
             Refresh
           </Button>
         </div>
         <div className="flex items-center gap-2">
+          <Input
+            type="search"
+            placeholder="Search..."
+            value={globalFilter || ""}
+            onChange={(e) => setGlobalFilter(e.target.value)}
+          />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline">Columns</Button>

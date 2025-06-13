@@ -3,16 +3,16 @@
 import { connectToDatabase } from "@/lib/mongoose";
 import CourierInfo from "@/models/CourierInfo";
 
-export default async function fetchCourierLists() {
+export default async function deleteCourierInfo(courierInfoId) {
   try {
     await connectToDatabase();
 
-    const courierInfo = await CourierInfo.find();
+    const deletedCourierInfo = await CourierInfo.findByIdAndDelete(courierInfoId);
 
     return new Response(
       JSON.stringify({
-        message: "✅ Courier Info Fetched Successfully",
-        courierInfo,
+        message: "✅ Courier Info Deleted Successfully",
+        deletedCourierInfo,
       }),
       {
         status: 201,
@@ -22,7 +22,7 @@ export default async function fetchCourierLists() {
   } catch (error) {
     return new Response(
       JSON.stringify({
-        message: "❌ Failed to fetch courier info",
+        message: "❌ Failed to delete courier info",
         error: error.message,
       }),
       {

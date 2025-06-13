@@ -1,12 +1,12 @@
 "use client";
 
-import { EyeIcon, PencilIcon, TrashIcon } from "lucide-react";
+import { PencilIcon, TrashIcon } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import Link from "next/link";
 import ConfirmDialog from "@/components/ConfirmDialog";
-import deleteCustomer from "@/features/customers/actions/deleteCustomer";
+import deleteCourierInfo from "@/features/courier-list/actions/deleteCourierInfo";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export const columns = [
   {
@@ -102,32 +102,24 @@ export const columns = [
     id: "actions",
     header: () => <div className="text-center">Actions</div>,
     cell: ({ row }) => {
-      const customer = row.original;
+      const courierInfo = row.original;
 
       return (
         <>
           <div className="flex items-center justify-self-center gap-2">
             <Button
-              className="bg-blue-600 hover:bg-blue-700 cursor-pointer"
-              asChild
-            >
-              <Link href={`/customers/view/${customer._id}`}>
-                <EyeIcon />
-              </Link>
-            </Button>
-            <Button
               className="bg-green-600 hover:bg-green-700 cursor-pointer"
               asChild
             >
-              <Link href={`/customers/edit/${customer._id}`}>
+              <Link href={`/courier-list/edit/${courierInfo._id}`}>
                 <PencilIcon />
               </Link>
             </Button>
             <ConfirmDialog
               className="bg-red-600 hover:bg-red-700 cursor-pointer"
               label="Delete"
-              message="Are you sure to delete this customer?"
-              onConfirm={() => deleteCustomer(customer._id)}
+              message="Are you sure to delete this courier info?"
+              onConfirm={() => deleteCourierInfo(courierInfo._id)}
             >
               <TrashIcon />
             </ConfirmDialog>
