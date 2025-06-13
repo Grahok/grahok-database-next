@@ -54,7 +54,7 @@ export async function POST(req) {
         p.product,
         {
           $inc: {
-            inStock: -p.quantity,
+            inStock: p.quantity,
           },
         },
         { new: true }
