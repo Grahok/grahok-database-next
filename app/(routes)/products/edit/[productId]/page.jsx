@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import Toast from "@/components/Toast";
 import { fetchProduct } from "@/features/products/actions/fetchProduct";
+import updateProduct from "@/features/products/actions/updateProduct";
 
 export default function EditProduct({ params }) {
   const router = useRouter();
@@ -30,7 +31,14 @@ export default function EditProduct({ params }) {
     try {
       const response = await updateProduct(productId, productData);
       if (response.ok) {
-        router.back();
+        setToast((prev) => ({
+          ...prev,
+          show: true,
+          message: "Product Updated Successfully",
+        }));
+        setTimeout(() => {
+          router.back();
+        }, 1000);
       }
     } catch (error) {
       console.log("Error Updating Product", error);
@@ -100,6 +108,7 @@ export default function EditProduct({ params }) {
           id="inStock"
           className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none"
           defaultValue={product?.inStock}
+          step={0.5}
           required
         />
       </div>
