@@ -8,10 +8,14 @@ import ProductSection from "@/features/entries/customer/add/components/ProductSe
 import CustomerForm from "@/features/entries/customer/add/components/CustomerForm";
 import combineDateWithCurrentTime from "@/utils/combineDateWithCurrentTime";
 import Toast from "@/components/Toast";
+import { Button } from "@/components/ui/button";
+import sendParcelTrackingMessage from "@/features/entries/customer/add/actions/sendParcelTrackingMessage";
+import { MessageSquareIcon } from "lucide-react";
 
 export default function AddEntry() {
   const [invoiceNumber, setInvoiceNumber] = useState(0);
   const [cnNumber, setCnNumber] = useState("");
+  const [trackingLink, setTrackingLink] = useState("");
   const [orderStatus, setOrderStatus] = useState("Pending");
   const [customerData, setCustomerData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -185,14 +189,54 @@ export default function AddEntry() {
             </select>
           </div>
           {["Shipped", "Delivered"].includes(orderStatus) && (
-            <input
-              type="text"
-              name="cnNumber"
-              id="cnNumber"
-              placeholder="CN Number"
-              className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none"
-              onChange={(e) => setCnNumber(e.target.value)}
-            />
+            <>
+              <input
+                type="text"
+                name="cnNumber"
+                id="cnNumber"
+                placeholder="CN Number"
+                className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none disabled:bg-gray-100 disabled:cursor-not-allowed"
+                onChange={(e) => setCnNumber(e.target.value)}
+                disabled={!isEditable}
+              />
+              <div className="flex items-center gap-2">
+                <input
+                  type="text"
+                  name="trackingLink"
+                  id="trackingLink"
+                  placeholder="Tracking Link"
+                  className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none grow"
+                  onChange={(e) => setTrackingLink(e.target.value)}
+                />
+                <Button
+                  className="flex items-center"
+                  onClick={async () => {
+                    const { success, message } =
+                      await sendParcelTrackingMessage(
+                        customerData.mobileNumber,
+                        shippingMethod,
+                        trackingLink
+                      );
+                    setToast((prev) => ({
+                      ...prev,
+                      show: true,
+                      message: message,
+                      type: success == 1 ? "success" : "error",
+                    }));
+
+                    setTimeout(() => {
+                      setToast((prev) => ({
+                        ...prev,
+                        show: false,
+                      }));
+                    }, 1500);
+                  }}
+                >
+                  <MessageSquareIcon />
+                  Send
+                </Button>
+              </div>
+            </>
           )}
         </div>
       </header>
@@ -250,6 +294,7 @@ export default function AddEntry() {
             show: false,
           }))
         }
+        type={toast.type}
       />
     </main>
   );
