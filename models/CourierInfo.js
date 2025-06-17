@@ -13,7 +13,7 @@ const courierInfoSchema = new mongoose.Schema(
     branchName: { type: String, required: true },
     branchId: { type: String },
     branchCode: { type: String },
-    mobileNumbers: { type: String, unique: true },
+    mobileNumber: { type: String, unique: true },
   },
   {
     collection: "Courier List",
