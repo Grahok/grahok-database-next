@@ -14,6 +14,7 @@ export default function AdvancedSearch({
   value,
   disabled = false,
   className = "",
+  ...props
 }) {
   const [searchTerm, setSearchTerm] = useState("")
   const [isOpen, setIsOpen] = useState(false)
@@ -46,7 +47,7 @@ export default function AdvancedSearch({
   }
 
   return (
-    <Select value={value} onValueChange={handleValueChange} disabled={disabled} open={isOpen} onOpenChange={setIsOpen}>
+    <Select value={value} onValueChange={handleValueChange} disabled={disabled} open={isOpen} onOpenChange={setIsOpen} {...props}>
       <SelectTrigger className={`w-full ${className}`}>
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>

@@ -2,6 +2,17 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import AppSidebar from "@/components/AppSidebar";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { Button } from "@/components/ui/button";
+import { SendIcon } from "lucide-react";
+import { Dialog } from "@radix-ui/react-dialog";
+import {
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import SendSMSForm from "@/features/home/components/SendSMSForm";
+import { Toaster } from "@/components/ui/sonner";
 
 const inter = Inter({
   subsets: [
@@ -23,20 +34,58 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body
-        className={`${inter.className} antialiased flex gap-6 min-h-dvh`}
-      >
-        <SidebarProvider>
-          <AppSidebar />
-          <main className="bg-gray-50 text-gray-800 flex flex-col gap-8 p-6 w-full">
-            <div className="flex items-center gap-3">
-              <SidebarTrigger className="block md:hidden" />
-            <h1 className="text-4xl font-bold text-blue-600 text-center grow">
-              Grahok Database
-            </h1>
+      <body className={`${inter.className} antialiased min-h-dvh`}>
+        <SidebarProvider className="flex flex-col">
+          <header className="bg-gray-800 px-8 py-2 sticky top-0 z-50 w-full flex justify-between">
+            <div className="flex items-center gap-2">
+              <SidebarTrigger className="flex items-center justify-center text-white" />
+              <h3 className="text-2xl font-bold text-blue-600">
+                <a href="/">Grahok DB</a>
+              </h3>
             </div>
-            {children}
+            <div>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="bg-gray-800 text-gray-200 border-gray-600 hover:text-gray-200/80 hover:bg-gray-800"
+                  >
+                    <SendIcon />
+                    Send SMS
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogTitle>Send SMS</DialogTitle>
+                  <Tabs
+                    defaultValue="orderConfirmation"
+                    className="w-full flex flex-col gap-5"
+                  >
+                    <TabsList>
+                      <TabsTrigger value="orderConfirmation">
+                        Order Confirmation
+                      </TabsTrigger>
+                      <TabsTrigger value="trackingParcel">
+                        Tracking Parcel
+                      </TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="orderConfirmation">
+                      <SendSMSForm />
+                    </TabsContent>
+                    <TabsContent value="trackingParcel">
+                      Parcel Tracking Message Sending Component Here
+                    </TabsContent>
+                  </Tabs>
+                </DialogContent>
+              </Dialog>
+            </div>
+          </header>
+          <main className="flex grow">
+            <AppSidebar />
+            <main className="bg-gray-50 text-gray-800 p-6 grow">
+              {children}
+            </main>
           </main>
+          <Toaster richColors />
         </SidebarProvider>
       </body>
     </html>

@@ -170,12 +170,7 @@ export default function AppSidebar() {
   ];
 
   return (
-    <Sidebar className="select-none">
-      <SidebarHeader>
-        <a className="flex justify-center" href="/">
-          <Image src={grahokLogo} height={75} alt="" />
-        </a>
-      </SidebarHeader>
+    <Sidebar className="select-none py-16">
       <SidebarContent className="scrollbar-none">
         <SidebarMenu className="px-3 flex flex-col gap-4">
           {sidebarItems.map((item, index) => {

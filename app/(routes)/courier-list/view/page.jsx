@@ -7,9 +7,9 @@ export default async function ViewCourierInfo() {
   const {courierInfo: courierList} = await response.json();
 
   return (
-    <div className="container mx-auto py-10">
+    <section className="flex flex-col gap-4">
       <h1 className="text-3xl font-bold">View Courier Info</h1>
       <DataTable columns={columns} data={courierList} />
-    </div>
+    </section>
   );
 }

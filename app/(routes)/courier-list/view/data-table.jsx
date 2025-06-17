@@ -45,7 +45,7 @@ import courierNames from "@/constants/courierNames";
 import { useEffect, useState } from "react";
 import AdvancedSearch from "@/components/ui/advanced-search";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import courierConditions from "@/constants/courierConditions";
 
 export function DataTable({ columns, data }) {
   const [sorting, setSorting] = useState([]);
@@ -166,8 +166,8 @@ export function DataTable({ columns, data }) {
   });
 
   return (
-    <div>
-      <div className="flex items-center justify-between py-4">
+    <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-2">
         <div className="flex items-end gap-2">
           <Select
             value={
@@ -195,109 +195,143 @@ export function DataTable({ columns, data }) {
             </SelectContent>
           </Select>
 
-          <AdvancedSearch
-            placeholder="Choose a division..."
-            data={divisions}
+          <Select
             value={
               table
                 .getState()
-                .columnFilters.find((filter) => filter.id === "division")
-                ?.value || ""
+                .columnFilters.find(
+                  (filter) => filter.id === "courierCondition"
+                )?.value || ""
             }
             onValueChange={(value) => {
-              const division = divisions.find(
-                (division) => division.value === value
-              );
-              setSelectedDivision(division);
               table.setColumnFilters((old) => [
-                ...old.filter((f) => f.id !== "division"),
-                { id: "division", value: division.value },
+                ...old.filter((f) => f.id !== "courierCondition"),
+                { id: "courierCondition", value: value },
               ]);
-            }}
-          />
-          <AdvancedSearch
-            placeholder="Choose a district..."
-            data={districts}
-            value={
-              table
-                .getState()
-                .columnFilters.find((filter) => filter.id === "district")
-                ?.value || ""
-            }
-            onValueChange={(value) => {
-              const district = districts.find(
-                (district) => district.value === value
-              );
-              setSelectedDistrict(district);
-              table.setColumnFilters((old) => [
-                ...old.filter((f) => f.id !== "district"),
-                { id: "district", value: district.value },
-              ]);
-            }}
-          />
-          <AdvancedSearch
-            placeholder="Choose an upazilla..."
-            data={upazillas}
-            value={
-              table
-                .getState()
-                .columnFilters.find((filter) => filter.id === "upazilla")
-                ?.value || ""
-            }
-            onValueChange={(value) => {
-              const upazilla = upazillas.find(
-                (upazilla) => upazilla.value === value
-              );
-              setSelectedUpazilla(upazilla);
-              table.setColumnFilters((old) => [
-                ...old.filter((f) => f.id !== "upazilla"),
-                { id: "upazilla", value: upazilla.value },
-              ]);
-            }}
-          />
-          <Button
-            variant="outline"
-            className="group"
-            onClick={() => {
-              table.resetColumnFilters();
-              table.resetGlobalFilter();
             }}
           >
-            <RefreshCwIcon className="group-active:animate-spin" />
-            Refresh
-          </Button>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Courier Condition" />
+            </SelectTrigger>
+            <SelectContent>
+              {courierConditions.map((condition, index) => (
+                <SelectItem key={index} value={condition.value}>
+                  {condition.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
-        <div className="flex items-center gap-2">
-          <Input
-            type="search"
-            placeholder="Search..."
-            value={globalFilter || ""}
-            onChange={(e) => setGlobalFilter(e.target.value)}
-          />
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline">Columns</Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              {table
-                .getAllColumns()
-                .filter((column) => column.getCanHide())
-                .map((column) => {
-                  return (
-                    <DropdownMenuCheckboxItem
-                      key={column.id}
-                      className="capitalize"
-                      checked={column.getIsVisible()}
-                      onCheckedChange={(value) =>
-                        column.toggleVisibility(!!value)
-                      }
-                    >
-                      {column.id}
-                    </DropdownMenuCheckboxItem>
-                  );
-                })}
-            </DropdownMenuContent>
-          </DropdownMenu>
+        <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-x-4 gap-y-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
+            <AdvancedSearch
+            className="w-50"
+              placeholder="Choose a division..."
+              data={divisions}
+              value={
+                table
+                  .getState()
+                  .columnFilters.find((filter) => filter.id === "division")
+                  ?.value || ""
+              }
+              onValueChange={(value) => {
+                const division = divisions.find(
+                  (division) => division.value === value
+                );
+                setSelectedDivision(division);
+                table.setColumnFilters((old) => [
+                  ...old.filter((f) => f.id !== "division"),
+                  { id: "division", value: division.value },
+                ]);
+              }}
+            />
+            <AdvancedSearch
+            className="w-50"
+              placeholder="Choose a district..."
+              data={districts}
+              value={
+                table
+                  .getState()
+                  .columnFilters.find((filter) => filter.id === "district")
+                  ?.value || ""
+              }
+              onValueChange={(value) => {
+                const district = districts.find(
+                  (district) => district.value === value
+                );
+                setSelectedDistrict(district);
+                table.setColumnFilters((old) => [
+                  ...old.filter((f) => f.id !== "district"),
+                  { id: "district", value: district.value },
+                ]);
+              }}
+            />
+            <AdvancedSearch
+            className="w-50"
+              placeholder="Choose an upazilla..."
+              data={upazillas}
+              value={
+                table
+                  .getState()
+                  .columnFilters.find((filter) => filter.id === "upazilla")
+                  ?.value || ""
+              }
+              onValueChange={(value) => {
+                const upazilla = upazillas.find(
+                  (upazilla) => upazilla.value === value
+                );
+                setSelectedUpazilla(upazilla);
+                table.setColumnFilters((old) => [
+                  ...old.filter((f) => f.id !== "upazilla"),
+                  { id: "upazilla", value: upazilla.value },
+                ]);
+              }}
+            />
+            <Button
+              variant="outline"
+              className="group max-w-25"
+              onClick={() => {
+                table.resetColumnFilters();
+                table.resetGlobalFilter();
+              }}
+            >
+              <RefreshCwIcon className="group-active:animate-spin" />
+              Reset
+            </Button>
+          </div>
+          <div className="flex items-center gap-2">
+            <Input
+            className="w-45"
+              type="search"
+              placeholder="Search..."
+              value={globalFilter || ""}
+              onChange={(e) => setGlobalFilter(e.target.value)}
+            />
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline">Columns</Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                {table
+                  .getAllColumns()
+                  .filter((column) => column.getCanHide())
+                  .map((column) => {
+                    return (
+                      <DropdownMenuCheckboxItem
+                        key={column.id}
+                        className="capitalize"
+                        checked={column.getIsVisible()}
+                        onCheckedChange={(value) =>
+                          column.toggleVisibility(!!value)
+                        }
+                      >
+                        {column.id}
+                      </DropdownMenuCheckboxItem>
+                    );
+                  })}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
       </div>
       <div className="rounded-md border">
@@ -350,7 +384,7 @@ export function DataTable({ columns, data }) {
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
+      <div className="flex items-center justify-end space-x-2">
         <div className="text-muted-foreground flex-1 text-sm">
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
           {table.getFilteredRowModel().rows.length} Courier Info(s) selected.

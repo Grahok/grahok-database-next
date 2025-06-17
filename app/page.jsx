@@ -88,7 +88,7 @@ export default function Home() {
   ];
 
   return (
-    <section className="flex flex-col justify-between gap-6 grow">
+    <section className="flex flex-col justify-between gap-6 h-full">
       <section className="grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-6">
         {items.map((item, index) => (
           <LinkCard

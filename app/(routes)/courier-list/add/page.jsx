@@ -1,5 +1,6 @@
 "use client";
 
+import AdvancedSearch from "@/components/ui/advanced-search";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,12 +14,12 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import courierConditions from "@/constants/courierConditions";
 import courierNames from "@/constants/courierNames";
-import DistrictsCombobox from "@/features/courier-list/DistrictsCombobox";
-import DivisionsCombobox from "@/features/courier-list/DivisionsCombobox";
-import UpazillasCombobox from "@/features/courier-list/UpazillasCombobox";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export default function AddCourierInfo() {
+  const router = useRouter();
   const [selectedCourier, setSelectedCourier] = useState("");
   const [selectedCourierContition, setSelectedCourierCondition] = useState("");
   const [divisions, setDivisions] = useState([]);
@@ -101,7 +102,7 @@ export default function AddCourierInfo() {
     })();
   }, [selectedDistrict]);
 
-  async function addCourierInfo(e) {
+  function addCourierInfo(e) {
     e.preventDefault();
     const formData = new FormData(e.target);
     const formDataObject = {
@@ -118,16 +119,28 @@ export default function AddCourierInfo() {
       branchId: formData.get("branchId"),
       mobileNumber: formData.get("mobileNumber"),
     };
-    console.log(formDataObject)
-    try {
-      const reponse = await fetch("/api/courierInfo", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formDataObject),
-      });
-    } catch (error) {
-      console.error(error);
-    }
+    console.log(formDataObject);
+
+    (async () => {
+      try {
+        const response = await fetch("/api/courierInfo", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formDataObject),
+        });
+
+        if (response.ok) {
+          toast.success("Courier Info Added");
+        }
+      } catch (error) {
+        console.error(error);
+        toast.success("Error adding courier info");
+      } finally {
+        setTimeout(() => {
+          router.refresh();
+        }, 1000);
+      }
+    })();
   }
 
   return (
@@ -184,32 +197,47 @@ export default function AddCourierInfo() {
             </div>
           </div>
           <div className="flex gap-6">
-            <DivisionsCombobox
-              divisions={divisions}
-              onDivisionSelect={(division) => setSelectedDivision(division)}
-            />
-            <input
-              type="hidden"
+            <AdvancedSearch
+              className="w-50"
+              placeholder="Choose a division..."
+              id="division"
               name="division"
-              value={selectedDivision.value || ""}
+              data={divisions}
+              value={selectedDivision.value}
+              onValueChange={(value) => {
+                const division = divisions.find(
+                  (division) => division.value === value
+                );
+                setSelectedDivision(division);
+              }}
             />
-            <DistrictsCombobox
-              districts={districts}
-              onDistrictSelect={(district) => setSelectedDistrict(district)}
-            />
-            <input
-              type="hidden"
+            <AdvancedSearch
+              className="w-50"
+              id="district"
               name="district"
-              value={selectedDistrict.value || ""}
+              placeholder="Choose a district..."
+              data={districts}
+              value={selectedDistrict.value}
+              onValueChange={(value) => {
+                const district = districts.find(
+                  (district) => district.value === value
+                );
+                setSelectedDistrict(district);
+              }}
             />
-            <UpazillasCombobox
-              upazillas={upazillas}
-              onUpazillaSelect={(upazilla) => setSelectedUpazilla(upazilla)}
-            />
-            <input
-              type="hidden"
+            <AdvancedSearch
+              className="w-50"
+              placeholder="Choose an upazilla..."
+              id="upazilla"
               name="upazilla"
-              value={selectedUpazilla.value || ""}
+              data={upazillas}
+              value={selectedUpazilla.value}
+              onValueChange={(value) => {
+                const upazilla = upazillas.find(
+                  (upazilla) => upazilla.value === value
+                );
+                setSelectedUpazilla(upazilla);
+              }}
             />
           </div>
         </section>
@@ -219,12 +247,12 @@ export default function AddCourierInfo() {
             <Input type="text" id="branchName" name="branchName" required />
           </div>
           <div className="flex flex-col gap-1">
-            <Label htmlFor="branchCode">Branch Code</Label>
-            <Input type="text" id="branchCode" name="branchCode" />
-          </div>
-          <div className="flex flex-col gap-1">
             <Label htmlFor="branchId">Branch Id</Label>
             <Input type="text" id="branchId" name="branchId" />
+          </div>
+          <div className="flex flex-col gap-1">
+            <Label htmlFor="branchCode">Branch Code</Label>
+            <Input type="text" id="branchCode" name="branchCode" />
           </div>
           <div className="flex flex-col gap-1">
             <Label htmlFor="mobileNumber">Mobile Number</Label>
