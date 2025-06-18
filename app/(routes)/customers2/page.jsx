@@ -1,14 +1,11 @@
 export const dynamic = "force-dynamic";
 
+import fetchCustomers from "@/features/customers/actions/fetchCustomers";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
-import baseUrl from "@/constants/baseUrl";
 
 export default async function DemoPage() {
-  const response = await fetch(`${baseUrl}/api/customers`, {
-    method: "GET",
-    headers: { "Content-type": "application/json" },
-  });
+  const response = await fetchCustomers();
   const { customers } = await response.json();
 
   return (

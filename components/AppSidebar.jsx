@@ -170,7 +170,7 @@ export default function AppSidebar() {
   ];
 
   return (
-    <Sidebar className="select-none py-16">
+    <Sidebar className="select-none pt-16">
       <SidebarContent className="scrollbar-none">
         <SidebarMenu className="px-3 flex flex-col gap-4">
           {sidebarItems.map((item, index) => {
