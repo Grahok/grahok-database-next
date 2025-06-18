@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import fetchCourierLists from "@/features/courier-list/actions/fetchCourierLists";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
