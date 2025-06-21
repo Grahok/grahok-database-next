@@ -4,7 +4,7 @@ import fetchCustomers from "@/features/customers/actions/fetchCustomers";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
 
-export default async function DemoPage() {
+export default async function Customers2() {
   const response = await fetchCustomers();
   const { customers } = await response.json();
 

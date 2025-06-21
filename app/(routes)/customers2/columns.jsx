@@ -8,6 +8,7 @@ import formatDate from "@/utils/formatDate";
 import Link from "next/link";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import deleteCustomer from "@/features/customers/actions/deleteCustomer";
+import DataTableColumnHeader from "@/components/DataTableColumnHeader";
 
 export const columns = [
   {
@@ -47,15 +48,7 @@ export const columns = [
   {
     accessorKey: "entryDate",
     header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Entry Date
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
+      return <DataTableColumnHeader column={column} title="Entry Date" />;
     },
     cell: ({ row }) => {
       const entryDate = row.getValue("entryDate");
@@ -93,7 +86,8 @@ export const columns = [
         <>
           <div className="flex items-center justify-self-center gap-2">
             <Button
-              className="bg-blue-600 hover:bg-blue-700 cursor-pointer"
+              size="icon"
+              className="size-7 bg-blue-600 hover:bg-blue-700"
               asChild
             >
               <Link href={`/customers/view/${customer._id}`}>
@@ -101,7 +95,8 @@ export const columns = [
               </Link>
             </Button>
             <Button
-              className="bg-green-600 hover:bg-green-700 cursor-pointer"
+              size="icon"
+              className="size-7 bg-green-600 hover:bg-green-700"
               asChild
             >
               <Link href={`/customers/edit/${customer._id}`}>
@@ -109,7 +104,7 @@ export const columns = [
               </Link>
             </Button>
             <ConfirmDialog
-              className="bg-red-600 hover:bg-red-700 cursor-pointer"
+              variant="destructive"
               label="Delete"
               message="Are you sure to delete this customer?"
               onConfirm={() => deleteCustomer(customer._id)}

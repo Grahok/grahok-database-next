@@ -29,14 +29,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  ChevronsLeftIcon,
-  ChevronsRightIcon,
-  RefreshCwIcon,
-} from "lucide-react";
+import { RefreshCwIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
+import DataTablePagination from "@/components/DataTablePagination";
+import rowsPerPageArray from "@/constants/rowsPerPageArray";
 
 export function DataTable({ columns, data }) {
   const router = useRouter();
@@ -57,7 +53,7 @@ export function DataTable({ columns, data }) {
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
     state: {
-      sorting,
+      sorting: [{ id: "entryDate", desc: true }],
       globalFilter,
       columnVisibility,
       rowSelection,
@@ -65,7 +61,7 @@ export function DataTable({ columns, data }) {
   });
 
   return (
-    <div>
+    <div className="flex flex-col gap-3">
       <div className="flex items-center justify-between py-4">
         <div className="flex items-center gap-2">
           <Input
@@ -160,79 +156,7 @@ export function DataTable({ columns, data }) {
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="text-muted-foreground flex-1 text-sm">
-          {table.getFilteredSelectedRowModel().rows.length} of{" "}
-          {table.getFilteredRowModel().rows.length} customer(s) selected.
-        </div>
-        {table.getPageCount() > 0 && (
-          <>
-            {table.getCanPreviousPage() && (
-              <>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => table.firstPage()}
-                >
-                  <ChevronsLeftIcon />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => table.previousPage()}
-                >
-                  <ChevronLeftIcon />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() =>
-                    table.setPageIndex(
-                      table.getState().pagination.pageIndex - 1
-                    )
-                  }
-                >
-                  {table.getState().pagination.pageIndex}
-                </Button>
-              </>
-            )}
-            <Button variant="outline" size="sm" disabled>
-              {table.getState().pagination.pageIndex + 1}
-            </Button>
-            {table.getState().pagination.pageIndex <
-              table.getPageCount() - 1 && (
-              <>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() =>
-                    table.setPageIndex(
-                      table.getState().pagination.pageIndex + 1
-                    )
-                  }
-                >
-                  {table.getState().pagination.pageIndex + 2}
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => table.nextPage()}
-                  disabled={!table.getCanNextPage()}
-                >
-                  <ChevronRightIcon />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => table.lastPage()}
-                >
-                  <ChevronsRightIcon />
-                </Button>
-              </>
-            )}
-          </>
-        )}
-      </div>
+      <DataTablePagination table={table} rowsPerPageArray={rowsPerPageArray} />
     </div>
   );
 }

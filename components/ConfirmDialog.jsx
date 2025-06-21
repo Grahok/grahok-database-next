@@ -10,6 +10,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "./ui/dialog";
+import { cn } from "@/lib/utils";
 
 export default function ConfirmDialog({
   onConfirm,
@@ -17,12 +18,13 @@ export default function ConfirmDialog({
   label = "Confirm",
   children,
   className,
+  variant,
 }) {
   const router = useRouter();
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className={className}>{children}</Button>
+        <Button className={cn("size-7 cursor-pointer", className)} size="icon" variant={variant}>{children}</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

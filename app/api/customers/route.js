@@ -48,41 +48,15 @@ export async function POST(req) {
   }
 }
 
-export async function GET(req) {
+export async function GET() {
   try {
     await connectToDatabase();
-    const url = new URL(req.url);
-    const search = url.searchParams.get("search");
-    const page = parseInt(url.searchParams.get("page")) || 1;
-    const itemsPerPage = parseInt(url.searchParams.get("itemsPerPage")) || 0;
-
-    const query = {};
-
-    if (search) {
-      query.$or = [
-        { name: { $regex: search, $options: "i" } },
-        { mobileNumber: { $regex: search, $options: "i" } },
-      ];
-    }
-
-    // Count total entries matching the query
-    const totalCustomers = await Customer.countDocuments(query);
-    const totalPages = Math.ceil(totalCustomers / itemsPerPage) || 1;
-
-    // Fetch paginated entries
-    const customers = await Customer.find(query)
-      .sort({ entryDate: -1 })
-      .skip((page - 1) * itemsPerPage)
-      .limit(itemsPerPage);
+    const customers = await Customer.find();
 
     return new Response(
       JSON.stringify({
         message: "Fetching Customers Successful",
         customers,
-        pagination: {
-          totalCustomers,
-          totalPages,
-        },
       }),
       {
         status: 200,
