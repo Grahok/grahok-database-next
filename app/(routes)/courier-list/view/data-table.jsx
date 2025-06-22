@@ -46,6 +46,7 @@ import { useEffect, useState } from "react";
 import AdvancedSearch from "@/components/ui/advanced-search";
 import { Input } from "@/components/ui/input";
 import courierConditions from "@/constants/courierConditions";
+import DataTablePagination from "@/components/DataTablePagination";
 
 export function DataTable({ columns, data }) {
   const [sorting, setSorting] = useState([]);
@@ -225,7 +226,7 @@ export function DataTable({ columns, data }) {
         <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-x-4 gap-y-2">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
             <AdvancedSearch
-            className="w-50"
+              className="w-50"
               placeholder="Choose a division..."
               data={divisions}
               value={
@@ -246,7 +247,7 @@ export function DataTable({ columns, data }) {
               }}
             />
             <AdvancedSearch
-            className="w-50"
+              className="w-50"
               placeholder="Choose a district..."
               data={districts}
               value={
@@ -267,7 +268,7 @@ export function DataTable({ columns, data }) {
               }}
             />
             <AdvancedSearch
-            className="w-50"
+              className="w-50"
               placeholder="Choose an upazilla..."
               data={upazillas}
               value={
@@ -301,7 +302,7 @@ export function DataTable({ columns, data }) {
           </div>
           <div className="flex items-center gap-2">
             <Input
-            className="w-45"
+              className="w-45"
               type="search"
               placeholder="Search..."
               value={globalFilter || ""}
@@ -384,79 +385,7 @@ export function DataTable({ columns, data }) {
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2">
-        <div className="text-muted-foreground flex-1 text-sm">
-          {table.getFilteredSelectedRowModel().rows.length} of{" "}
-          {table.getFilteredRowModel().rows.length} Courier Info(s) selected.
-        </div>
-        {table.getPageCount() > 0 && (
-          <>
-            {table.getCanPreviousPage() && (
-              <>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => table.firstPage()}
-                >
-                  <ChevronsLeftIcon />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => table.previousPage()}
-                >
-                  <ChevronLeftIcon />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() =>
-                    table.setPageIndex(
-                      table.getState().pagination.pageIndex - 1
-                    )
-                  }
-                >
-                  {table.getState().pagination.pageIndex}
-                </Button>
-              </>
-            )}
-            <Button variant="outline" size="sm" disabled>
-              {table.getState().pagination.pageIndex + 1}
-            </Button>
-            {table.getState().pagination.pageIndex <
-              table.getPageCount() - 1 && (
-              <>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() =>
-                    table.setPageIndex(
-                      table.getState().pagination.pageIndex + 1
-                    )
-                  }
-                >
-                  {table.getState().pagination.pageIndex + 2}
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => table.nextPage()}
-                  disabled={!table.getCanNextPage()}
-                >
-                  <ChevronRightIcon />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => table.lastPage()}
-                >
-                  <ChevronsRightIcon />
-                </Button>
-              </>
-            )}
-          </>
-        )}
-      </div>
+      <DataTablePagination table={table} />
     </div>
   );
 }

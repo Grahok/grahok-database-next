@@ -7,7 +7,7 @@ const courierInfoSchema = new mongoose.Schema(
     address: {
       division: { type: String, required: true },
       district: { type: String, required: true },
-      upazilla: { type: String, required: true },
+      upazilla: { type: String },
       location: { type: String, required: true },
     },
     branchName: { type: String, required: true },

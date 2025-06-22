@@ -56,25 +56,7 @@ export default function RootLayout({ children }) {
                 </DialogTrigger>
                 <DialogContent>
                   <DialogTitle>Send SMS</DialogTitle>
-                  <Tabs
-                    defaultValue="orderConfirmation"
-                    className="w-full flex flex-col gap-5"
-                  >
-                    <TabsList>
-                      <TabsTrigger value="orderConfirmation">
-                        Order Confirmation
-                      </TabsTrigger>
-                      <TabsTrigger value="trackingParcel">
-                        Tracking Parcel
-                      </TabsTrigger>
-                    </TabsList>
-                    <TabsContent value="orderConfirmation">
-                      <SendSMSForm />
-                    </TabsContent>
-                    <TabsContent value="trackingParcel">
-                      Parcel Tracking Message Sending Component Here
-                    </TabsContent>
-                  </Tabs>
+                  <SendSMSForm />
                 </DialogContent>
               </Dialog>
             </div>

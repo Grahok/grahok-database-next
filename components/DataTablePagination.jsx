@@ -20,7 +20,7 @@ export default function DataTablePagination({ table, rowsPerPageArray }) {
     <div className="flex items-center justify-between px-2">
       <div className="text-muted-foreground flex-1 text-sm">
         {table.getFilteredSelectedRowModel().rows.length} of{" "}
-        {table.getFilteredRowModel().rows.length} row(s) selected.
+        {table.getPaginationRowModel().rows.length} row(s) selected.
       </div>
       <div className="flex items-center space-x-6 lg:space-x-8">
         <div className="flex items-center space-x-2">
@@ -35,11 +35,13 @@ export default function DataTablePagination({ table, rowsPerPageArray }) {
               <SelectValue placeholder={table.getState().pagination.pageSize} />
             </SelectTrigger>
             <SelectContent side="top">
-              {(rowsPerPageArray || [10, 20, 25, 30, 40, 50]).map((pageSize) => (
-                <SelectItem key={pageSize} value={`${pageSize}`}>
-                  {pageSize}
-                </SelectItem>
-              ))}
+              {(rowsPerPageArray || [10, 20, 25, 30, 40, 50]).map(
+                (pageSize) => (
+                  <SelectItem key={pageSize} value={`${pageSize}`}>
+                    {pageSize}
+                  </SelectItem>
+                )
+              )}
             </SelectContent>
           </Select>
         </div>

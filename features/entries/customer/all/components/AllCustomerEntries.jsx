@@ -20,7 +20,8 @@ import inputDateFormat from "@/utils/inputDateFormat";
 import fetchCustomerEntries from "../../actions/fetchCustomerEntries";
 import deleteCustomerEntry from "../../actions/deleteCustomerEntry";
 import ConfirmDialog from "@/components/ConfirmDialog";
-import { LoaderPinwheel } from "lucide-react";
+import { EyeIcon, LoaderPinwheel, TrashIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function AllCustomerEntries() {
   const router = useRouter();
@@ -253,19 +254,19 @@ export default function AllCustomerEntries() {
                 <td>{(pageParam - 1) * itemsPerPageParam + (index + 1)}</td>
                 <td>
                   <div className="flex gap-1">
-                    <a
-                      href={`/entries/customer/view/${entry._id}`}
-                      className="p-1.5 bg-blue-600 text-white rounded-md"
-                    >
-                      <FaEye size={12} />
-                    </a>
+                    <Button size="icon" className="size-7">
+                      <a href={`/entries/customer/view/${entry._id}`}>
+                        <EyeIcon />
+                      </a>
+                    </Button>
                     <ConfirmDialog
-                      className="p-1.5 bg-red-600 text-white rounded-md cursor-pointer"
-                      onConfirm={() => handleDelete(customer._id)}
+                      onConfirm={() => handleDelete(entry._id)}
                       message="Are you sure you want to delete this entry?"
                       label="Delete"
+                      variant="destructive"
+                      className="cursor-pointer"
                     >
-                      <FaTrash size={12} />
+                      <TrashIcon />
                     </ConfirmDialog>
                   </div>
                 </td>

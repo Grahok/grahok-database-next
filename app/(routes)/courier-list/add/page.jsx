@@ -128,7 +128,6 @@ export default function AddCourierInfo() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(formDataObject),
         });
-
         if (response.ok) {
           toast.success("Courier Info Added");
         }

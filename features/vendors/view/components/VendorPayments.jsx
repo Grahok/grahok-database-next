@@ -5,9 +5,13 @@ import formatDate from "@/utils/formatDate";
 import { useEffect, useState } from "react";
 import { FaPencil, FaTrash } from "react-icons/fa6";
 import AddVendorPaymentForm from "./AddVendorPaymentForm";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export default function VendorPayments({ vendorId }) {
+  const router = useRouter();
   const [payments, setPayments] = useState([]);
+  const [dialogOpen, setDialogOpen] = useState(false);
   useEffect(() => {
     (async () => {
       try {
@@ -42,7 +46,7 @@ export default function VendorPayments({ vendorId }) {
       new FormData(e.target)
     );
 
-    await fetch(`/api/entries/vendor`, {
+    const response = await fetch(`/api/entries/vendor`, {
       method: "PUT",
       headers: { "Content-type": "application/json" },
       body: JSON.stringify({
@@ -50,10 +54,18 @@ export default function VendorPayments({ vendorId }) {
         paymentData,
       }),
     });
-    setDialogOpen(false);
-    setTimeout(() => {
-      router.refresh();
-    }, 1000);
+
+    if (response.ok) {
+      setDialogOpen(false);
+      toast.success("Vendor Payment Added Successfully");
+      setTimeout(() => {
+        router.refresh();
+      }, 1000);
+    } else {
+      setDialogOpen(false);
+      toast.error("Failed to add Vendor Payment");
+
+    }
   }
   return (
     <div>
@@ -90,6 +102,8 @@ export default function VendorPayments({ vendorId }) {
                       <FaPencil />
                     </a>
                     <ConfirmDialog
+                      open={dialogOpen}
+                      onOpenChange={setDialogOpen}
                       className="p-2 bg-red-600 text-white rounded-md cursor-pointer hover:bg-red-700 transition duration-200"
                       message="Do you really want to delete this payment?"
                       label="Delete"

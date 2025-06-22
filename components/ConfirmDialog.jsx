@@ -19,10 +19,11 @@ export default function ConfirmDialog({
   children,
   className,
   variant,
+  ...props
 }) {
   const router = useRouter();
   return (
-    <Dialog>
+    <Dialog {...props}>
       <DialogTrigger asChild>
         <Button className={cn("size-7 cursor-pointer", className)} size="icon" variant={variant}>{children}</Button>
       </DialogTrigger>
