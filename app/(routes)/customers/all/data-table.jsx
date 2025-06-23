@@ -32,7 +32,7 @@ import DataTablePagination from "@/components/DataTablePagination";
 import rowsPerPageArray from "@/constants/rowsPerPageArray";
 
 export function DataTable({ columns, data }) {
-  const [sorting, setSorting] = useState([]);
+  const [sorting, setSorting] = useState([{id: "entryDate", desc: true}]);
   const [globalFilter, setGlobalFilter] = useState("");
   const [columnVisibility, setColumnVisibility] = useState({
     division: false,

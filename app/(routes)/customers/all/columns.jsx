@@ -55,7 +55,6 @@ export const columns = [
 
       return formatted;
     },
-    sortDescFirst: true,
   },
   {
     accessorKey: "name",

@@ -19,8 +19,7 @@ export default function CustomerForm({ onCustomerChange }) {
   useEffect(() => {
     (async () => {
       try {
-        const response = await fetchCustomers();
-        const { customers } = await response.json();
+        const customers = await fetchCustomers();
         setCustomers(customers);
       } catch (error) {
         console.error("Error fetching customers:", error);

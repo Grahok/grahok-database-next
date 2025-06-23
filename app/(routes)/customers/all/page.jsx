@@ -5,8 +5,7 @@ import { columns } from "./columns";
 import { DataTable } from "./data-table";
 
 export default async function AllCustomers() {
-  const response = await fetchCustomers();
-  const { customers } = await response.json();
+  const customers = await fetchCustomers();
 
   return (
     <div className="container mx-auto py-10">
