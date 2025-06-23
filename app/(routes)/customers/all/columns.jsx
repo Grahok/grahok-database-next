@@ -30,7 +30,6 @@ export const columns = [
         aria-label="Select customer"
       />
     ),
-    enableSorting: false,
     enableHiding: false,
   },
   {
@@ -43,7 +42,7 @@ export const columns = [
       const rowIndex = pageRows.findIndex((r) => r.id === row.id);
       return pageIndex * pageSize + rowIndex + 1;
     },
-    enableGlobalFilter: false,
+    enableHiding: false,
   },
   {
     accessorKey: "entryDate",
@@ -56,20 +55,12 @@ export const columns = [
 
       return formatted;
     },
-    enableGlobalFilter: false,
+    sortDescFirst: true,
   },
   {
     accessorKey: "name",
     header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Name
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
+      return <DataTableColumnHeader column={column} title="Name" />;
     },
   },
   {

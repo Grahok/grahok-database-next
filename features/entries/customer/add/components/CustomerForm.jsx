@@ -1,11 +1,13 @@
 "use client";
 
 import fetchCustomers from "@/features/customers/actions/fetchCustomers";
+import { Loader2Icon, LoaderIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { FaChevronDown } from "react-icons/fa6";
 
 export default function CustomerForm({ onCustomerChange }) {
   const [selectedCustomerId, setSelectedCustomerId] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [name, setName] = useState("");
   const [mobileNumber, setMobileNumber] = useState("");
   const [address, setAddress] = useState("");
@@ -22,6 +24,8 @@ export default function CustomerForm({ onCustomerChange }) {
         setCustomers(customers);
       } catch (error) {
         console.error("Error fetching customers:", error);
+      } finally {
+        setLoading(false);
       }
     })();
   }, []);
@@ -105,7 +109,13 @@ export default function CustomerForm({ onCustomerChange }) {
               </button>
             ))}
 
-            {filtered.length === 0 && (
+            {loading && (
+              <div className="p-4 text-sm text-gray-500 text-center">
+                <Loader2Icon className="animate-spin" />
+              </div>
+            )}
+
+            {!loading && filtered.length === 0 && (
               <div className="p-4 text-sm text-gray-500 text-center">
                 No customer available
               </div>

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useMemo } from "react"
-import { Search } from "lucide-react"
+import { Search, XIcon } from "lucide-react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
 
@@ -62,7 +62,7 @@ export default function AdvancedSearch({
           />
           {searchTerm && (
             <button onClick={clearSearch} className="ml-2 h-4 w-4 shrink-0 opacity-50 hover:opacity-100">
-              ×
+              <XIcon size={14} />
             </button>
           )}
         </div>

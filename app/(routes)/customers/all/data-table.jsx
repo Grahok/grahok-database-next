@@ -1,7 +1,5 @@
 "use client";
 
-import * as React from "react";
-
 import {
   flexRender,
   getCoreRowModel,
@@ -21,7 +19,6 @@ import {
 } from "@/components/ui/table";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -29,17 +26,21 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { RefreshCwIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { Input } from "@/components/ui/input";
 import DataTablePagination from "@/components/DataTablePagination";
 import rowsPerPageArray from "@/constants/rowsPerPageArray";
 
 export function DataTable({ columns, data }) {
-  const router = useRouter();
-  const [sorting, setSorting] = React.useState([]);
-  const [globalFilter, setGlobalFilter] = React.useState([]);
-  const [columnVisibility, setColumnVisibility] = React.useState({});
-  const [rowSelection, setRowSelection] = React.useState({});
+  const [sorting, setSorting] = useState([]);
+  const [globalFilter, setGlobalFilter] = useState("");
+  const [columnVisibility, setColumnVisibility] = useState({
+    division: false,
+    district: false,
+    upazilla: false,
+    // actions: false,
+  });
+  const [rowSelection, setRowSelection] = useState({});
 
   const table = useReactTable({
     data,
@@ -49,11 +50,18 @@ export function DataTable({ columns, data }) {
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     onGlobalFilterChange: setGlobalFilter,
+    globalFilterFn: (row, _, filterValue) => {
+      const search = filterValue.toLowerCase();
+      return (
+        row.getValue("name")?.toLowerCase().includes(search) ||
+        row.getValue("mobileNumber")?.toLowerCase().includes(search)
+      );
+    },
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
     state: {
-      sorting: [{ id: "entryDate", desc: true }],
+      sorting,
       globalFilter,
       columnVisibility,
       rowSelection,
@@ -61,25 +69,16 @@ export function DataTable({ columns, data }) {
   });
 
   return (
-    <div className="flex flex-col gap-3">
-      <div className="flex items-center justify-between py-4">
-        <div className="flex items-center gap-2">
+    <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-2">
+        <div className="flex justify-end items-center gap-2">
           <Input
-            placeholder="Filter Customers..."
-            value={globalFilter}
-            onChange={(event) => setGlobalFilter(event.target.value)}
-            className="max-w-sm"
+            className="w-45"
+            type="search"
+            placeholder="Search..."
+            value={globalFilter || ""}
+            onChange={(e) => setGlobalFilter(e.target.value)}
           />
-        </div>
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            className="group"
-            onClick={() => router.refresh()}
-          >
-            <RefreshCwIcon className="group-active:animate-spin" />
-            Refresh
-          </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline">Columns</Button>

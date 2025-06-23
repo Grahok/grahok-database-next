@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import sendParcelTrackingMessage from "@/features/entries/customer/add/actions/sendParcelTrackingMessage";
 import { MessageSquareIcon } from "lucide-react";
 
-export default function AddEntry() {
+export default function AddCustomerEntry() {
   const [invoiceNumber, setInvoiceNumber] = useState(0);
   const [cnNumber, setCnNumber] = useState("");
   const [trackingLink, setTrackingLink] = useState("");

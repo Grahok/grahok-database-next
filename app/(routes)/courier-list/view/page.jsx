@@ -11,7 +11,7 @@ export default async function ViewCourierInfo() {
   return (
     <section className="flex flex-col gap-4">
       <h1 className="text-3xl font-bold">View Courier Info</h1>
-      <DataTable columns={columns} data={courierList} />
+      <DataTable columns={columns} data={courierList || []} />
     </section>
   );
 }

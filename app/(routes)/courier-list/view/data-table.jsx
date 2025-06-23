@@ -27,12 +27,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  ChevronsLeftIcon,
-  ChevronsRightIcon,
   RefreshCwIcon,
-  SearchIcon,
 } from "lucide-react";
 import {
   Select,
