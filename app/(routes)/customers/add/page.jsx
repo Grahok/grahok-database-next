@@ -1,29 +1,16 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import createCustomer from "@/features/customers/actions/createCustomer";
-import { useState } from "react";
 
 export default function AddCustomer() {
-  const [toast, setToast] = useState();
   async function handleSubmit(e) {
     e.preventDefault();
     const formData = new FormData(e.target);
     const customerData = Object.fromEntries(formData);
-
-    const response = await createCustomer(customerData);
-
-    if (response.ok) {
-      e.target.reset();
-      // ✅ Show success toast
-      setToast({ show: true, message: "Customer added successfully." });
-
-      setTimeout(() => {
-        setToast((prev) => ({
-          ...prev,
-          show: false,
-        }));
-      }, 2000);
-    }
+    await createCustomer(customerData);
   }
 
   return (
@@ -38,8 +25,8 @@ export default function AddCustomer() {
       </h2>
 
       <div className="flex flex-col gap-1">
-        <label htmlFor="name">Customer Name</label>
-        <input
+        <Label htmlFor="name">Customer Name</Label>
+        <Input
           type="text"
           name="name"
           id="name"
@@ -49,8 +36,8 @@ export default function AddCustomer() {
       </div>
 
       <div className="flex flex-col gap-1">
-        <label htmlFor="mobileNumber">Mobile Number</label>
-        <input
+        <Label htmlFor="mobileNumber">Mobile Number</Label>
+        <Input
           type="text"
           name="mobileNumber"
           id="mobileNumber"
@@ -60,8 +47,8 @@ export default function AddCustomer() {
       </div>
 
       <div className="flex flex-col gap-1">
-        <label htmlFor="address">Customer Address</label>
-        <input
+        <Label htmlFor="address">Customer Address</Label>
+        <Input
           type="text"
           name="address"
           id="address"
@@ -70,12 +57,12 @@ export default function AddCustomer() {
         />
       </div>
 
-      <button
+      <Button
         type="submit"
         className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg transition cursor-pointer disabled:opacity-50"
       >
         Add Customer
-      </button>
+      </Button>
     </form>
   );
 }

@@ -5,7 +5,7 @@ export async function POST(req) {
     process.env.SMS_BANGLADESH_EMAIL
   )}&password=${encodeURIComponent(
     process.env.SMS_BANGLADESH_PASSWORD
-  )}&to=88${encodeURIComponent(mobileNumber)}&text=${messageBody}`;
+  )}&to=88${encodeURIComponent(mobileNumber)}&text=${encodeURIComponent(messageBody)}`;
 
   const response = await fetch(url);
 

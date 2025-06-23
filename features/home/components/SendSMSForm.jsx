@@ -27,7 +27,6 @@ export default function SendSMSForm() {
       onSubmit={async (e) => {
         e.preventDefault();
         const formData = Object.fromEntries(new FormData(e.target));
-        console.log(formData);
         const response = await fetch("/api/send-sms", {
           method: "POST",
           headers: { "Content-type": "application/json" },

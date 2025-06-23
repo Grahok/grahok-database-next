@@ -47,6 +47,7 @@ const customerEntrySchema = new mongoose.Schema(
     overallDiscount: Number,
     totalIncome: Number,
     netProfit: Number,
+    message: { type: String, default: "" },
   },
   {
     collection: "Customer Entries",

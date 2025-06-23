@@ -44,6 +44,7 @@ export default function EditEntry({ params }) {
         });
         setInvoiceNumber(entry.invoiceNumber);
         setCnNumber(entry.cnNumber);
+        setTrackingLink(entry.message);
         setOrderStatus(entry.orderStatus);
         setShippingCustomer(entry.shippingCustomer);
         setShippingMerchant(entry.shippingMerchant);
@@ -217,6 +218,7 @@ export default function EditEntry({ params }) {
                   id="trackingLink"
                   placeholder="Tracking Link"
                   className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none grow"
+                  value={trackingLink}
                   onChange={(e) => setTrackingLink(e.target.value)}
                 />
                 <Button
@@ -226,7 +228,8 @@ export default function EditEntry({ params }) {
                       await sendParcelTrackingMessage(
                         entry.customer.mobileNumber,
                         shippingMethod,
-                        trackingLink
+                        trackingLink,
+                        entryId
                       );
                     setToast((prev) => ({
                       ...prev,
@@ -247,6 +250,7 @@ export default function EditEntry({ params }) {
                   Send
                 </Button>
               </div>
+              {entry.message && "SMS Sent Before"}
             </>
           )}
         </div>

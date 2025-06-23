@@ -1,5 +1,9 @@
+import { connectToDatabase } from "@/lib/mongoose";
+import CustomerEntry from "@/models/CustomerEntry";
+
 export async function POST(req) {
-  const { mobileNumber, shippingMethod, trackingLink } = await req.json();
+  const { mobileNumber, shippingMethod, trackingLink, customerEntryId } =
+    await req.json();
 
   function parcelTrackingMessage(shippingMethod, trackingLink) {
     return encodeURIComponent(`As Salamu Alaikum, Sir/Mam. Your Parcel has been handed to ${shippingMethod} courier. Please visit this link to track your parcel.
@@ -21,6 +25,13 @@ Thank you for staying with Grahok.`);
 
   const data = await response.json();
   const { success, message } = data;
+
+  if (success === 1) {
+    await connectToDatabase();
+    await CustomerEntry.findByIdAndUpdate(customerEntryId, {
+      message: trackingLink,
+    });
+  }
 
   return new Response(
     JSON.stringify({

@@ -8,9 +8,9 @@ export default async function createCustomer(customerData) {
   });
 
   if (response.ok) {
-    toast.success("Custommer added successfully");
+    toast.success(`Custommer added successfully (${response.status})`);
   } else {
-    toast.error("Failed to add customer");
+    toast.error(`Failed to add customer (${response.status})`);
   }
 
   return response;
