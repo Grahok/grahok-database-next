@@ -228,7 +228,7 @@ export default function AllCustomerEntries() {
               <th>Courier Tax</th>
               <th>Total Profit</th>
               <th>Order Status</th>
-              <th>CN Number</th>
+              <th>SMS Sent</th>
             </tr>
           </thead>
           <tbody>
@@ -284,7 +284,7 @@ export default function AllCustomerEntries() {
                 <td>{entry.courierTax}</td>
                 <td>{entry.netProfit}</td>
                 <td>{entry.orderStatus}</td>
-                <td>{entry.cnNumber || "N/A"}</td>
+                <td>{entry.message ? "YES" : "NO"}</td>
               </tr>
             ))}
             <tr>

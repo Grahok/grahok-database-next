@@ -1,26 +1,21 @@
 "use client";
 
-import Toast from "@/components/Toast";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import fetchCustomer from "@/features/customers/actions/fetchCustomer";
-import { updateCustomer } from "@/features/customers/actions/updateCustomer";
+import updateCustomer from "@/features/customers/actions/updateCustomer";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 
 export default function EditCustomer({ params }) {
   const router = useRouter();
-  const { customerId } = React.use(params);
+  const { customerId } = use(params);
   const [customer, setCustomer] = useState();
-  const [toast, setToast] = useState({ show: false, message: "" });
+
   useEffect(() => {
     (async () => {
-      const response = await fetchCustomer(customerId);
-      try {
-        const { customer } = await response.json();
-        setCustomer(customer);
-      } catch (error) {
-        console.error("Error fetching Customer", error);
-        setError("Error fetching customer");
-      }
+      const customer = await fetchCustomer(customerId);
+      setCustomer(customer);
     })();
   }, []);
 
@@ -28,13 +23,10 @@ export default function EditCustomer({ params }) {
     e.preventDefault();
     const formdata = new FormData(e.target);
     const customerData = Object.fromEntries(formdata);
-    try {
-      const response = await updateCustomer(customerId, customerData);
-      if (response.ok) {
-        router.back();
-      }
-    } catch (error) {
-      console.log("Error Updating Customer", error);
+    const response = await updateCustomer(customerId, customerData);
+
+    if (response.ok) {
+      router.back();
     }
   }
 
@@ -50,10 +42,10 @@ export default function EditCustomer({ params }) {
       </h2>
 
       <div className="flex flex-col gap-1">
-        <label htmlFor="name" className="text-sm">
+        <Label htmlFor="name" className="text-sm">
           Customer Name
-        </label>
-        <input
+        </Label>
+        <Input
           type="text"
           name="name"
           id="name"
@@ -64,10 +56,10 @@ export default function EditCustomer({ params }) {
       </div>
 
       <div className="flex flex-col gap-1">
-        <label htmlFor="mobileNumber" className="text-sm">
+        <Label htmlFor="mobileNumber" className="text-sm">
           Mobile Number
-        </label>
-        <input
+        </Label>
+        <Input
           type="text"
           name="mobileNumber"
           id="mobileNumber"
@@ -78,10 +70,10 @@ export default function EditCustomer({ params }) {
       </div>
 
       <div className="flex flex-col gap-1">
-        <label htmlFor="address" className="text-sm">
+        <Label htmlFor="address" className="text-sm">
           Address
-        </label>
-        <input
+        </Label>
+        <Input
           type="text"
           name="address"
           id="address"
@@ -97,16 +89,6 @@ export default function EditCustomer({ params }) {
       >
         Update Customer
       </button>
-      <Toast
-        show={toast.show}
-        message={toast.message}
-        onClose={() =>
-          setToast((prev) => ({
-            ...prev,
-            show: false,
-          }))
-        }
-      />
     </form>
   );
 }

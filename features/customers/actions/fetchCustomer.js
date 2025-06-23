@@ -1,13 +1,11 @@
-export default async function fetchCustomer(customerId) {
-  const response = await fetch(`/api/customers/${customerId}`, {
-    method: "GET",
-    headers: { "Content-type": "application/json" },
-    cache: "no-store"
-  });
+"use server";
 
-  if (!response.ok) {
-    throw new Error("❌ Failed to fetch customer");
-  }
+import { connectToDatabase } from "@/lib/mongoose";
+import Customer from "@/models/Customer";
+import mongooseDocumentToPlainObject from "@/utils/mongooseDocumentToPlainObject";
 
-  return response;
+export default async function fetchCustomers(customerId) {
+  await connectToDatabase();
+  const customer = await Customer.findById(customerId);
+  return mongooseDocumentToPlainObject(customer);
 }

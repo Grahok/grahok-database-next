@@ -1,12 +1,16 @@
-"use client";
+export const dynamic = "force-dynamic";
 
-import AllProducts from "@/features/products/all/components/AllProducts";
-import { Suspense } from "react";
+import fetchProducts from "@/features/products/actions/fetchProducts";
+import { columns } from "./columns";
+import { DataTable } from "./data-table";
 
-export default function AllCustomerEntriesWrapper() {
+export default async function AllCustomers() {
+  const products = await fetchProducts();
+
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <AllProducts />
-    </Suspense>
+    <div className="flex flex-col gap-4">
+      <h1 className="text-3xl font-bold">All Products:</h1>
+      <DataTable columns={columns} data={products || []} />
+    </div>
   );
 }

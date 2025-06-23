@@ -1,16 +1,18 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
-import Toast from "@/components/Toast";
+import { use, useEffect, useState } from "react";
 import { fetchProduct } from "@/features/products/actions/fetchProduct";
 import updateProduct from "@/features/products/actions/updateProduct";
+import { toast } from "sonner";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 export default function EditProduct({ params }) {
   const router = useRouter();
-  const { productId } = React.use(params);
+  const { productId } = use(params);
   const [product, setProduct] = useState();
-  const [toast, setToast] = useState({ show: false, message: "" });
   useEffect(() => {
     (async () => {
       const response = await fetchProduct(productId);
@@ -28,20 +30,14 @@ export default function EditProduct({ params }) {
     e.preventDefault();
     const formdata = new FormData(e.target);
     const productData = Object.fromEntries(formdata);
-    try {
-      const response = await updateProduct(productId, productData);
-      if (response.ok) {
-        setToast((prev) => ({
-          ...prev,
-          show: true,
-          message: "Product Updated Successfully",
-        }));
-        setTimeout(() => {
-          router.back();
-        }, 1000);
-      }
-    } catch (error) {
-      console.log("Error Updating Product", error);
+    const response = await updateProduct(productId, productData);
+    if (response.ok) {
+      toast.success(`Product added successfully (${response.status})`);
+      setTimeout(() => {
+        router.back();
+      }, 1000);
+    } else {
+      toast.error(`Failed to add product (${response.status})`);
     }
   }
 
@@ -57,10 +53,10 @@ export default function EditProduct({ params }) {
       </h2>
 
       <div className="flex flex-col gap-1">
-        <label htmlFor="name" className="text-sm">
+        <Label htmlFor="name" className="text-sm">
           Product Name
-        </label>
-        <input
+        </Label>
+        <Input
           type="text"
           name="name"
           id="name"
@@ -71,10 +67,10 @@ export default function EditProduct({ params }) {
       </div>
 
       <div className="flex flex-col gap-1">
-        <label htmlFor="purchasePrice" className="text-sm">
+        <Label htmlFor="purchasePrice" className="text-sm">
           Purchase Price
-        </label>
-        <input
+        </Label>
+        <Input
           type="number"
           name="purchasePrice"
           id="purchasePrice"
@@ -85,10 +81,10 @@ export default function EditProduct({ params }) {
       </div>
 
       <div className="flex flex-col gap-1">
-        <label htmlFor="sellPrice" className="text-sm">
+        <Label htmlFor="sellPrice" className="text-sm">
           Sell Price
-        </label>
-        <input
+        </Label>
+        <Input
           type="number"
           name="sellPrice"
           id="sellPrice"
@@ -99,10 +95,10 @@ export default function EditProduct({ params }) {
       </div>
 
       <div className="flex flex-col gap-1">
-        <label htmlFor="inStock" className="text-sm">
+        <Label htmlFor="inStock" className="text-sm">
           In Stock
-        </label>
-        <input
+        </Label>
+        <Input
           type="number"
           name="inStock"
           id="inStock"
@@ -113,22 +109,9 @@ export default function EditProduct({ params }) {
         />
       </div>
 
-      <button
-        type="submit"
-        className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition cursor-pointer disabled:opacity-50"
-      >
+      <Button type="submit" className="bg-blue-600 hover:bg-blue-500/90">
         Update Product
-      </button>
-      <Toast
-        show={toast.show}
-        message={toast.message}
-        onClose={() =>
-          setToast((prev) => ({
-            ...prev,
-            show: false,
-          }))
-        }
-      />
+      </Button>
     </form>
   );
 }

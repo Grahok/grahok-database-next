@@ -71,9 +71,7 @@ export default function AllCustomerEntries({ params }) {
   async function handleDelete(entryId) {
     try {
       await deleteCustomerEntry(entryId);
-      setEntries((prev) =>
-        prev.filter((entry) => entry._id !== entryId)
-      );
+      setEntries((prev) => prev.filter((entry) => entry._id !== entryId));
       console.log("Entry deleted successfully");
     } catch (error) {
       console.error("Error deleting entry:", error);
@@ -231,19 +229,20 @@ export default function AllCustomerEntries({ params }) {
               <th>Courier Tax</th>
               <th>Total Profit</th>
               <th>Order Status</th>
-              <th>CN Number</th>
+              <th>SMS Sent</th>
             </tr>
           </thead>
           <tbody>
             {loading && (
               <tr>
                 <td colSpan={17} className="bg-gray-50">
-                    <div className="flex justify-center">
-                      <LoaderPinwheel
-                        className="animate-spin text-blue-400"
-                        size={100}
-                      />
-                    </div></td>
+                  <div className="flex justify-center">
+                    <LoaderPinwheel
+                      className="animate-spin text-blue-400"
+                      size={100}
+                    />
+                  </div>
+                </td>
               </tr>
             )}
             {!loading && !entries.length && (
@@ -286,7 +285,7 @@ export default function AllCustomerEntries({ params }) {
                 <td>{entry.courierTax}</td>
                 <td>{entry.netProfit}</td>
                 <td>{entry.orderStatus}</td>
-                <td>{entry.cnNumber || "N/A"}</td>
+                <td>{entry.smsSent ? "YES" : "NO"}</td>
               </tr>
             ))}
             <tr>
@@ -311,7 +310,7 @@ export default function AllCustomerEntries({ params }) {
       </div>
       <div className="flex justify-between">
         <strong>{`Showing ${Math.min(
-          totalEntries - ((pageParam - 1) * itemsPerPage),
+          totalEntries - (pageParam - 1) * itemsPerPage,
           itemsPerPageParam
         )} items of ${totalEntries || "Loading..."}`}</strong>
         <div className="flex gap-2 leading-none">

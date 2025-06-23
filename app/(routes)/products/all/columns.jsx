@@ -1,14 +1,13 @@
 "use client";
 
-import { ArrowUpDown, EyeIcon, PencilIcon, TrashIcon } from "lucide-react";
+import { PencilIcon, TrashIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import formatDate from "@/utils/formatDate";
 import Link from "next/link";
 import ConfirmDialog from "@/components/ConfirmDialog";
-import deleteCustomer from "@/features/customers/actions/deleteCustomer";
 import DataTableColumnHeader from "@/components/DataTableColumnHeader";
+import deleteProduct from "@/features/products/actions/deleteProducts";
 
 export const columns = [
   {
@@ -45,63 +44,46 @@ export const columns = [
     enableHiding: false,
   },
   {
-    accessorKey: "entryDate",
-    header: ({ column }) => {
-      return <DataTableColumnHeader column={column} title="Entry Date" />;
-    },
-    cell: ({ row }) => {
-      const entryDate = row.getValue("entryDate");
-      const formatted = formatDate(entryDate);
-
-      return formatted;
-    },
-  },
-  {
     accessorKey: "name",
     header: ({ column }) => {
       return <DataTableColumnHeader column={column} title="Name" />;
     },
   },
   {
-    accessorKey: "mobileNumber",
-    header: "Mobile Number",
+    accessorKey: "purchasePrice",
+    header: "Purchase Price",
   },
   {
-    accessorKey: "address",
-    header: "Address",
+    accessorKey: "sellPrice",
+    header: "Sell Price",
+  },
+  {
+    accessorKey: "inStock",
+    header: "In Stock",
   },
   {
     id: "actions",
     header: () => <div className="text-center">Actions</div>,
     cell: ({ row }) => {
-      const customer = row.original;
+      const product = row.original;
 
       return (
         <>
           <div className="flex items-center justify-self-center gap-2">
             <Button
               size="icon"
-              className="size-7 bg-blue-600 hover:bg-blue-700"
-              asChild
-            >
-              <Link href={`/customers/view/${customer._id}`}>
-                <EyeIcon />
-              </Link>
-            </Button>
-            <Button
-              size="icon"
               className="size-7 bg-green-600 hover:bg-green-700"
               asChild
             >
-              <Link href={`/customers/edit/${customer._id}`}>
+              <Link href={`/products/edit/${product._id}`}>
                 <PencilIcon />
               </Link>
             </Button>
             <ConfirmDialog
               variant="destructive"
               label="Delete"
-              message="Are you sure to delete this customer?"
-              onConfirm={() => deleteCustomer(customer._id)}
+              message="Are you sure to delete this product?"
+              onConfirm={() => deleteProduct(product._id)}
             >
               <TrashIcon />
             </ConfirmDialog>

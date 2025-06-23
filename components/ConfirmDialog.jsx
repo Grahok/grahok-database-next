@@ -18,7 +18,7 @@ export default function ConfirmDialog({
   label = "Confirm",
   children,
   className,
-  variant,
+  variant = "destructive",
   ...props
 }) {
   const router = useRouter();

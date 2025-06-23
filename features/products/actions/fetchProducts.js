@@ -1,13 +1,11 @@
-export default async function fetchProducts(searchParams = "") {
-  const response = await fetch(`/api/products${searchParams}`, {
-    method: "GET",
-    headers: { "Content-Type": "application/json" },
-    cache: "no-store",
-  });
+"use server";
 
-  if (!response.ok) {
-    throw new Error("Failed to fetch products");
-  }
+import { connectToDatabase } from "@/lib/mongoose";
+import Product from "@/models/Product";
+import mongooseDocumentToPlainObject from "@/utils/mongooseDocumentToPlainObject";
 
-  return response;
+export default async function fetchProducts() {
+  await connectToDatabase();
+  const products = await Product.find();
+  return mongooseDocumentToPlainObject(products);
 }

@@ -108,7 +108,7 @@ export const columns = [
         <>
           <div className="flex items-center justify-self-center gap-2">
             <Button
-              className="bg-green-600 hover:bg-green-700 cursor-pointer"
+              className="bg-green-600 hover:bg-green-700 cursor-pointer size-7"
               asChild
             >
               <Link href={`/courier-list/edit/${courierInfo._id}`}>

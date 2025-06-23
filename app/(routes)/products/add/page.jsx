@@ -1,5 +1,9 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+
 async function handleSubmit(e) {
   e.preventDefault();
   const formData = new FormData(e.target);
@@ -28,8 +32,8 @@ export default function AddProduct() {
       </h2>
 
       <div className="flex flex-col gap-1">
-        <label htmlFor="name">Product Name</label>
-        <input
+        <Label htmlFor="name">Product Name</Label>
+        <Input
           type="text"
           name="name"
           id="name"
@@ -40,8 +44,8 @@ export default function AddProduct() {
       </div>
 
       <div className="flex flex-col gap-1">
-        <label htmlFor="purchasePrice">Purchase Price</label>
-        <input
+        <Label htmlFor="purchasePrice">Purchase Price</Label>
+        <Input
           type="number"
           name="purchasePrice"
           id="purchasePrice"
@@ -51,8 +55,8 @@ export default function AddProduct() {
       </div>
 
       <div className="flex flex-col gap-1">
-        <label htmlFor="sellPrice">Sell Price</label>
-        <input
+        <Label htmlFor="sellPrice">Sell Price</Label>
+        <Input
           type="number"
           name="sellPrice"
           id="sellPrice"
@@ -62,8 +66,8 @@ export default function AddProduct() {
       </div>
 
       <div className="flex flex-col gap-1">
-        <label htmlFor="inStock">In Stock</label>
-        <input
+        <Label htmlFor="inStock">In Stock</Label>
+        <Input
           type="number"
           name="inStock"
           id="inStock"
@@ -72,12 +76,12 @@ export default function AddProduct() {
         />
       </div>
 
-      <button
+      <Button
         type="submit"
         className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition cursor-pointer disabled:opacity-50"
       >
         Add Product
-      </button>
+      </Button>
     </form>
   );
 }

@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/table";
 
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -26,17 +27,16 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { useState } from "react";
-import { Input } from "@/components/ui/input";
+import { RefreshCwIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
 import DataTablePagination from "@/components/DataTablePagination";
 import rowsPerPageArray from "@/constants/rowsPerPageArray";
 
 export function DataTable({ columns, data }) {
-  const [sorting, setSorting] = useState([{ id: "entryDate", desc: true }]);
-  const [globalFilter, setGlobalFilter] = useState("");
-  const [columnVisibility, setColumnVisibility] = useState({
-    address: false,
-  });
+  const router = useRouter();
+  const [sorting, setSorting] = useState([]);
+  const [globalFilter, setGlobalFilter] = useState([]);
+  const [columnVisibility, setColumnVisibility] = useState({});
   const [rowSelection, setRowSelection] = useState({});
 
   const table = useReactTable({
@@ -47,18 +47,11 @@ export function DataTable({ columns, data }) {
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     onGlobalFilterChange: setGlobalFilter,
-    globalFilterFn: (row, _, filterValue) => {
-      const search = filterValue.toLowerCase();
-      return (
-        row.getValue("name")?.toLowerCase().includes(search) ||
-        row.getValue("mobileNumber")?.toLowerCase().includes(search)
-      );
-    },
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
     state: {
-      sorting,
+      sorting: [{ id: "entryDate", desc: true }],
       globalFilter,
       columnVisibility,
       rowSelection,
@@ -66,16 +59,25 @@ export function DataTable({ columns, data }) {
   });
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex flex-col gap-2">
-        <div className="flex justify-end items-center gap-2">
+    <div className="flex flex-col gap-3">
+      <div className="flex items-center justify-between py-4">
+        <div className="flex items-center gap-2">
           <Input
-            className="w-45"
-            type="search"
-            placeholder="Search..."
-            value={globalFilter || ""}
-            onChange={(e) => setGlobalFilter(e.target.value)}
+            placeholder="Filter Customers..."
+            value={globalFilter}
+            onChange={(event) => setGlobalFilter(event.target.value)}
+            className="max-w-sm"
           />
+        </div>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            className="group"
+            onClick={() => router.refresh()}
+          >
+            <RefreshCwIcon className="group-active:animate-spin" />
+            Refresh
+          </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline">Columns</Button>
