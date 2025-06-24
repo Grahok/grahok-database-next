@@ -30,14 +30,13 @@ export default function EditProduct({ params }) {
     e.preventDefault();
     const formdata = new FormData(e.target);
     const productData = Object.fromEntries(formdata);
-    const response = await updateProduct(productId, productData);
-    if (response.ok) {
-      toast.success(`Product added successfully (${response.status})`);
-      setTimeout(() => {
-        router.back();
-      }, 1000);
+
+    const success = await updateProduct(productId, productData);
+    if (success) {
+      toast.success("Product updated successfully");
+      router.back();
     } else {
-      toast.error(`Failed to add product (${response.status})`);
+      toast.error("Failed to update product");
     }
   }
 

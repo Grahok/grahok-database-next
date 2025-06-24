@@ -4,13 +4,20 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import createCustomer from "@/features/customers/actions/createCustomer";
+import { toast } from "sonner";
 
 export default function AddCustomer() {
   async function handleSubmit(e) {
     e.preventDefault();
     const formData = new FormData(e.target);
     const customerData = Object.fromEntries(formData);
-    await createCustomer(customerData);
+    const successs = await createCustomer(customerData);
+    if (successs) {
+      toast.success("Customer added successfully");
+      e.target.reset();
+    } else {
+      toast.error("Failed to add customer");
+    }
   }
 
   return (

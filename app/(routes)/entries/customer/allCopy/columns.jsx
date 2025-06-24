@@ -1,6 +1,6 @@
 "use client";
 
-import { EyeIcon, PencilIcon, TrashIcon } from "lucide-react";
+import { EyeIcon, TrashIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -10,7 +10,7 @@ import deleteCustomer from "@/features/customers/actions/deleteCustomer";
 import DataTableColumnHeader from "@/components/DataTableColumnHeader";
 import { toast } from "sonner";
 
-export const columns = [
+export const getColumns = (totals = {}) => [
   {
     id: "select",
     header: ({ table }) => (
@@ -43,32 +43,7 @@ export const columns = [
       return pageIndex * pageSize + rowIndex + 1;
     },
     enableHiding: false,
-  },
-  {
-    accessorKey: "entryDate",
-    header: ({ column }) => {
-      return <DataTableColumnHeader column={column} title="Entry Date" />;
-    },
-    cell: ({ row }) => {
-      const entryDate = row.getValue("entryDate");
-      const formatted = formatDate(entryDate);
-
-      return formatted;
-    },
-  },
-  {
-    accessorKey: "name",
-    header: ({ column }) => {
-      return <DataTableColumnHeader column={column} title="Name" />;
-    },
-  },
-  {
-    accessorKey: "mobileNumber",
-    header: "Mobile Number",
-  },
-  {
-    accessorKey: "address",
-    header: "Address",
+    footer: "Total",
   },
   {
     id: "actions",
@@ -86,15 +61,6 @@ export const columns = [
             >
               <a href={`/customers/view/${customer._id}`}>
                 <EyeIcon />
-              </a>
-            </Button>
-            <Button
-              size="icon"
-              className="size-7 bg-green-600 hover:bg-green-700"
-              asChild
-            >
-              <a href={`/customers/edit/${customer._id}`}>
-                <PencilIcon />
               </a>
             </Button>
             <ConfirmDialog
@@ -115,6 +81,106 @@ export const columns = [
           </div>
         </>
       );
+    },
+  },
+  {
+    accessorKey: "orderDate",
+    header: ({ column }) => {
+      return <DataTableColumnHeader column={column} title="Order Date" />;
+    },
+    cell: ({ row }) => {
+      const orderDate = row.getValue("orderDate");
+      const formatted = formatDate(orderDate);
+
+      return formatted;
+    },
+  },
+  {
+    accessorKey: "entryDate",
+    header: ({ column }) => {
+      return <DataTableColumnHeader column={column} title="Order Date" />;
+    },
+    cell: ({ row }) => {
+      const entryDate = row.getValue("entryDate");
+      const formatted = formatDate(entryDate);
+
+      return formatted;
+    },
+  },
+  {
+    accessorKey: "customer.name",
+    header: ({ column }) => {
+      return <DataTableColumnHeader column={column} title="Name" />;
+    },
+  },
+  {
+    accessorKey: "customer.mobileNumber",
+    header: "Mobile Number",
+  },
+  {
+    accessorKey: "totalPurchasePrice",
+    header: "Total Purchase Price",
+    footer: () => totals.totalPurchasePrice || 0,
+  },
+  {
+    accessorKey: "totalSellPrice",
+    header: "Total Sell Price",
+    footer: () => totals.totalSellPrice || 0,
+  },
+  {
+    accessorKey: "paidByCustomer",
+    header: "Paid By Customer",
+    footer: () => totals.paidByCustomer || 0,
+  },
+  {
+    accessorKey: "totalQuantity",
+    header: "Total Quantity",
+    footer: () => totals.totalQuantity || 0,
+  },
+  {
+    accessorKey: "totalDiscount",
+    header: "Total Discount",
+    footer: () => totals.totalDiscount || 0,
+  },
+  {
+    accessorKey: "shippingCustomer",
+    header: "Shipping Customer",
+    footer: () => totals.shippingCustomer || 0,
+  },
+  {
+    accessorKey: "shippingMerchant",
+    header: "Shipping Merchant",
+    footer: () => totals.shippingMerchant || 0,
+  },
+  {
+    accessorKey: "otherCost",
+    header: "Other Cost",
+    footer: () => totals.otherCost || 0,
+  },
+  {
+    accessorKey: "courierTax",
+    header: "Courier Tax",
+    footer: () => totals.courierTax || 0,
+  },
+  {
+    accessorKey: "netProfit",
+    header: "Total Profit",
+    footer: () => totals.netProfit || 0,
+  },
+  {
+    accessorKey: "shippingMethod",
+    header: "Shipping Method",
+  },
+  {
+    accessorKey: "orderStatus",
+    header: "Order Status",
+  },
+  {
+    accessorKey: "smsSent",
+    header: "SMS Sent",
+    cell: ({ row }) => {
+      const data = row.original;
+      return data.message ? "YES" : "NO";
     },
   },
 ];

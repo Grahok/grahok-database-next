@@ -20,7 +20,7 @@ import {
 } from "react-icons/lu";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import fetchProducts from "../../actions/fetchProducts";
-import deleteProduct from "../../actions/deleteProducts";
+import deleteProduct from "../../actions/deleteProduct";
 import { LoaderPinwheel } from "lucide-react";
 
 export default function AllProducts() {

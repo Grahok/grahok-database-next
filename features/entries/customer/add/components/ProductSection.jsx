@@ -1,4 +1,5 @@
 import fetchProducts from "@/features/products/actions/fetchProducts";
+import { Loader2Icon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { FaChevronDown, FaTrashCan } from "react-icons/fa6";
 
@@ -9,15 +10,17 @@ export default function ProductSection({
   const [search, setSearch] = useState("");
   const [products, setProducts] = useState([]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     (async () => {
       try {
-        const response = await fetchProducts();
-        const { products } = await response.json();
+        const products = await fetchProducts();
         setProducts(products);
       } catch (error) {
         console.error("Error fetching products:", error);
+      } finally {
+        setLoading(false);
       }
     })();
   }, []);
@@ -110,7 +113,13 @@ export default function ProductSection({
             </button>
           ))}
 
-          {filtered.length === 0 && (
+          {loading && (
+            <div className="p-4 text-sm text-gray-500 text-center">
+              <Loader2Icon className="animate-spin" />
+            </div>
+          )}
+
+          {!loading && filtered.length === 0 && (
             <div className="p-4 text-sm text-gray-500 text-center">
               No product available
             </div>

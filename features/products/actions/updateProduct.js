@@ -1,13 +1,14 @@
+"use server";
+
+import { connectToDatabase } from "@/lib/mongoose";
+import Product from "@/models/Product";
+
 export default async function updateProduct(productId, productData) {
-  const response = await fetch(`/api/products/${productId}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(productData),
-  });
-
-  if (!response.ok) {
-    throw new Error("❌ Failed to update product");
+  try {
+    await connectToDatabase();
+    await Product.findByIdAndUpdate(productId, productData);
+    return { success: true };
+  } catch (_) {
+    return { success: false };
   }
-
-  return response;
 }

@@ -4,10 +4,10 @@ import { PencilIcon, TrashIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import Link from "next/link";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import DataTableColumnHeader from "@/components/DataTableColumnHeader";
-import deleteProduct from "@/features/products/actions/deleteProducts";
+import deleteProduct from "@/features/products/actions/deleteProduct";
+import { toast } from "sonner";
 
 export const columns = [
   {
@@ -26,7 +26,7 @@ export const columns = [
       <Checkbox
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select customer"
+        aria-label="Select product"
       />
     ),
     enableHiding: false,
@@ -75,15 +75,22 @@ export const columns = [
               className="size-7 bg-green-600 hover:bg-green-700"
               asChild
             >
-              <Link href={`/products/edit/${product._id}`}>
+              <a href={`/products/edit/${product._id}`}>
                 <PencilIcon />
-              </Link>
+              </a>
             </Button>
             <ConfirmDialog
               variant="destructive"
               label="Delete"
               message="Are you sure to delete this product?"
-              onConfirm={() => deleteProduct(product._id)}
+              onConfirm={async () => {
+                const success = await deleteProduct(product._id);
+                if (success) {
+                  toast.warning("Product deleted successfully");
+                } else {
+                  toast.error("Failed to delete product");
+                }
+              }}
             >
               <TrashIcon />
             </ConfirmDialog>

@@ -1,12 +1,12 @@
 "use server";
 
 import { connectToDatabase } from "@/lib/mongoose";
-import Customer from "@/models/Customer";
+import Product from "@/models/Product";
 
-export default async function createCustomer(customerData) {
+export default async function createProduct(productData) {
   try {
     await connectToDatabase();
-    await Customer.create(customerData);
+    await Product.create(productData);
     return { success: true };
   } catch (_) {
     return { success: false };

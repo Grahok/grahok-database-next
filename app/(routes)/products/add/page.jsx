@@ -3,20 +3,21 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import createProduct from "@/features/products/actions/createProduct";
+import { toast } from "sonner";
 
 async function handleSubmit(e) {
   e.preventDefault();
   const formData = new FormData(e.target);
   const productData = Object.fromEntries(formData);
 
-  const response = await fetch("/api/products", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(productData),
-  });
+  const success = await createProduct(productData);
 
-  if (response.ok) {
+  if (success) {
+    toast.success("Product created successfully");
     e.target.reset();
+  } else {
+    toast.error("Failed to create product");
   }
 }
 export default function AddProduct() {

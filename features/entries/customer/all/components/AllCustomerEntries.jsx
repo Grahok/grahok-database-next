@@ -22,6 +22,14 @@ import deleteCustomerEntry from "../../actions/deleteCustomerEntry";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import { EyeIcon, LoaderPinwheel, TrashIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 export default function AllCustomerEntries() {
   const router = useRouter();
@@ -208,105 +216,109 @@ export default function AllCustomerEntries() {
           </div>
         </form>
       </div>
-      <div className="overflow-x-auto">
-        <table className="table-auto [&_th,_td]:border [&_th,_td]:p-3 [&_div]:flex [&_div]:justify-self-center text-center max-w-full">
-          <thead>
-            <tr className="*:sticky *:top-0 *:bg-gray-200">
-              <th>ID</th>
-              <th>Actions</th>
-              <th>Order Date</th>
-              <th>Customer</th>
-              <th>Mobile Number</th>
-              <th>Total Purchase Price</th>
-              <th>Total Sell Price</th>
-              <th>Paid By Customer</th>
-              <th>Total Quantity</th>
-              <th>Total Discount</th>
-              <th>Shipping Customer</th>
-              <th>Shipping Merchant</th>
-              <th>Other Cost</th>
-              <th>Courier Tax</th>
-              <th>Total Profit</th>
-              <th>Order Status</th>
-              <th>SMS Sent</th>
-            </tr>
-          </thead>
-          <tbody>
-            {loading && (
-              <tr>
-                <td colSpan={17} className="bg-gray-50">
-                  <div className="flex justify-center">
-                    <LoaderPinwheel
-                      className="animate-spin text-blue-400"
-                      size={100}
-                    />
-                  </div>
-                </td>
-              </tr>
-            )}
-            {!loading && !entries.length && (
-              <tr>
-                <td colSpan={17}>No Entries Found</td>
-              </tr>
-            )}
-            {entries.map((entry, index) => (
-              <tr key={entry._id} className="hover:bg-gray-100">
-                <td>{(pageParam - 1) * itemsPerPageParam + (index + 1)}</td>
-                <td>
-                  <div className="flex gap-1">
-                    <Button size="icon" className="size-7">
-                      <a href={`/entries/customer/view/${entry._id}`}>
-                        <EyeIcon />
-                      </a>
-                    </Button>
-                    <ConfirmDialog
-                      onConfirm={() => handleDelete(entry._id)}
-                      message="Are you sure you want to delete this entry?"
-                      label="Delete"
-                      variant="destructive"
-                      className="cursor-pointer"
-                    >
-                      <TrashIcon />
-                    </ConfirmDialog>
-                  </div>
-                </td>
-                <td>{formatDate(entry.orderDate)}</td>
-                <td>{entry.customer?.name || "Customer Not Found"}</td>
-                <td>{entry.customer?.mobileNumber || "Customer Not Found"}</td>
-                <td>{entry.totalPurchasePrice}</td>
-                <td>{entry.totalSellPrice}</td>
-                <td>{entry.paidByCustomer}</td>
-                <td>{entry.totalQuantity}</td>
-                <td>{entry.totalDiscount}</td>
-                <td>{entry.shippingCustomer}</td>
-                <td>{entry.shippingMerchant}</td>
-                <td>{entry.otherCost}</td>
-                <td>{entry.courierTax}</td>
-                <td>{entry.netProfit}</td>
-                <td>{entry.orderStatus}</td>
-                <td>{entry.message ? "YES" : "NO"}</td>
-              </tr>
-            ))}
-            <tr>
-              <td colSpan={5} className="font-bold">
-                Total:
-              </td>
-              <th>{totalPurchasePrice}</th>
-              <th>{totalSellPrice}</th>
-              <th>{totalPaidByCustomer}</th>
-              <th>{totalQuantity}</th>
-              <th>{totalDiscount}</th>
-              <th>{totalShippingCustomer}</th>
-              <th>{totalShippingMerchant}</th>
-              <th>{totalOtherCost}</th>
-              <th>{totalCourierTax}</th>
-              <th>{totalProfit}</th>
-              <th>N/A</th>
-              <th>N/A</th>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <Table className="border">
+        <TableHeader>
+          <TableRow>
+            <TableHead>ID</TableHead>
+            <TableHead>Actions</TableHead>
+            <TableHead>Order Date</TableHead>
+            <TableHead>Customer</TableHead>
+            <TableHead>Mobile Number</TableHead>
+            <TableHead>Total Purchase Price</TableHead>
+            <TableHead>Total Sell Price</TableHead>
+            <TableHead>Paid By Customer</TableHead>
+            <TableHead>Total Quantity</TableHead>
+            <TableHead>Total Discount</TableHead>
+            <TableHead>Shipping Customer</TableHead>
+            <TableHead>Shipping Merchant</TableHead>
+            <TableHead>Other Cost</TableHead>
+            <TableHead>Courier Tax</TableHead>
+            <TableHead>Total Profit</TableHead>
+            <TableHead>Order Status</TableHead>
+            <TableHead>SMS Sent</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {loading && (
+            <TableRow>
+              <TableCell colSpan={17} className="bg-gray-50">
+                <div className="flex justify-center">
+                  <LoaderPinwheel
+                    className="animate-spin text-blue-400"
+                    size={100}
+                  />
+                </div>
+              </TableCell>
+            </TableRow>
+          )}
+          {!loading && !entries.length && (
+            <TableRow>
+              <TableCell colSpan={17}>No Entries Found</TableCell>
+            </TableRow>
+          )}
+          {entries.map((entry, index) => (
+            <TableRow key={entry._id} className="hover:bg-gray-100">
+              <TableCell>
+                {(pageParam - 1) * itemsPerPageParam + (index + 1)}
+              </TableCell>
+              <TableCell>
+                <div className="flex gap-1">
+                  <Button size="icon" className="size-7">
+                    <a href={`/entries/customer/view/${entry._id}`}>
+                      <EyeIcon />
+                    </a>
+                  </Button>
+                  <ConfirmDialog
+                    onConfirm={() => handleDelete(entry._id)}
+                    message="Are you sure you want to delete this entry?"
+                    label="Delete"
+                    variant="destructive"
+                    className="cursor-pointer"
+                  >
+                    <TrashIcon />
+                  </ConfirmDialog>
+                </div>
+              </TableCell>
+              <TableCell>{formatDate(entry.orderDate)}</TableCell>
+              <TableCell>
+                {entry.customer?.name || "Customer Not Found"}
+              </TableCell>
+              <TableCell>
+                {entry.customer?.mobileNumber || "Customer Not Found"}
+              </TableCell>
+              <TableCell>{entry.totalPurchasePrice}</TableCell>
+              <TableCell>{entry.totalSellPrice}</TableCell>
+              <TableCell>{entry.paidByCustomer}</TableCell>
+              <TableCell>{entry.totalQuantity}</TableCell>
+              <TableCell>{entry.totalDiscount}</TableCell>
+              <TableCell>{entry.shippingCustomer}</TableCell>
+              <TableCell>{entry.shippingMerchant}</TableCell>
+              <TableCell>{entry.otherCost}</TableCell>
+              <TableCell>{entry.courierTax}</TableCell>
+              <TableCell>{entry.netProfit}</TableCell>
+              <TableCell>{entry.orderStatus}</TableCell>
+              <TableCell>{entry.message ? "YES" : "NO"}</TableCell>
+            </TableRow>
+          ))}
+          <TableRow>
+            <TableCell colSpan={5} className="font-bold">
+              Total:
+            </TableCell>
+            <TableHead>{totalPurchasePrice}</TableHead>
+            <TableHead>{totalSellPrice}</TableHead>
+            <TableHead>{totalPaidByCustomer}</TableHead>
+            <TableHead>{totalQuantity}</TableHead>
+            <TableHead>{totalDiscount}</TableHead>
+            <TableHead>{totalShippingCustomer}</TableHead>
+            <TableHead>{totalShippingMerchant}</TableHead>
+            <TableHead>{totalOtherCost}</TableHead>
+            <TableHead>{totalCourierTax}</TableHead>
+            <TableHead>{totalProfit}</TableHead>
+            <TableHead>N/A</TableHead>
+            <TableHead>N/A</TableHead>
+          </TableRow>
+        </TableBody>
+      </Table>
       <div className="flex justify-between">
         <strong>{`Showing ${Math.min(
           totalEntries,

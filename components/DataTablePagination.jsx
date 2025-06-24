@@ -74,6 +74,72 @@ export default function DataTablePagination({ table, rowsPerPageArray }) {
             variant="outline"
             size="icon"
             className="size-8"
+            onClick={() =>
+              table.setPageIndex(table.getState().pagination.pageIndex - 2)
+            }
+            hidden={table.getState().pagination.pageIndex - 1 <= 0}
+          >
+            <span className="sr-only">{`Page ${
+              table.getState().pagination.pageIndex - 1
+            }`}</span>
+            {table.getState().pagination.pageIndex - 1}
+          </Button>
+          <Button
+            variant="outline"
+            size="icon"
+            className="size-8"
+            onClick={() => table.previousPage()}
+            hidden={table.getState().pagination.pageIndex + 1 <= 1}
+          >
+            <span className="sr-only">{`Page ${
+              table.getState().pagination.pageIndex
+            }`}</span>
+            {table.getState().pagination.pageIndex}
+          </Button>
+          <Button
+            variant="outline"
+            size="icon"
+            className="size-8"
+            onClick={() => table.previousPage()}
+            disabled={true}
+          >
+            <span className="sr-only">{`Page ${
+              table.getState().pagination.pageIndex + 1
+            }`}</span>
+            {table.getState().pagination.pageIndex + 1}
+          </Button>
+          <Button
+            variant="outline"
+            size="icon"
+            className="size-8"
+            onClick={() => table.nextPage()}
+            hidden={!table.getCanNextPage()}
+          >
+            <span className="sr-only">{`Page ${
+              table.getState().pagination.pageIndex + 2
+            }`}</span>
+            {table.getState().pagination.pageIndex + 2}
+          </Button>
+          <Button
+            variant="outline"
+            size="icon"
+            className="size-8"
+            onClick={() =>
+              table.setPageIndex(table.getState().pagination.pageIndex + 2)
+            }
+            hidden={
+              table.getState().pagination.pageIndex + 2 >= table.getPageCount()
+            }
+          >
+            <span className="sr-only">{`Page ${
+              table.getState().pagination.pageIndex + 3
+            }`}</span>
+            {table.getState().pagination.pageIndex + 3}
+          </Button>
+          <Button
+            variant="outline"
+            size="icon"
+            className="size-8"
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
           >

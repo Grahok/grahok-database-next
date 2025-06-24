@@ -6,6 +6,7 @@ import fetchCustomer from "@/features/customers/actions/fetchCustomer";
 import updateCustomer from "@/features/customers/actions/updateCustomer";
 import { useRouter } from "next/navigation";
 import { use, useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export default function EditCustomer({ params }) {
   const router = useRouter();
@@ -23,10 +24,13 @@ export default function EditCustomer({ params }) {
     e.preventDefault();
     const formdata = new FormData(e.target);
     const customerData = Object.fromEntries(formdata);
-    const response = await updateCustomer(customerId, customerData);
 
-    if (response.ok) {
+    const success = await updateCustomer(customerId, customerData);
+    if (success) {
+      toast.success(`Customer updated successfully`);
       router.back();
+    } else {
+      toast.error("Failed to update customer");
     }
   }
 
