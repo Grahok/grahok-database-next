@@ -6,9 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import formatDate from "@/utils/formatDate";
 import ConfirmDialog from "@/components/ConfirmDialog";
-import deleteCustomer from "@/features/customers/actions/deleteCustomer";
 import DataTableColumnHeader from "@/components/DataTableColumnHeader";
 import { toast } from "sonner";
+import deleteCustomerEntry from "@/features/entries/customer/actions/deleteCustomerEntry";
 
 export const getColumns = (totals = {}) => [
   {
@@ -49,7 +49,7 @@ export const getColumns = (totals = {}) => [
     id: "actions",
     header: () => <div className="text-center">Actions</div>,
     cell: ({ row }) => {
-      const customer = row.original;
+      const entry = row.original;
 
       return (
         <>
@@ -59,20 +59,20 @@ export const getColumns = (totals = {}) => [
               className="size-7 bg-blue-600 hover:bg-blue-700"
               asChild
             >
-              <a href={`/customers/view/${customer._id}`}>
+              <a href={`/entries/customer/view/${entry._id}`}>
                 <EyeIcon />
               </a>
             </Button>
             <ConfirmDialog
               variant="destructive"
               label="Delete"
-              message="Are you sure to delete this customer?"
+              message="Are you sure to delete this entry?"
               onConfirm={async () => {
-                const success = await deleteCustomer(customer._id);
+                const success = await deleteCustomerEntry(entry._id);
                 if (success) {
-                  toast.warning("Customer deleted successfully");
+                  toast.warning("Customer Entry deleted successfully");
                 } else {
-                  toast.error("Failed to delete customer");
+                  toast.error("Failed to delete customer entry");
                 }
               }}
             >

@@ -1,18 +1,15 @@
 "use client";
 
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import fetchCustomers from "@/features/customers/actions/fetchCustomers";
 import useDebounce from "@/hooks/use-debounce";
 import inputDateFormat from "@/utils/inputDateFormat";
 import { useEffect, useState } from "react";
 
-export default function CustomerForm({ onCustomerChange }) {
-  const [selectedCustomerId, setSelectedCustomerId] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [name, setName] = useState("");
+export default function CustomerForm({ filteredCustomer, setFilteredCustomer }) {
   const [mobileNumber, setMobileNumber] = useState("");
-  const [address, setAddress] = useState("");
   const [customers, setCustomers] = useState([]);
-  const [filteredCustomer, setFilteredCustomer] = useState({});
   const [courierData, setCourierData] = useState({});
 
   const [search, setSearch] = useState("");
@@ -26,23 +23,19 @@ export default function CustomerForm({ onCustomerChange }) {
         setCustomers(customers);
       } catch (error) {
         console.error("Error fetching customers:", error);
-      } finally {
-        setLoading(false);
       }
     })();
   }, []);
 
   useEffect(() => {
     if (debouncedSearch.trim() !== "") {
-      setMobileNumber(debouncedSearch);
+      setMobileNumber(search);
       // Filter customers for dropdown
       setFilteredCustomer(
         customers.find((c) => c.mobileNumber === debouncedSearch)
       );
-
-      console.log(filteredCustomer)
     }
-  }, [debouncedSearch, customers]);
+  }, [debouncedSearch]);
 
   useEffect(() => {
     if (mobileNumber !== "") {
@@ -67,34 +60,16 @@ export default function CustomerForm({ onCustomerChange }) {
     }
   }, [filteredCustomer]);
 
-  // const handleCustomerSelect = (customer) => {
-  //   setSelectedCustomerId(customer._id);
-  //   setName(customer.name);
-  //   setMobileNumber(customer.mobileNumber);
-  //   setAddress(customer.address);
-  //   setDropdownOpen(false);
-  //   setSearch("");
-  // };
-
-  useEffect(() => {
-    onCustomerChange({
-      _id: selectedCustomerId,
-      name,
-      mobileNumber,
-      address,
-    });
-  }, [name, mobileNumber, address, selectedCustomerId]);
-
   return (
     <section className="bg-white p-6 rounded-lg shadow space-y-6">
       <h2 className="text-2xl font-semibold">Customer Info</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <div className="flex flex-col gap-1">
-          <label htmlFor="mobileNumber">Mobile Number</label>
-          <input
+          <Label htmlFor="mobileNumber">Mobile Number</Label>
+          <Input
             id="mobileNumber"
+            name="mobileNumber"
             type="text"
-            className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none"
             placeholder="Mobile Number"
             pattern="^01\d{9}$"
             title="Please enter an 11-digit number starting with 01"
@@ -109,55 +84,55 @@ export default function CustomerForm({ onCustomerChange }) {
           }%`}</p>
         </div>
         <div className="flex flex-col gap-1">
-          <label htmlFor="customerName">Customer Name</label>
-          <input
-            id="customerName"
+          <Label htmlFor="name">Customer Name</Label>
+          <Input
+            id="name"
+            name="name"
             type="text"
-            className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none"
             placeholder="Customer Name"
             defaultValue={filteredCustomer?.name}
             required
           />
         </div>
         <div className="flex flex-col gap-1">
-          <label htmlFor="address">Address</label>
-          <input
+          <Label htmlFor="address">Address</Label>
+          <Input
             id="address"
+            name="address"
             type="text"
-            className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none"
             placeholder="Address"
             defaultValue={filteredCustomer?.address}
             required
           />
         </div>
         <div className="flex flex-col gap-1">
-          <label htmlFor="orderDate">Order Date</label>
-          <input
+          <Label htmlFor="orderDate">Order Date</Label>
+          <Input
             id="orderDate"
+            name="orderDate"
             type="date"
-            className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none"
             placeholder="Order Date"
             defaultValue={inputDateFormat(Date.now())}
             required
           />
         </div>
         <div className="flex flex-col gap-1">
-          <label htmlFor="entryDate">Entry Date</label>
-          <input
+          <Label htmlFor="entryDate">Entry Date</Label>
+          <Input
             id="entryDate"
+            name="entryDate"
             type="date"
-            className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none"
             placeholder="Entry Date"
             defaultValue={inputDateFormat(Date.now())}
             required
           />
         </div>
         <div className="flex flex-col gap-1">
-          <label htmlFor="paymentDate">Payment Date</label>
-          <input
+          <Label htmlFor="paymentDate">Payment Date</Label>
+          <Input
             id="paymentDate"
+            name="paymentDate"
             type="date"
-            className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none"
             placeholder="Payment Date"
           />
         </div>

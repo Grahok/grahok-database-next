@@ -7,12 +7,16 @@ import SummarySection from "@/features/entries/customer/add/components/SummarySe
 import ProductSection from "@/features/entries/customer/add/components/ProductSection";
 import CustomerForm from "@/features/entries/customer/add/components/CustomerForm";
 import combineDateWithCurrentTime from "@/utils/combineDateWithCurrentTime";
-import Toast from "@/components/Toast";
 import { Button } from "@/components/ui/button";
 import sendParcelTrackingMessage from "@/features/entries/customer/add/actions/sendParcelTrackingMessage";
 import { MessageSquareIcon } from "lucide-react";
+import useEnterNavigation from "@/hooks/use-enter-navigation";
+import createCustomer from "@/features/customers/actions/createCustomer";
+import { toast } from "sonner";
 
 export default function AddCustomerEntry() {
+  useEnterNavigation({ autoSubmit: false });
+
   const [invoiceNumber, setInvoiceNumber] = useState(0);
   const [cnNumber, setCnNumber] = useState("");
   const [trackingLink, setTrackingLink] = useState("");
@@ -39,7 +43,6 @@ export default function AddCustomerEntry() {
   const totalIncome =
     paidByCustomer - totalShippingCharge - courierTax - otherCost;
   const netProfit = totalIncome - totalPurchasePrice;
-  const [toast, setToast] = useState({ show: false, message: "" });
   const [shippingMethod, setShippingMethod] = useState("Steadfast");
   const [note, setNote] = useState("");
 
@@ -60,25 +63,20 @@ export default function AddCustomerEntry() {
         customerId = customerData._id;
       } else {
         // 🆕 Create a new customer
-        const res = await fetch("/api/customers", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            name: customerData.name,
-            mobileNumber: customerData.mobileNumber,
-            address: customerData.address,
-            entryDate: combineDateWithCurrentTime(e.target.entryDate.value),
-          }),
+        const { success, createdCustomer } = await createCustomer({
+          name: customerData.name,
+          mobileNumber: customerData.mobileNumber,
+          address: customerData.address,
+          entryDate: combineDateWithCurrentTime(e.target.entryDate.value),
         });
 
-        if (!res.ok) {
-          throw new Error("Failed to create new customer.");
+        if (success) {
+          toast.success("Customer created successfully")
+        } else {
+          toast.error("Failed to create customer")
         }
-
-        const { createdCustomer: newCustomer } = await res.json();
-        customerId = newCustomer._id;
+        
+        customerId = createdCustomer._id;
       }
 
       const totalQuantity = Number(
@@ -125,8 +123,6 @@ export default function AddCustomerEntry() {
         totalIncome,
         netProfit,
       };
-
-      console.log(entry);
 
       // 💾 Post the entry
       const entryRes = await fetch("/api/entries/customer", {
@@ -284,17 +280,6 @@ export default function AddCustomerEntry() {
           {loading ? "Adding..." : "Add Entry"}
         </button>
       </form>
-      <Toast
-        show={toast.show}
-        message={toast.message}
-        onClose={() =>
-          setToast((prev) => ({
-            ...prev,
-            show: false,
-          }))
-        }
-        type={toast.type}
-      />
     </main>
   );
 }

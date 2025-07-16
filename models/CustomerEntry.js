@@ -4,55 +4,92 @@ import mongoose from "mongoose";
 
 const productSchema = new mongoose.Schema({
   product: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
-  quantity: Number,
-  purchasePrice: Number,
-  sellPrice: Number,
-  discount: Number,
-  subtotal: Number,
+  quantity: { type: Number, default: 1 },
+  purchasePrice: { type: Number, default: 0 },
+  sellPrice: { type: Number, default: 0 },
+  discount: { type: Number, default: 0, default: 0 },
+  subtotal: { type: Number, default: 0 }, // calculated field
 });
 
 const customerEntrySchema = new mongoose.Schema(
   {
-    invoiceNumber: Number,
-    cnNumber: String,
+    invoiceNumber: { type: String, default: "" },
+    cnNumber: { type: String, default: "" },
     orderStatus: {
       type: String,
       enum: ORDER_STATUSES,
       default: "Pending",
     },
     customer: { type: mongoose.Schema.Types.ObjectId, ref: "Customer" },
-    orderDate: Date,
-    entryDate: Date,
-    paymentDate: Date,
+    orderDate: { type: Date, required: true },
+    entryDate: { type: Date, required: true },
+    paymentDate: { type: Date },
     products: [productSchema],
-    subtotal: Number,
-    paidByCustomer: Number,
-    shippingCustomer: Number,
-    shippingMerchant: Number,
-    totalShippingCharge: Number,
+    shippingCustomer: { type: Number, default: 0 },
+    shippingMerchant: { type: Number, default: 0 },
     shippingMethod: {
       type: String,
       enum: SHIPPING_METHODS,
-      default: "Pathao",
+      default: "Steadfast",
     },
     otherCost: Number,
-    note: String,
-    courierTax: Number,
+    note: { type: String, default: "" },
+    courierTax: { type: Number, default: 0 },
+    overallDiscount: { type: Number, default: 0 },
 
     // Calculated fields (write-once at submission)
-    totalQuantity: Number,
-    totalPurchasePrice: Number,
-    totalSellPrice: Number,
-    totalDiscount: Number,
-    overallDiscount: Number,
-    totalIncome: Number,
-    netProfit: Number,
+    subtotal: { type: Number, default: 0 },
+    paidByCustomer: { type: Number, default: 0 },
+    totalShippingCharge: { type: Number, default: 0 },
+    totalQuantity: { type: Number, default: 0 },
+    totalPurchasePrice: { type: Number, default: 0 },
+    totalSellPrice: { type: Number, default: 0 },
+    totalDiscount: { type: Number, default: 0 },
+    totalIncome: { type: Number, default: 0 },
+    netProfit: { type: Number, default: 0 },
     message: { type: String, default: "" },
   },
   {
     collection: "Customer Entries",
   }
 );
+
+customerEntrySchema.pre("save", function (next) {
+  this.products.forEach((product) => {
+    product.subtotal = product.quantity * product.sellPrice - product.discount;
+  });
+  this.subtotal = this.products.reduce(
+    (sum, product) => sum + (product.subtotal || 0),
+    0
+  );
+  this.paidByCustomer =
+    this.subtotal + this.shippingCustomer - this.overallDiscount;
+  this.totalShippingCharge = this.shippingCustomer + this.shippingMerchant;
+  this.totalQuantity = this.products.reduce(
+    (sum, product) => sum + (product.quantity || 0),
+    0
+  );
+  this.totalPurchasePrice = this.products.reduce(
+    (sum, product) => sum + (product.purchasePrice || 0),
+    0
+  );
+  this.totalSellPrice = this.products.reduce(
+    (sum, product) => sum + (product.sellPrice || 0),
+    0
+  );
+  this.totalDiscount = this.products.reduce(
+    (sum, product) => sum + (product.discount || 0),
+    0
+  );
+  this.totalIncome =
+    this.paidByCustomer -
+    this.totalShippingCharge -
+    this.courierTax -
+    this.otherCost;
+  this.netProfit = this.totalIncome - this.totalPurchasePrice;
+
+  next();
+});
 
 const CustomerEntry =
   mongoose.models.CustomerEntry ||

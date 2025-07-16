@@ -79,41 +79,43 @@ export function DataTable({ data, totals }) {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-2">
-        <div className="flex justify-end items-center gap-2">
-          <Input
-            className="w-45"
-            type="search"
-            placeholder="Search..."
-            value={globalFilter || ""}
-            onChange={(e) => setGlobalFilter(e.target.value)}
-          />
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline">Columns</Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              {table
-                .getAllColumns()
-                .filter((column) => column.getCanHide())
-                .map((column) => {
-                  return (
-                    <DropdownMenuCheckboxItem
-                      key={column.id}
-                      className="capitalize"
-                      checked={column.getIsVisible()}
-                      onCheckedChange={(value) =>
-                        column.toggleVisibility(!!value)
-                      }
-                    >
-                      {column.id}
-                    </DropdownMenuCheckboxItem>
-                  );
-                })}
-            </DropdownMenuContent>
-          </DropdownMenu>
+        <div className="flex justify-between items-center gap-6">
+          <h1 className="text-3xl font-bold">All Customer Entries:</h1>
+          <div className="flex items-center gap-2">
+            <Input
+              className="w-45"
+              type="search"
+              placeholder="Search..."
+              value={globalFilter || ""}
+              onChange={(e) => setGlobalFilter(e.target.value)}
+            />
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline">Columns</Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                {table
+                  .getAllColumns()
+                  .filter((column) => column.getCanHide())
+                  .map((column) => {
+                    return (
+                      <DropdownMenuCheckboxItem
+                        key={column.id}
+                        className="capitalize"
+                        checked={column.getIsVisible()}
+                        onCheckedChange={(value) =>
+                          column.toggleVisibility(!!value)
+                        }
+                      >
+                        {column.id}
+                      </DropdownMenuCheckboxItem>
+                    );
+                  })}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
       </div>
-      <div className="rounded-md border">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -167,9 +169,7 @@ export function DataTable({ data, totals }) {
             {table.getFooterGroups().map((footerGroup) => (
               <TableRow key={footerGroup.id}>
                 {footerGroup.headers.map((header) => (
-                  <TableCell
-                    key={header.id}
-                  >
+                  <TableCell key={header.id}>
                     {flexRender(
                       header.column.columnDef.footer,
                       header.getContext()
@@ -180,7 +180,6 @@ export function DataTable({ data, totals }) {
             ))}
           </TableFooter>
         </Table>
-      </div>
       <DataTablePagination table={table} rowsPerPageArray={rowsPerPageArray} />
     </div>
   );

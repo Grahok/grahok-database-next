@@ -37,7 +37,6 @@ export default async function AllCustomers() {
 
   return (
     <div className="container mx-auto py-10">
-      <h1 className="text-3xl font-bold">All Customer Entries:</h1>
       <DataTable totals={totals} data={customerEntries} />
     </div>
   );
