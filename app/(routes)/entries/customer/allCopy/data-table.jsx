@@ -28,14 +28,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Input } from "@/components/ui/input";
 import DataTablePagination from "@/components/DataTablePagination";
 import rowsPerPageArray from "@/constants/rowsPerPageArray";
 import { getColumns } from "./columns";
 
-export function DataTable({ data, totals }) {
-  const columns = getColumns(totals);
+export function DataTable({ data }) {
+  // Table state
   const [sorting, setSorting] = useState([{ id: "orderDate", desc: true }]);
   const [globalFilter, setGlobalFilter] = useState("");
   const [columnVisibility, setColumnVisibility] = useState({
@@ -46,13 +46,14 @@ export function DataTable({ data, totals }) {
     shippingMerchant: false,
     otherCost: false,
     courierTax: false,
-    totalProfit: false,
+    netProfit: false,
   });
   const [rowSelection, setRowSelection] = useState({});
 
+  // Table instance
   const table = useReactTable({
     data,
-    columns,
+    columns: getColumns(),
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     onSortingChange: setSorting,
@@ -76,110 +77,136 @@ export function DataTable({ data, totals }) {
     },
   });
 
+  // Totals calculation for visible columns and rows (after filtering & pagination)
+  const visibleTotals = useMemo(() => {
+    // Only sum for visible columns, and only for visible rows (after filtering & pagination)
+    const rows = table.getRowModel().rows;
+    const totals = {};
+    // List of keys to sum, matching column accessorKeys
+    const sumKeys = [
+      "totalPurchasePrice",
+      "totalSellPrice",
+      "paidByCustomer",
+      "totalQuantity",
+      "totalDiscount",
+      "shippingCustomer",
+      "shippingMerchant",
+      "otherCost",
+      "courierTax",
+      "netProfit",
+    ];
+    // Only sum for columns that are visible
+    sumKeys.forEach((key) => {
+      const col = table
+        .getAllColumns()
+        .find((c) => c.id === key || c.accessorKey === key);
+      if (col && col.getIsVisible()) {
+        totals[key] = rows.reduce(
+          (acc, row) => acc + (row.original[key] || 0),
+          0
+        );
+      }
+    });
+    return totals;
+  }, [table, table.getRowModel().rows, columnVisibility]);
+
+  // Pass totals to columns
+  const columns = useMemo(() => getColumns(visibleTotals), [visibleTotals]);
+  table.setOptions((opts) => ({ ...opts, columns }));
+
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex flex-col gap-2">
-        <div className="flex justify-between items-center gap-6">
-          <h1 className="text-3xl font-bold">All Customer Entries:</h1>
-          <div className="flex items-center gap-2">
-            <Input
-              className="w-45"
-              type="search"
-              placeholder="Search..."
-              value={globalFilter || ""}
-              onChange={(e) => setGlobalFilter(e.target.value)}
-            />
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline">Columns</Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                {table
-                  .getAllColumns()
-                  .filter((column) => column.getCanHide())
-                  .map((column) => {
-                    return (
-                      <DropdownMenuCheckboxItem
-                        key={column.id}
-                        className="capitalize"
-                        checked={column.getIsVisible()}
-                        onCheckedChange={(value) =>
-                          column.toggleVisibility(!!value)
-                        }
-                      >
-                        {column.id}
-                      </DropdownMenuCheckboxItem>
-                    );
-                  })}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        </div>
-      </div>
-        <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  );
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              <>
-                {table.getRowModel().rows.map((row) => (
-                  <TableRow
-                    key={row.id}
-                    data-state={row.getIsSelected() && "selected"}
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))}
-              </>
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
+    <div>
+      <h1 className="text-3xl font-bold">All Customer Entries:</h1>
+      <Input
+        className="w-45"
+        type="search"
+        placeholder="Search..."
+        value={globalFilter || ""}
+        onChange={(e) => setGlobalFilter(e.target.value)}
+      />
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline">Columns</Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          {table
+            .getAllColumns()
+            .filter((column) => column.getCanHide())
+            .map((column) => {
+              return (
+                <DropdownMenuCheckboxItem
+                  key={column.id}
+                  className="capitalize"
+                  checked={column.getIsVisible()}
+                  onCheckedChange={(value) => column.toggleVisibility(!!value)}
                 >
-                  No results.
+                  {column.id}
+                </DropdownMenuCheckboxItem>
+              );
+            })}
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <Table>
+        <TableHeader>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <TableRow key={headerGroup.id}>
+              {headerGroup.headers.map((header) => {
+                return (
+                  <TableHead key={header.id}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                  </TableHead>
+                );
+              })}
+            </TableRow>
+          ))}
+        </TableHeader>
+        <TableBody>
+          {table.getRowModel().rows?.length ? (
+            <>
+              {table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </>
+          ) : (
+            <TableRow>
+              <TableCell colSpan={columns.length} className="h-24 text-center">
+                No results.
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+        <TableFooter className="bg-muted/50 font-medium">
+          {table.getFooterGroups().map((footerGroup) => (
+            <TableRow key={footerGroup.id}>
+              {footerGroup.headers.map((header) => (
+                <TableCell key={header.id}>
+                  {flexRender(
+                    header.column.columnDef.footer,
+                    header.getContext()
+                  )}
                 </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-          <TableFooter className="bg-muted/50 font-medium">
-            {table.getFooterGroups().map((footerGroup) => (
-              <TableRow key={footerGroup.id}>
-                {footerGroup.headers.map((header) => (
-                  <TableCell key={header.id}>
-                    {flexRender(
-                      header.column.columnDef.footer,
-                      header.getContext()
-                    )}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))}
-          </TableFooter>
-        </Table>
+              ))}
+            </TableRow>
+          ))}
+        </TableFooter>
+      </Table>
       <DataTablePagination table={table} rowsPerPageArray={rowsPerPageArray} />
     </div>
   );

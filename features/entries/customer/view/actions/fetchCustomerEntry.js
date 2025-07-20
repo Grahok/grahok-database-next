@@ -6,10 +6,10 @@ import Customer from "@/models/Customer";
 import Product from "@/models/Product";
 import mongooseDocumentToPlainObject from "@/utils/mongooseDocumentToPlainObject";
 
-export default async function fetchCustomerEntries() {
+export default async function fetchCustomerEntry(entryId) {
   await connectToDatabase();
-  const customerEntries = await CustomerEntry.find()
-    .populate("customer", "name mobileNumber")
-    .populate("products.product", "name");
-  return mongooseDocumentToPlainObject(customerEntries);
+  const customerEntry = await CustomerEntry.findById(entryId)
+    .populate("customer", "name mobileNumber address")
+    .populate("products.product", "name inStock");
+  return mongooseDocumentToPlainObject(customerEntry);
 }

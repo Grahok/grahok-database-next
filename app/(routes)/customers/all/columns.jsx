@@ -77,43 +77,49 @@ export const columns = [
       const customer = row.original;
 
       return (
-        <>
-          <div className="flex items-center justify-self-center gap-2">
-            <Button
-              size="icon"
-              className="size-7 bg-blue-600 hover:bg-blue-700"
-              asChild
+        <div className="flex items-center justify-self-center gap-2">
+          <Button
+            size="icon"
+            className="size-7 bg-blue-600 hover:bg-blue-700"
+            asChild
+          >
+            <a
+              href={`/customers/view/${customer._id}`}
+              aria-label="View customer"
             >
-              <a href={`/customers/view/${customer._id}`}>
-                <EyeIcon />
-              </a>
-            </Button>
-            <Button
-              size="icon"
-              className="size-7 bg-green-600 hover:bg-green-700"
-              asChild
+              <EyeIcon aria-hidden="true" />
+              <span className="sr-only">View</span>
+            </a>
+          </Button>
+          <Button
+            size="icon"
+            className="size-7 bg-green-600 hover:bg-green-700"
+            asChild
+          >
+            <a
+              href={`/customers/edit/${customer._id}`}
+              aria-label="Edit customer"
             >
-              <a href={`/customers/edit/${customer._id}`}>
-                <PencilIcon />
-              </a>
-            </Button>
-            <ConfirmDialog
-              variant="destructive"
-              label="Delete"
-              message="Are you sure to delete this customer?"
-              onConfirm={async () => {
-                const success = await deleteCustomer(customer._id);
-                if (success) {
-                  toast.warning("Customer deleted successfully");
-                } else {
-                  toast.error("Failed to delete customer");
-                }
-              }}
-            >
-              <TrashIcon />
-            </ConfirmDialog>
-          </div>
-        </>
+              <PencilIcon aria-hidden="true" />
+            </a>
+          </Button>
+          <ConfirmDialog
+            variant="destructive"
+            label="Delete"
+            message="Are you sure to delete this customer?"
+            onConfirm={async () => {
+              const success = await deleteCustomer(customer._id);
+              if (success) {
+                toast.warning("Customer deleted successfully");
+              } else {
+                toast.error("Failed to delete customer");
+              }
+            }}
+          >
+            <TrashIcon aria-hidden="true" />
+            <span className="sr-only">Delete</span>
+          </ConfirmDialog>
+        </div>
       );
     },
   },

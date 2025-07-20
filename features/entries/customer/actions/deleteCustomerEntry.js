@@ -1,8 +1,14 @@
-export default async function deleteCustomerEntry(entryId) {
-  const response = await fetch(`/api/entries/customer/${entryId}`, {
-    method: "DELETE",
-    headers: { "Content-Type": "application/json" },
-  });
+"use server";
 
-  return response;
+import { connectToDatabase } from "@/lib/mongoose";
+import CustomerEntry from "@/models/CustomerEntry";
+
+export default async function deleteCustomerEntry(entryId) {
+  try {
+    await connectToDatabase();
+    await CustomerEntry.findByIdAndDelete(entryId);
+    return { success: true };
+  } catch (_) {
+    return { success: false };
+  }
 }

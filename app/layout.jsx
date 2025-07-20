@@ -36,10 +36,10 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={`${inter.className} antialiased min-h-dvh`}>
         <SidebarProvider className="flex flex-col">
-          <header className="bg-gray-800 px-8 py-2 sticky top-0 z-50 w-full flex justify-between">
+          <header className="bg-gray-900 px-8 py-2 sticky top-0 z-50 w-full flex justify-between">
             <div className="flex items-center gap-2">
               <SidebarTrigger className="flex items-center justify-center text-white" />
-              <h3 className="text-2xl font-bold text-blue-600">
+              <h3 className="text-2xl font-bold text-blue-400">
                 <a href="/">Grahok DB</a>
               </h3>
             </div>

@@ -195,10 +195,15 @@ export default function AppSidebar() {
                   defaultOpen={isGroupActive}
                   className="group/collapsible"
                   key={index}
+                  asChild
                 >
                   <SidebarMenuItem className="flex flex-col gap-2">
                     <CollapsibleTrigger asChild>
-                      <div className="flex items-center justify-between gap-3 w-full cursor-pointer">
+                      <div
+                        className="flex items-center justify-between gap-3 w-full cursor-pointer"
+                        role="button"
+                        aria-expanded={isGroupActive}
+                      >
                         {item.title}
                         <ChevronDown
                           size={18}

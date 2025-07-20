@@ -1,98 +1,112 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { use, useEffect } from "react";
+import { toast } from "sonner";
 import fetchCustomer from "@/features/customers/actions/fetchCustomer";
 import updateCustomer from "@/features/customers/actions/updateCustomer";
 import { useRouter } from "next/navigation";
-import { use, useEffect, useState } from "react";
-import { toast } from "sonner";
 
-export default function EditCustomer({ params }) {
-  const router = useRouter();
+const formSchema = z.object({
+  name: z.string().min(1),
+  mobileNumber: z
+    .string()
+    .length(11)
+    .regex(/^01.{9}$/),
+  address: z.string(),
+});
+
+export default function EditCustomerForm({ params }) {
   const { customerId } = use(params);
-  const [customer, setCustomer] = useState();
+  const router = useRouter();
+
+  const form = useForm({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "Loading...",
+      mobileNumber: "Loading...",
+      address: "Loading...",
+    },
+  });
 
   useEffect(() => {
     (async () => {
       const customer = await fetchCustomer(customerId);
-      setCustomer(customer);
+      form.reset({
+        name: customer?.name ?? "",
+        mobileNumber: customer?.mobileNumber ?? "",
+        address: customer?.address ?? "",
+      });
     })();
   }, []);
 
-  async function handleSubmit(e) {
-    e.preventDefault();
-    const formdata = new FormData(e.target);
-    const customerData = Object.fromEntries(formdata);
-
-    const success = await updateCustomer(customerId, customerData);
+  async function onSubmit(values) {
+    const { success } = await updateCustomer(customerId, values);
     if (success) {
-      toast.success(`Customer updated successfully`);
+      toast.success("Customer updated successfully");
       router.back();
     } else {
       toast.error("Failed to update customer");
     }
   }
-
   return (
-    <form
-      onSubmit={handleSubmit}
-      method="post"
-      className="bg-white p-6 rounded-lg shadow space-y-6"
-      aria-labelledby="customer-section-title"
-    >
-      <h2 id="customer-section-title" className="text-2xl font-semibold">
-        Edit Customer
-      </h2>
-
-      <div className="flex flex-col gap-1">
-        <Label htmlFor="name" className="text-sm">
-          Customer Name
-        </Label>
-        <Input
-          type="text"
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <h1 className="text-3xl font-bold">Edit Customer</h1>
+        <FormField
+          control={form.control}
           name="name"
-          id="name"
-          className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none"
-          defaultValue={customer?.name}
-          required
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Name</FormLabel>
+              <FormControl>
+                <Input type="text" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-      </div>
-
-      <div className="flex flex-col gap-1">
-        <Label htmlFor="mobileNumber" className="text-sm">
-          Mobile Number
-        </Label>
-        <Input
-          type="text"
+        <FormField
+          control={form.control}
           name="mobileNumber"
-          id="mobileNumber"
-          className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none"
-          defaultValue={customer?.mobileNumber}
-          required
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Mobile Number</FormLabel>
+              <FormControl>
+                <Input type="string" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-      </div>
-
-      <div className="flex flex-col gap-1">
-        <Label htmlFor="address" className="text-sm">
-          Address
-        </Label>
-        <Input
-          type="text"
+        <FormField
+          control={form.control}
           name="address"
-          id="address"
-          className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none"
-          defaultValue={customer?.address}
-          required
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Address</FormLabel>
+              <FormControl>
+                <Input type="text" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-      </div>
-
-      <button
-        type="submit"
-        className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition cursor-pointer disabled:opacity-50"
-      >
-        Update Customer
-      </button>
-    </form>
+        <Button type="submit">Submit</Button>
+      </form>
+    </Form>
   );
 }

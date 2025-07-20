@@ -52,7 +52,8 @@ export default function AddCustomerEntry() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-
+    if (e.target.dataset.submitting === "true") return;
+    e.target.dataset.submitting = "true";
     const formData = new FormData(e.target);
     const formDataObj = Object.fromEntries(formData);
     let customerId = filteredCustomer?._id;
@@ -81,12 +82,11 @@ export default function AddCustomerEntry() {
       })),
     };
 
-    console.log(entryObj);
-
     const { success } = await createCustomerEntry(entryObj);
 
     if (success) {
       toast.success("Customer entry created successfully");
+      e.target.reset();
     } else {
       toast.error("Failed to create customer entry");
     }

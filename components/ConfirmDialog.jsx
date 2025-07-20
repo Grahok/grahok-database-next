@@ -1,3 +1,5 @@
+"use client";
+
 import { useRouter } from "next/navigation";
 import { Button } from "./ui/button";
 import {
@@ -25,7 +27,13 @@ export default function ConfirmDialog({
   return (
     <Dialog {...props}>
       <DialogTrigger asChild>
-        <Button className={cn("size-7 cursor-pointer", className)} size="icon" variant={variant}>{children}</Button>
+        <Button
+          className={cn("size-7 cursor-pointer", className)}
+          size="icon"
+          variant={variant}
+        >
+          {children}
+        </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -45,11 +53,12 @@ export default function ConfirmDialog({
           <DialogClose asChild>
             <Button
               type="button"
+              aria-label={label || "Confirm action"}
               onClick={() => {
                 onConfirm();
                 router.refresh();
               }}
-              className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded cursor-pointer"
+              variant={variant}
             >
               {label}
             </Button>

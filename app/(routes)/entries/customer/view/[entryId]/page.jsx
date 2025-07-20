@@ -10,11 +10,11 @@ import combineDateWithCurrentTime from "@/utils/combineDateWithCurrentTime";
 import React from "react";
 import { FaPencil } from "react-icons/fa6";
 import inputDateFormat from "@/utils/inputDateFormat";
-import { getCustomerEntry } from "@/features/entries/customer/view/actions/getCustomerEntry";
 import Toast from "@/components/Toast";
 import { Button } from "@/components/ui/button";
 import sendParcelTrackingMessage from "@/features/entries/customer/add/actions/sendParcelTrackingMessage";
 import { MessageSquareIcon } from "lucide-react";
+import fetchCustomerEntry from "@/features/entries/customer/view/actions/fetchCustomerEntry";
 
 export default function EditEntry({ params }) {
   const { entryId } = React.use(params);
@@ -31,8 +31,7 @@ export default function EditEntry({ params }) {
   useEffect(() => {
     (async () => {
       try {
-        const response = await getCustomerEntry(entryId);
-        const { entry } = await response.json();
+        const entry = await fetchCustomerEntry(entryId);
 
         setEntry({
           ...entry,
