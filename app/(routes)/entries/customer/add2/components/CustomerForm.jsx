@@ -13,7 +13,7 @@ export default function CustomerForm({ filteredCustomer, setFilteredCustomer }) 
   const [courierData, setCourierData] = useState({});
 
   const [search, setSearch] = useState("");
-  const debouncedSearch = useDebounce(search, 500);
+  const debouncedSearch = useDebounce(search, 2000);
 
   // Load customer list
   useEffect(() => {

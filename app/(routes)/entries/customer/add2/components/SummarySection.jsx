@@ -18,6 +18,7 @@ export default function SummarySection({
   setShippingMerchant,
   shippingMethod,
   setShippingMethod,
+  otherCost,
   setOtherCost,
   note,
   setNote,
@@ -47,7 +48,7 @@ export default function SummarySection({
               id="shippingCustomer"
               placeholder={shippingCustomer}
               min={0}
-              value={0}
+              value={shippingCustomer}
               onChange={(e) => setShippingCustomer(Number(e.target.value))}
             />
           </div>
@@ -61,7 +62,7 @@ export default function SummarySection({
               name="shippingMerchant"
               placeholder={shippingMerchant}
               min={0}
-              value={0}
+              value={shippingMerchant}
               onChange={(e) => setShippingMerchant(Number(e.target.value))}
             />
           </div>
@@ -93,7 +94,7 @@ export default function SummarySection({
               id="otherCost"
               placeholder={0}
               min={0}
-              value={0}
+              value={otherCost}
               onChange={(e) => setOtherCost(Number(e.target.value))}
             />
           </div>

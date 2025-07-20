@@ -188,9 +188,9 @@ export default function AddCustomerEntry() {
           courierTax={courierTax}
           setCourierTax={setCourierTax}
           otherCost={otherCost}
+          setOtherCost={setOtherCost}
           note={note}
           setNote={setNote}
-          setOtherCost={setOtherCost}
           overallDiscount={overallDiscount}
           setOverallDiscount={setOverallDiscount}
           subtotal={subtotal}
