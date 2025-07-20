@@ -72,9 +72,8 @@ export default function SummarySection({
               onValueChange={(value) => setShippingMethod(value)}
               id="shippingMethod"
               name="shippingMethod"
-              tabIndex={-1}
             >
-              <SelectTrigger className="w-full">
+              <SelectTrigger className="w-full" tabIndex={-1}>
                 <SelectValue placeholder="Shipping Method" />
               </SelectTrigger>
               <SelectContent>

@@ -201,7 +201,7 @@ export default function AddCustomerEntry() {
           netProfit={netProfit}
         />
 
-        <Button type="submit">Add Entry</Button>
+        <Button type="submit" className="bg-blue-700 hover:bg-blue-800 focus-visible:ring-blue-400">Add Entry</Button>
       </form>
     </main>
   );

@@ -109,12 +109,14 @@ export const getColumns = (totals = {}) => [
   },
   {
     accessorKey: "customer.name",
+    id: "name",
     header: ({ column }) => {
       return <DataTableColumnHeader column={column} title="Name" />;
     },
   },
   {
     accessorKey: "customer.mobileNumber",
+    id: "mobileNumber",
     header: "Mobile Number",
   },
   {
