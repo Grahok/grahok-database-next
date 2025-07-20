@@ -100,7 +100,7 @@ export default function Home() {
         ))}
       </section>
       <strong className="text-right">
-        Created for 💵 by Shakil Ahmmed | Chitti V4.0
+        Created for 💵 by Shakil Ahmmed | Chitti V4.0.1
       </strong>
     </section>
   );

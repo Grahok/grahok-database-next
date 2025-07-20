@@ -1,285 +1,98 @@
 "use client";
 
-import { ORDER_STATUSES } from "@/constants/orderStatuses";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
-import { useState } from "react";
-import SummarySection from "@/features/entries/customer/add/components/SummarySection";
-import ProductSection from "@/features/entries/customer/add/components/ProductSection";
-import CustomerForm from "@/features/entries/customer/add/components/CustomerForm";
-import combineDateWithCurrentTime from "@/utils/combineDateWithCurrentTime";
 import { Button } from "@/components/ui/button";
-import sendParcelTrackingMessage from "@/features/entries/customer/add/actions/sendParcelTrackingMessage";
-import { MessageSquareIcon } from "lucide-react";
-import useEnterNavigation from "@/hooks/use-enter-navigation";
-import createCustomer from "@/features/customers/actions/createCustomer";
-import { toast } from "sonner";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { SHIPPING_METHODS } from "@/constants/shippingMethods";
 
-export default function AddCustomerEntry() {
-  useEnterNavigation({ autoSubmit: false });
+const customerSchema = z.object({
+  name: z.string().min(1),
+  mobileNumber: z.string().regex(/^01.{9}$/),
+  address: z.string().min(1),
+});
 
-  const [invoiceNumber, setInvoiceNumber] = useState(0);
-  const [cnNumber, setCnNumber] = useState("");
-  const [trackingLink, setTrackingLink] = useState("");
-  const [orderStatus, setOrderStatus] = useState("Pending");
-  const [customerData, setCustomerData] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [selectedProducts, setSelectedProducts] = useState([]);
-  const [overallDiscount, setOverallDiscount] = useState(0);
-  const subtotal = selectedProducts.reduce(
-    (sum, row) => sum + row.quantity * row.sellPrice - row.discount,
-    0
-  );
-  const totalPurchasePrice = selectedProducts.reduce(
-    (sum, row) => sum + row.quantity * row.purchasePrice,
-    0
-  );
-  const [shippingCustomer, setShippingCustomer] = useState(0);
-  const paidByCustomer = subtotal + shippingCustomer - overallDiscount;
-  const [shippingMerchant, setShippingMerchant] = useState(0);
-  const totalShippingCharge = shippingCustomer + shippingMerchant;
-  const [otherCost, setOtherCost] = useState(0);
-  const [courierTax, setCourierTax] = useState(0);
-  const totalIncome =
-    paidByCustomer - totalShippingCharge - courierTax - otherCost;
-  const netProfit = totalIncome - totalPurchasePrice;
-  const [shippingMethod, setShippingMethod] = useState("Steadfast");
-  const [note, setNote] = useState("");
+const productSchema = z.object({
+  _id: z.string(),
+  name: z.string(),
+  inStock: z.number(),
+  purchasePrice: z.coerce().number().nonnegative(),
+  sellPrice: z.coerce().number().nonnegative(),
+});
 
-  const handleCustomerChange = (data) => {
-    setCustomerData(data);
-  };
+const productSchemaExtended = z.object({
+  product: productSchema._id,
+  purchasePrice: productSchema.purchasePrice,
+  sellPrice: productSchema.sellPrice,
+  quantity: z.coerce().number().min(1),
+  discount: z.coerce().number().nonnegative(),
+});
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
+const customerEntrySchema = z.object({
+  customer: customerSchema,
+  orderDate: z.date(),
+  entryDate: z.date(),
+  paymentDate: z.date(),
+  products: z.array(productSchema).min(1, {
+    message: "Add at least one product",
+  }),
+  shippingCustomer: z.coerce().number().nonnegative(),
+  shippingMerchant: z.coerce().number().nonnegative(),
+  shippingMethod: z.enum(SHIPPING_METHODS),
+  otherCost: z.coerce().number().nonnegative(),
+  courierTax: z.coerce().number().nonnegative(),
+  overallDiscount: z.coerce().number().nonnegative(),
+  note: z.string(),
+});
 
-    try {
-      let customerId;
+export function ProfileForm() {
+  // 1. Define your form.
+  const form = useForm({
+    resolver: zodResolver(customerEntrySchema),
+    defaultValues: {
+      username: "",
+    },
+  });
 
-      // 🔍 Check if it's an existing customer (already has _id)
-      if (customerData._id) {
-        customerId = customerData._id;
-      } else {
-        // 🆕 Create a new customer
-        const { success, createdCustomer } = await createCustomer({
-          name: customerData.name,
-          mobileNumber: customerData.mobileNumber,
-          address: customerData.address,
-          entryDate: combineDateWithCurrentTime(e.target.entryDate.value),
-        });
-
-        if (success) {
-          toast.success("Customer created successfully")
-        } else {
-          toast.error("Failed to create customer")
-        }
-        
-        customerId = createdCustomer._id;
-      }
-
-      const totalQuantity = Number(
-        selectedProducts.reduce((sum, p) => sum + p.quantity, 0)
-      );
-      const totalSellPrice = Number(
-        selectedProducts.reduce((sum, p) => sum + p.sellPrice * p.quantity, 0)
-      );
-      const totalDiscount =
-        Number(selectedProducts.reduce((sum, p) => sum + p.discount, 0)) +
-        Number(overallDiscount);
-
-      const entry = {
-        invoiceNumber,
-        cnNumber,
-        orderStatus,
-        customer: customerId,
-        orderDate: combineDateWithCurrentTime(e.target.orderDate.value),
-        entryDate: combineDateWithCurrentTime(e.target.entryDate.value),
-        paymentDate:
-          combineDateWithCurrentTime(e.target.paymentDate.value) || null,
-        products: selectedProducts.map((p) => ({
-          product: p.product._id,
-          quantity: Number(p.quantity),
-          purchasePrice: Number(p.purchasePrice),
-          sellPrice: Number(p.sellPrice),
-          discount: Number(p.discount || 0),
-          subtotal: Number(p.quantity * p.sellPrice - p.discount),
-        })),
-        subtotal,
-        paidByCustomer,
-        shippingCustomer,
-        shippingMerchant,
-        totalShippingCharge,
-        shippingMethod,
-        otherCost,
-        note,
-        courierTax,
-        totalQuantity,
-        totalPurchasePrice,
-        totalSellPrice,
-        totalDiscount,
-        overallDiscount,
-        totalIncome,
-        netProfit,
-      };
-
-      // 💾 Post the entry
-      const entryRes = await fetch("/api/entries/customer", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(entry),
-      });
-
-      if (!entryRes.ok) {
-        throw new Error("Failed to save entry.");
-      }
-
-      // ✅ Show success toast
-      setToast({ show: true, message: "Entry added successfully." });
-      setTimeout(() => {
-        setToast((prev) => ({
-          ...prev,
-          show: false,
-        }));
-      }, 2000);
-      window.location.reload();
-    } catch (err) {
-      console.error(err.error || err.message);
-      setError(err.message || "Something went wrong.");
-    } finally {
-      setLoading(false);
-    }
-  };
+  // 2. Define a submit handler.
+  function onSubmit(values) {
+    // Do something with the form values.
+    // ✅ This will be type-safe and validated.
+    console.log(values);
+  }
 
   return (
-    <main className="min-h-screen bg-gray-50 text-gray-800 flex flex-col gap-8">
-      <header className="flex justify-between items-center gap-6">
-        <h1 className="text-3xl font-bold">Add New Entry</h1>
-        <div className="flex flex-col gap-2">
-          <div className="flex gap-2">
-            <input
-              type="number"
-              name="inVoiceNumber"
-              id="invoiceNumber"
-              placeholder="Invoice Number"
-              className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none"
-              onChange={(e) => setInvoiceNumber(Number(e.target.value))}
-              autoFocus
-            />
-
-            <select
-              name="orderStatus"
-              id="orderStatus"
-              className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none"
-              value={orderStatus}
-              onChange={(e) => setOrderStatus(e.target.value)}
-            >
-              {ORDER_STATUSES.map((orderStatus, index) => (
-                <option key={index} value={orderStatus}>
-                  {orderStatus}
-                </option>
-              ))}
-            </select>
-          </div>
-          {["Shipped", "Delivered"].includes(orderStatus) && (
-            <>
-              <input
-                type="text"
-                name="cnNumber"
-                id="cnNumber"
-                placeholder="CN Number"
-                className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none"
-                onChange={(e) => setCnNumber(e.target.value)}
-              />
-              <div className="flex items-center gap-2">
-                <input
-                  type="text"
-                  name="trackingLink"
-                  id="trackingLink"
-                  placeholder="Tracking Link"
-                  className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none grow"
-                  onChange={(e) => setTrackingLink(e.target.value)}
-                />
-                <Button
-                  className="flex items-center"
-                  onClick={async () => {
-                    const { success, message } =
-                      await sendParcelTrackingMessage(
-                        customerData.mobileNumber,
-                        shippingMethod,
-                        trackingLink
-                      );
-                    setToast((prev) => ({
-                      ...prev,
-                      show: true,
-                      message: message,
-                      type: success == 1 ? "success" : "error",
-                    }));
-
-                    setTimeout(() => {
-                      setToast((prev) => ({
-                        ...prev,
-                        show: false,
-                      }));
-                    }, 1500);
-                  }}
-                >
-                  <MessageSquareIcon />
-                  Send
-                </Button>
-              </div>
-            </>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <FormField
+          control={form.control}
+          name="username"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Username</FormLabel>
+              <FormControl>
+                <Input placeholder="shadcn" {...field} />
+              </FormControl>
+              <FormDescription>
+                This is your public display name.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
           )}
-        </div>
-      </header>
-
-      <form onSubmit={handleSubmit} className="space-y-10">
-        {/* Customer Section */}
-        <CustomerForm onCustomerChange={handleCustomerChange} />
-
-        {/* Product Section */}
-        <ProductSection
-          selectedProducts={selectedProducts}
-          setSelectedProducts={setSelectedProducts}
         />
-
-        {/* Summary */}
-        <SummarySection
-          shippingCustomer={shippingCustomer}
-          setShippingCustomer={setShippingCustomer}
-          shippingMerchant={shippingMerchant}
-          setShippingMerchant={setShippingMerchant}
-          courierTax={courierTax}
-          setCourierTax={setCourierTax}
-          otherCost={otherCost}
-          note={note}
-          setNote={setNote}
-          setOtherCost={setOtherCost}
-          overallDiscount={overallDiscount}
-          setOverallDiscount={setOverallDiscount}
-          subtotal={subtotal}
-          paidByCustomer={paidByCustomer}
-          totalPurchasePrice={totalPurchasePrice}
-          totalShippingCharge={totalShippingCharge}
-          totalIncome={totalIncome}
-          netProfit={netProfit}
-          setShippingMethod={setShippingMethod}
-        />
-
-        {/* Error or Loading Feedback */}
-        {error && <div className="text-red-600">{error}</div>}
-
-        <button
-          type="submit"
-          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition cursor-pointer disabled:opacity-50"
-          disabled={loading || !customerData}
-        >
-          {loading ? "Adding..." : "Add Entry"}
-        </button>
+        <Button type="submit">Submit</Button>
       </form>
-    </main>
+    </Form>
   );
 }

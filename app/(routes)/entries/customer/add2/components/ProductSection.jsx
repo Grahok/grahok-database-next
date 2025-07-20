@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { UniversalCombobox } from "@/components/ui/combobox";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -56,70 +55,6 @@ export default function ProductSection({
   return (
     <section className="bg-white p-6 rounded-lg shadow space-y-6">
       <h2 className="text-2xl font-semibold">Add Products</h2>
-
-      {/* Product Dropdown */}
-      {/* <div className="relative max-w-80">
-        <button
-          type="button"
-          onClick={() => setDropdownOpen((prev) => !prev)}
-          aria-expanded={dropdownOpen}
-          aria-controls="product-dropdown"
-          className="w-full px-4 py-2 bg-white border rounded shadow flex justify-between items-center cursor-pointer"
-        >
-          <span>Select a Product</span>
-          <FaChevronDown />
-        </button>
-
-        <div
-          id="product-dropdown"
-          className={`absolute z-10 w-full mt-1 bg-white border rounded shadow max-h-64 overflow-y-auto ${
-            dropdownOpen ? "" : "hidden"
-          }`}
-          role="listbox"
-        >
-          <div className="p-2">
-            <input
-              type="search"
-              placeholder="Search products..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-full px-2 py-1 border rounded text-sm"
-              aria-label="Search products"
-            />
-          </div>
-
-          {filtered.map((product) => (
-            <button
-              type="button"
-              key={product._id}
-              role="option"
-              aria-selected={dropdownOpen}
-              onClick={() => handleProductSelect(product)}
-              className="w-full text-left px-4 py-2 flex items-center gap-2 hover:bg-gray-100 focus:bg-gray-200 disabled:hover:bg-red-100 disabled:line-through"
-              disabled={!Boolean(product.inStock)}
-            >
-              <div className="flex flex-col">
-                <span className="text-sm font-medium">{product.name}</span>
-                <span className="text-xs text-gray-500">
-                  ৳{product.sellPrice}
-                </span>
-              </div>
-            </button>
-          ))}
-
-          {loading && (
-            <div className="p-4 text-sm text-gray-500 text-center">
-              <Loader2Icon className="animate-spin" />
-            </div>
-          )}
-
-          {!loading && filtered.length === 0 && (
-            <div className="p-4 text-sm text-gray-500 text-center">
-              No product available
-            </div>
-          )}
-        </div>
-      </div> */}
 
       <Select value={productSelectValue} onValueChange={handleProductSelect}>
         <SelectTrigger className="w-50 max-w-80">
@@ -244,6 +179,7 @@ export default function ProductSection({
                   className="cursor-pointer"
                   size="icon"
                   variant="destructive"
+                  tabIndex={-1}
                   onClick={() => {
                     setSelectedProducts((prev) =>
                       prev.filter((p) => p._id !== product._id)

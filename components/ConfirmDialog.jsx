@@ -59,6 +59,7 @@ export default function ConfirmDialog({
                 router.refresh();
               }}
               variant={variant}
+              autoFocus
             >
               {label}
             </Button>

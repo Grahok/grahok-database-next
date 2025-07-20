@@ -47,6 +47,7 @@ export default function SummarySection({
               id="shippingCustomer"
               placeholder={shippingCustomer}
               min={0}
+              value={0}
               onChange={(e) => setShippingCustomer(Number(e.target.value))}
             />
           </div>
@@ -60,6 +61,7 @@ export default function SummarySection({
               name="shippingMerchant"
               placeholder={shippingMerchant}
               min={0}
+              value={0}
               onChange={(e) => setShippingMerchant(Number(e.target.value))}
             />
           </div>
@@ -91,6 +93,7 @@ export default function SummarySection({
               id="otherCost"
               placeholder={0}
               min={0}
+              value={0}
               onChange={(e) => setOtherCost(Number(e.target.value))}
             />
           </div>
@@ -170,6 +173,13 @@ export default function SummarySection({
           onKeyDown={(e) => {
             if (e.key === "Enter" && !e.shiftKey) {
               e.preventDefault(); // prevent newline
+              // Shift focus to the next form element
+              const form = e.target.form;
+              const index = Array.prototype.indexOf.call(form, e.target);
+              const next = form.elements[index + 1];
+              if (next) {
+                next.focus();
+              }
             }
           }}
         ></Textarea>

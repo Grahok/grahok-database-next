@@ -21,10 +21,13 @@ import {
 } from "@/components/ui/select";
 import createCustomer from "@/features/customers/actions/createCustomer";
 import createCustomerEntry from "@/features/entries/customer/add/actions/createCustomerEntry";
+import { usePathname, useRouter } from "next/navigation";
 
 export default function AddCustomerEntry() {
   useEnterNavigation({ autoSubmit: false });
 
+  const router = useRouter();
+  const pathname = usePathname();
   const [trackingLink, setTrackingLink] = useState("");
   const [orderStatus, setOrderStatus] = useState("Pending");
   const [filteredCustomer, setFilteredCustomer] = useState({});
@@ -86,7 +89,6 @@ export default function AddCustomerEntry() {
 
     if (success) {
       toast.success("Customer entry created successfully");
-      e.target.reset();
     } else {
       toast.error("Failed to create customer entry");
     }
@@ -199,12 +201,7 @@ export default function AddCustomerEntry() {
           netProfit={netProfit}
         />
 
-        <button
-          type="submit"
-          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition cursor-pointer disabled:opacity-50"
-        >
-          Add Entry
-        </button>
+        <Button type="submit">Add Entry</Button>
       </form>
     </main>
   );
