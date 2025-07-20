@@ -28,7 +28,6 @@ export default function Analytics() {
     `fromDate=${fromDateParam}&toDate=${toDateParam}`;
   const queryParams = `?${query}`;
   const [loading, setLoading] = useState(true);
-  const [statusEntries, setStatusEntries] = useState({});
   const [statusTotals, setStatusTotals] = useState({});
   const [totalObj, setTotalObj] = useState({
     totalCount: 0,
@@ -39,8 +38,7 @@ export default function Analytics() {
     (async () => {
       setLoading(true);
       try {
-        const response = await fetchCustomerEntries(queryParams);
-        const { entries } = await response.json();
+        const entries = await fetchCustomerEntries();
         const statusEntriesTemp = {};
         const statusTotalsTemp = {};
 
@@ -56,7 +54,6 @@ export default function Analytics() {
           };
         });
 
-        setStatusEntries(statusEntriesTemp);
         setStatusTotals(statusTotalsTemp);
 
         setTotalObj({
