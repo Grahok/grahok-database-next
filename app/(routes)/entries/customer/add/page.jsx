@@ -46,7 +46,7 @@ import fetchCustomers from "@/features/customers/actions/fetchCustomers";
 import useEnterNavigation from "@/hooks/use-enter-navigation";
 
 const customerSchema = z.object({
-  _id: z.string().nullable(),
+  _id: z.string().optional(),
   name: z.string().min(1),
   mobileNumber: z.string().regex(/^01.{9}$/),
   address: z.string().min(1),
