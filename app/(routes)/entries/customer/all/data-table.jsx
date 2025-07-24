@@ -33,6 +33,8 @@ import { Input } from "@/components/ui/input";
 import DataTablePagination from "@/components/DataTablePagination";
 import rowsPerPageArray from "@/constants/rowsPerPageArray";
 import { getColumns } from "./columns";
+import DataTableToolbar from "@/components/DataTableFilterToolbar";
+import dateRangeFilter from "@/utils/filters/dateRangeFilter";
 
 export function DataTable({ data }) {
   // Table state
@@ -65,6 +67,9 @@ export function DataTable({ data }) {
         row.getValue("name")?.toLowerCase().includes(search) ||
         row.getValue("mobileNumber")?.toLowerCase().includes(search)
       );
+    },
+    filterFns: {
+      dateRange: dateRangeFilter,
     },
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
@@ -117,36 +122,34 @@ export function DataTable({ data }) {
   return (
     <div>
       <h1 className="text-3xl font-bold">All Customer Entries:</h1>
-      <Input
-        className="w-45"
-        type="search"
-        placeholder="Search..."
-        value={globalFilter || ""}
-        onChange={(e) => setGlobalFilter(e.target.value)}
-      />
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="outline">Columns</Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          {table
-            .getAllColumns()
-            .filter((column) => column.getCanHide())
-            .map((column) => {
-              return (
-                <DropdownMenuCheckboxItem
-                  key={column.id}
-                  className="capitalize"
-                  checked={column.getIsVisible()}
-                  onCheckedChange={(value) => column.toggleVisibility(!!value)}
-                >
-                  {column.id}
-                </DropdownMenuCheckboxItem>
-              );
-            })}
-        </DropdownMenuContent>
-      </DropdownMenu>
-      <Table>
+      <div className="flex items-center justify-between gap-3">
+        <DataTableToolbar table={table} />
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline">Columns</Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            {table
+              .getAllColumns()
+              .filter((column) => column.getCanHide())
+              .map((column) => {
+                return (
+                  <DropdownMenuCheckboxItem
+                    key={column.id}
+                    className="capitalize"
+                    checked={column.getIsVisible()}
+                    onCheckedChange={(value) =>
+                      column.toggleVisibility(!!value)
+                    }
+                  >
+                    {column.id}
+                  </DropdownMenuCheckboxItem>
+                );
+              })}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+      <Table className="border">
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>

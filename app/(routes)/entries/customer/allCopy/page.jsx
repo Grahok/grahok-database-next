@@ -1,14 +1,12 @@
-export const dynamic = "force-dynamic";
+"use client";
 
-import fetchCustomerEntries from "@/features/entries/customer/actions/fetchCustomerEntries";
-import { DataTable } from "./data-table";
+import AllCustomerEntries from "@/features/entries/customer/all/components/AllCustomerEntries";
+import { Suspense } from "react";
 
-export default async function AllCustomers() {
-  const customerEntries = (await fetchCustomerEntries()) || [];
-
+export default function AllCustomerEntriesWrapper() {
   return (
-    <div className="container mx-auto py-10">
-      <DataTable data={customerEntries} />
-    </div>
+    <Suspense fallback={<div>Loading...</div>}>
+      <AllCustomerEntries />
+    </Suspense>
   );
 }

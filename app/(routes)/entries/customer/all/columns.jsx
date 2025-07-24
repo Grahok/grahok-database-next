@@ -94,6 +94,8 @@ export const getColumns = (totals = {}) => [
 
       return formatted;
     },
+    filterFn: "dateRange", // Custom filter function
+    enableColumnFilter: true,
   },
   {
     accessorKey: "entryDate",
