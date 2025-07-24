@@ -183,7 +183,7 @@ export default function SummarySection({
               }
             }
           }}
-        ></Textarea>
+        />
       </div>
     </section>
   );

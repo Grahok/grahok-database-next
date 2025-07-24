@@ -18,7 +18,7 @@ const customerEntrySchema = new mongoose.Schema(
     orderStatus: {
       type: String,
       enum: ORDER_STATUSES,
-      default: "Pending",
+      default: ORDER_STATUSES[0],
     },
     customer: { type: mongoose.Schema.Types.ObjectId, ref: "Customer" },
     orderDate: { type: Date, required: true },
@@ -33,9 +33,9 @@ const customerEntrySchema = new mongoose.Schema(
       default: "Steadfast",
     },
     otherCost: Number,
-    note: { type: String, default: "" },
     courierTax: { type: Number, default: 0 },
     overallDiscount: { type: Number, default: 0 },
+    note: { type: String, default: "" },
 
     // Calculated fields (write-once at submission)
     subtotal: { type: Number, default: 0 },

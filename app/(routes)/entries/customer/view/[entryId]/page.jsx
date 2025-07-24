@@ -207,6 +207,7 @@ export default function EditEntry({ params }) {
                 id="cnNumber"
                 placeholder="CN Number"
                 className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none disabled:bg-gray-100 disabled:cursor-not-allowed"
+                value={cnNumber || ""}
                 onChange={(e) => setCnNumber(e.target.value)}
                 disabled={!isEditable}
               />
