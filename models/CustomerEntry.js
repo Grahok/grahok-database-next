@@ -70,11 +70,11 @@ customerEntrySchema.pre("save", function (next) {
     0
   );
   this.totalPurchasePrice = this.products.reduce(
-    (sum, product) => sum + (product.purchasePrice || 0),
+    (sum, product) => sum + (product.quantity * product.purchasePrice || 0),
     0
   );
   this.totalSellPrice = this.products.reduce(
-    (sum, product) => sum + (product.sellPrice || 0),
+    (sum, product) => sum + (product.quantity * product.sellPrice || 0),
     0
   );
   this.totalDiscount = this.products.reduce(
