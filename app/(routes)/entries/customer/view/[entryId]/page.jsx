@@ -8,13 +8,15 @@ import ProductSection from "@/features/entries/customer/view/components/ProductS
 import CustomerForm from "@/features/entries/customer/view/components/CustomerForm";
 import combineDateWithCurrentTime from "@/utils/combineDateWithCurrentTime";
 import React from "react";
-import { FaPencil } from "react-icons/fa6";
+import { FaDownload, FaPencil } from "react-icons/fa6";
 import inputDateFormat from "@/utils/inputDateFormat";
 import Toast from "@/components/Toast";
 import { Button } from "@/components/ui/button";
 import sendParcelTrackingMessage from "@/features/entries/customer/add/actions/sendParcelTrackingMessage";
 import { MessageSquareIcon } from "lucide-react";
 import fetchCustomerEntry from "@/features/entries/customer/view/actions/fetchCustomerEntry";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import EntryPDF from "@/features/entries/customer/view/components/EntryPDF";
 
 export default function EditEntry({ params }) {
   const { entryId } = React.use(params);
@@ -61,11 +63,11 @@ export default function EditEntry({ params }) {
 
   const subtotal = selectedProducts.reduce(
     (sum, row) => sum + row.quantity * row.sellPrice - row.discount,
-    0
+    0,
   );
   const totalPurchasePrice = selectedProducts.reduce(
     (sum, row) => sum + row.quantity * row.purchasePrice,
-    0
+    0,
   );
   const [shippingCustomer, setShippingCustomer] = useState(0);
   const paidByCustomer = subtotal + shippingCustomer - overallDiscount;
@@ -87,10 +89,10 @@ export default function EditEntry({ params }) {
 
     try {
       const totalQuantity = Number(
-        selectedProducts.reduce((sum, p) => sum + p.quantity, 0)
+        selectedProducts.reduce((sum, p) => sum + p.quantity, 0),
       );
       const totalSellPrice = Number(
-        selectedProducts.reduce((sum, p) => sum + p.sellPrice * p.quantity, 0)
+        selectedProducts.reduce((sum, p) => sum + p.sellPrice * p.quantity, 0),
       );
       const totalDiscount =
         Number(selectedProducts.reduce((sum, p) => sum + p.discount, 0)) +
@@ -172,6 +174,14 @@ export default function EditEntry({ params }) {
           >
             <FaPencil />
           </button>
+          <PDFDownloadLink
+            document={<EntryPDF entry={entry} />}
+            fileName={`invoice-${invoiceNumber}.pdf`}
+          >
+            <button className="p-2 bg-green-600 text-white rounded-md cursor-pointer">
+              <FaDownload />
+            </button>
+          </PDFDownloadLink>
         </div>
         <div className="flex flex-col gap-2">
           <div className="flex gap-2">
@@ -229,7 +239,7 @@ export default function EditEntry({ params }) {
                         entry.customer.mobileNumber,
                         shippingMethod,
                         trackingLink,
-                        entryId
+                        entryId,
                       );
                     setToast((prev) => ({
                       ...prev,
