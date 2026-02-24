@@ -78,10 +78,6 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 14,
     fontWeight: "bold",
-    marginBottom: 8,
-    paddingBottom: 4,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ddd",
   },
   row: {
     flexDirection: "row",
@@ -149,10 +145,10 @@ const styles = StyleSheet.create({
 });
 
 const statusConfig = {
-  pending: { bg: "#fef3c7", color: "#92400e" },
-  confirmed: { bg: "#dbeafe", color: "#1e40af" },
-  delivered: { bg: "#dcfce7", color: "#166534" },
-  cancelled: { bg: "#fee2e2", color: "#991b1b" },
+  Pending: { bg: "#fef3c7", color: "#92400e" },
+  Confirmed: { bg: "#dbeafe", color: "#1e40af" },
+  Shipped: { bg: "#e0f2fe", color: "#075985" },
+  Delivered: { bg: "#dcfce7", color: "#166534" },
 };
 
 const SITE_NAME = "Grahok";
@@ -178,6 +174,10 @@ function formatDate(date) {
 }
 
 export default function EntryPDF({ entry }) {
+  if (!entry) {
+    return null;
+  }
+
   const status = statusConfig[entry.orderStatus] || {
     bg: "#f3f4f6",
     color: "#374151",
@@ -203,26 +203,24 @@ export default function EntryPDF({ entry }) {
               </View>
             </View>
           </View>
+        </View>
 
+        <View style={styles.section}>
           <View
             style={{
               flexDirection: "row",
               justifyContent: "space-between",
               alignItems: "flex-start",
               marginTop: 16,
+              marginBottom: 8,
+              paddingBottom: 4,
+              borderBottomWidth: 1,
+              borderBottomColor: "#ddd",
             }}
           >
-            <View>
-              <Text style={styles.title}>Invoice #{entry.invoiceNumber}</Text>
-              <Text style={styles.subtitle}>
-                Order Date: {formatDate(entry.orderDate)}
-              </Text>
-              {entry.entryDate && (
-                <Text style={styles.subtitle}>
-                  Entry Date: {formatDate(entry.entryDate)}
-                </Text>
-              )}
-            </View>
+            <Text style={styles.sectionTitle}>
+              Customer & Delivery Information
+            </Text>
             <View style={[styles.statusBadge, { backgroundColor: status.bg }]}>
               <Text style={[styles.statusText, { color: status.color }]}>
                 {entry.orderStatus.charAt(0).toUpperCase() +
@@ -230,25 +228,19 @@ export default function EntryPDF({ entry }) {
               </Text>
             </View>
           </View>
-        </View>
-
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Customer & Delivery Information</Text>
-          {entry.customerInfo && (
+          {entry.customer && (
             <>
               <View style={styles.row}>
                 <Text style={styles.label}>Name:</Text>
-                <Text style={styles.value}>{entry.customerInfo.name}</Text>
+                <Text style={styles.value}>{entry.customer.name}</Text>
               </View>
               <View style={styles.row}>
                 <Text style={styles.label}>Phone:</Text>
-                <Text style={styles.value}>
-                  {entry.customerInfo.mobileNumber}
-                </Text>
+                <Text style={styles.value}>{entry.customer.mobileNumber}</Text>
               </View>
               <View style={styles.row}>
                 <Text style={styles.label}>Address:</Text>
-                <Text style={styles.value}>{entry.customerInfo.address}</Text>
+                <Text style={styles.value}>{entry.customer.address}</Text>
               </View>
             </>
           )}
@@ -322,9 +314,7 @@ export default function EntryPDF({ entry }) {
             <Text style={styles.bold}>Total</Text>
             <Text style={styles.bold}>
               {formatCurrency(
-                entry.subtotal +
-                  entry.shippingCustomer -
-                  entry.overallDiscount,
+                entry.subtotal + entry.shippingCustomer - entry.overallDiscount,
               )}
             </Text>
           </View>

@@ -15,8 +15,13 @@ import { Button } from "@/components/ui/button";
 import sendParcelTrackingMessage from "@/features/entries/customer/add/actions/sendParcelTrackingMessage";
 import { MessageSquareIcon } from "lucide-react";
 import fetchCustomerEntry from "@/features/entries/customer/view/actions/fetchCustomerEntry";
-import { PDFDownloadLink } from "@react-pdf/renderer";
 import EntryPDF from "@/features/entries/customer/view/components/EntryPDF";
+import dynamic from "next/dynamic";
+
+const PDFDownloadLink = dynamic(
+  () => import("@react-pdf/renderer").then((mod) => mod.PDFDownloadLink),
+  { ssr: false },
+);
 
 export default function EditEntry({ params }) {
   const { entryId } = React.use(params);
@@ -174,14 +179,16 @@ export default function EditEntry({ params }) {
           >
             <FaPencil />
           </button>
-          <PDFDownloadLink
-            document={<EntryPDF entry={entry} />}
-            fileName={`invoice-${invoiceNumber}.pdf`}
-          >
-            <button className="p-2 bg-green-600 text-white rounded-md cursor-pointer">
-              <FaDownload />
-            </button>
-          </PDFDownloadLink>
+          {entry && (
+            <PDFDownloadLink
+              document={<EntryPDF entry={entry} />}
+              fileName={`invoice-${invoiceNumber}.pdf`}
+            >
+              <button className="p-2 bg-green-600 text-white rounded-md cursor-pointer">
+                <FaDownload />
+              </button>
+            </PDFDownloadLink>
+          )}
         </div>
         <div className="flex flex-col gap-2">
           <div className="flex gap-2">
