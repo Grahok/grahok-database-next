@@ -41,6 +41,7 @@ export function DataTable({ data }) {
   const [sorting, setSorting] = useState([{ id: "orderDate", desc: true }]);
   const [globalFilter, setGlobalFilter] = useState("");
   const [columnVisibility, setColumnVisibility] = useState({
+    address: false,
     entryDate: false,
     totalPurchasePrice: false,
     paidByCustomer: false,
@@ -65,7 +66,8 @@ export function DataTable({ data }) {
       const search = filterValue.toLowerCase();
       return (
         row.getValue("name")?.toLowerCase().includes(search) ||
-        row.getValue("mobileNumber")?.toLowerCase().includes(search)
+        row.getValue("mobileNumber")?.toLowerCase().includes(search) ||
+        row.getValue("address")?.toLowerCase().includes(search)
       );
     },
     filterFns: {
@@ -108,7 +110,7 @@ export function DataTable({ data }) {
       if (col && col.getIsVisible()) {
         totals[key] = rows.reduce(
           (acc, row) => acc + (row.original[key] || 0),
-          0
+          0,
         );
       }
     });
@@ -160,7 +162,7 @@ export function DataTable({ data }) {
                       ? null
                       : flexRender(
                           header.column.columnDef.header,
-                          header.getContext()
+                          header.getContext(),
                         )}
                   </TableHead>
                 );
@@ -180,7 +182,7 @@ export function DataTable({ data }) {
                     <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}
@@ -202,7 +204,7 @@ export function DataTable({ data }) {
                 <TableCell key={header.id}>
                   {flexRender(
                     header.column.columnDef.footer,
-                    header.getContext()
+                    header.getContext(),
                   )}
                 </TableCell>
               ))}

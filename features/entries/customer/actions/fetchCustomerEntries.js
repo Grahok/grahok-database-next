@@ -9,7 +9,7 @@ import mongooseDocumentToPlainObject from "@/utils/mongooseDocumentToPlainObject
 export default async function fetchCustomerEntries() {
   await connectToDatabase();
   const customerEntries = await CustomerEntry.find()
-    .populate("customer", "name mobileNumber")
+    .populate("customer", "name mobileNumber address")
     .populate("products.product", "name");
   return mongooseDocumentToPlainObject(customerEntries);
 }

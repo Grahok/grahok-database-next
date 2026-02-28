@@ -122,6 +122,11 @@ export const getColumns = (totals = {}) => [
     header: "Mobile Number",
   },
   {
+    accessorKey: "customer.address",
+    id: "address",
+    header: "Address",
+  },
+  {
     accessorKey: "totalPurchasePrice",
     header: "Total Purchase Price",
     footer: () => totals.totalPurchasePrice || 0,
