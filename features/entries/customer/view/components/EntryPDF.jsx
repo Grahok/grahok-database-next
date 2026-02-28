@@ -156,7 +156,7 @@ const CONTACT_MOBILE = process.env.NEXT_PUBLIC_CONTACT_MOBILE_NUMBER;
 const CONTACT_ADDRESS = process.env.NEXT_PUBLIC_CONTACT_ADDRESS;
 
 function formatCurrency(amount) {
-  return new Intl.NumberFormat("en-BD", {
+  return new Intl.NumberFormat("bn-BD", {
     style: "currency",
     currency: "BDT",
     maximumFractionDigits: 0,
