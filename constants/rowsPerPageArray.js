@@ -1,3 +1,3 @@
-const rowsPerPageArray = [10, 20, 50, 100, 150, 200];
+const rowsPerPageArray = [10, 20, 50, 100, 150, 200, 500];
 
 export default rowsPerPageArray;
