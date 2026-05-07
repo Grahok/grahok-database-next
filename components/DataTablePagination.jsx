@@ -22,7 +22,7 @@ export default function DataTablePagination({ table, rowsPerPageArray }) {
     <div className="flex items-center justify-between px-2">
       <div className="text-muted-foreground flex-1 text-sm">
         {table.getFilteredSelectedRowModel().rows.length} of{" "}
-        {table.getPaginationRowModel().rows.length} row(s) selected.
+        {table.getRowModel().rows.length} row(s) selected.
       </div>
       <div className="flex items-center space-x-6 lg:space-x-8">
         <div className="flex items-center space-x-2">

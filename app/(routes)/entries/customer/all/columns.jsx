@@ -38,7 +38,7 @@ export const getColumns = (totals = {}) => [
     cell: ({ table, row }) => {
       const pageIndex = table.getState().pagination.pageIndex;
       const pageSize = table.getState().pagination.pageSize;
-      const pageRows = table.getPaginationRowModel().rows;
+      const pageRows = table.getRowModel().rows;
       const rowIndex = pageRows.findIndex((r) => r.id === row.id);
       return pageIndex * pageSize + rowIndex + 1;
     },

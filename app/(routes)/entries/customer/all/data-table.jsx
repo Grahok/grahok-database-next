@@ -3,9 +3,6 @@
 import {
   flexRender,
   getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 
@@ -28,18 +25,25 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { useState, useMemo } from "react";
-import { Input } from "@/components/ui/input";
+import { useMemo, useState, useTransition } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import DataTablePagination from "@/components/DataTablePagination";
 import rowsPerPageArray from "@/constants/rowsPerPageArray";
 import { getColumns } from "./columns";
 import DataTableToolbar from "@/components/DataTableFilterToolbar";
-import dateRangeFilter from "@/utils/filters/dateRangeFilter";
 
-export function DataTable({ data }) {
+function getUrl(pathname, searchParams) {
+  const queryString = searchParams.toString();
+  return queryString ? `${pathname}?${queryString}` : pathname;
+}
+
+export function DataTable({ data, pagination, filters }) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const [isPending, startTransition] = useTransition();
+
   // Table state
-  const [sorting, setSorting] = useState([{ id: "orderDate", desc: true }]);
-  const [globalFilter, setGlobalFilter] = useState("");
   const [columnVisibility, setColumnVisibility] = useState({
     address: false,
     entryDate: false,
@@ -52,33 +56,54 @@ export function DataTable({ data }) {
     netProfit: false,
   });
   const [rowSelection, setRowSelection] = useState({});
+  const paginationState = useMemo(
+    () => ({
+      pageIndex: Math.max((pagination?.page || 1) - 1, 0),
+      pageSize: pagination?.itemsPerPage || 20,
+    }),
+    [pagination?.page, pagination?.itemsPerPage],
+  );
+
+  function updateQuery(updates) {
+    const nextSearchParams = new URLSearchParams(searchParams.toString());
+
+    Object.entries(updates).forEach(([key, value]) => {
+      if (value === undefined || value === null || value === "") {
+        nextSearchParams.delete(key);
+        return;
+      }
+
+      nextSearchParams.set(key, String(value));
+    });
+
+    startTransition(() => {
+      router.push(getUrl(pathname, nextSearchParams), { scroll: false });
+    });
+  }
 
   // Table instance
   const table = useReactTable({
     data,
     columns: getColumns(),
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    onSortingChange: setSorting,
-    getSortedRowModel: getSortedRowModel(),
-    onGlobalFilterChange: setGlobalFilter,
-    globalFilterFn: (row, _, filterValue) => {
-      const search = filterValue.toLowerCase();
-      return (
-        row.getValue("name")?.toLowerCase().includes(search) ||
-        row.getValue("mobileNumber")?.toLowerCase().includes(search) ||
-        row.getValue("address")?.toLowerCase().includes(search)
-      );
+    manualPagination: true,
+    pageCount: pagination?.totalPages || 1,
+    rowCount: pagination?.totalEntries || data.length,
+    enableSorting: false,
+    onPaginationChange: (updater) => {
+      const nextPagination =
+        typeof updater === "function" ? updater(paginationState) : updater;
+      const pageSizeChanged = nextPagination.pageSize !== paginationState.pageSize;
+
+      updateQuery({
+        page: pageSizeChanged ? 1 : nextPagination.pageIndex + 1,
+        itemsPerPage: nextPagination.pageSize,
+      });
     },
-    filterFns: {
-      dateRange: dateRangeFilter,
-    },
-    getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
     state: {
-      sorting,
-      globalFilter,
+      pagination: paginationState,
       columnVisibility,
       rowSelection,
     },
@@ -125,7 +150,13 @@ export function DataTable({ data }) {
     <div>
       <h1 className="text-3xl font-bold">All Customer Entries:</h1>
       <div className="flex items-center justify-between gap-3">
-        <DataTableToolbar table={table} />
+        <DataTableToolbar
+          filters={filters}
+          isPending={isPending}
+          onApplyFilters={(nextFilters) =>
+            updateQuery({ ...nextFilters, page: 1 })
+          }
+        />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline">Columns</Button>
