@@ -44,6 +44,7 @@ import createCustomerEntry from "@/features/entries/customer/add/actions/createC
 import useDebounce from "@/hooks/use-debounce";
 import fetchCustomers from "@/features/customers/actions/fetchCustomers";
 import useEnterNavigation from "@/hooks/use-enter-navigation";
+import sendOrderToSteadfast from "@/features/entries/customer/add/actions/sendOrderToSteadfast";
 
 const customerSchema = z.object({
   _id: z.string().optional(),
@@ -165,7 +166,7 @@ export default function ProfileForm() {
     ) {
       setCourierData({});
       const foundCustomer = customers.find(
-        (c) => c.mobileNumber === debouncedSearch
+        (c) => c.mobileNumber === debouncedSearch,
       );
       form.setValue(
         "customer",
@@ -173,7 +174,7 @@ export default function ProfileForm() {
           name: "",
           mobileNumber: debouncedSearch,
           address: "",
-        }
+        },
       );
       (async () => {
         try {
@@ -186,7 +187,7 @@ export default function ProfileForm() {
                 Authorization: `Bearer ${process.env.NEXT_PUBLIC_BDCOURIER_TOKEN}`,
               },
               body: JSON.stringify({ phone: debouncedSearch }),
-            }
+            },
           );
           const data = await response.json();
           setCourierData(data?.courierData?.summary || {});
@@ -201,7 +202,7 @@ export default function ProfileForm() {
   const subtotal = watchedProducts.reduce(
     (sum, product) =>
       sum + (product.quantity * product.sellPrice - product.discount || 0),
-    0
+    0,
   );
   const paidByCustomer = subtotal + shippingCustomer - overallDiscount;
   const totalShippingCharge = shippingCustomer + shippingMerchant;
@@ -209,7 +210,7 @@ export default function ProfileForm() {
     paidByCustomer - totalShippingCharge - otherCost - courierTax;
   const totalPurchase = watchedProducts.reduce(
     (sum, product) => sum + (product.quantity * product.purchasePrice || 0),
-    0
+    0,
   );
   const netProfit = totalIncome - totalPurchase;
 
@@ -219,14 +220,14 @@ export default function ProfileForm() {
     // Create customer if needed
     if (!values.customer._id) {
       const { success, createdCustomer } = await createCustomer(
-        values.customer
+        values.customer,
       );
       if (success) {
         toast.success("Customer created successfully!");
         values.customer = createdCustomer?._id;
       } else {
         toast.error(
-          "Failed to create customer. Please check the details and try again."
+          "Failed to create customer. Please check the details and try again.",
         );
         return;
       }
@@ -242,13 +243,19 @@ export default function ProfileForm() {
         purchasePrice,
         sellPrice,
         discount,
-      })
+      }),
     );
 
-    const { success } = await createCustomerEntry(values);
+    const { success, createdCustomerEntry } = await createCustomerEntry(values);
     if (success) {
       toast.success("Customer entry created successfully!");
-      setCourierData({})
+      try {
+        await sendOrderToSteadfast(createdCustomerEntry);
+        toast.success(`Order sent to Steadfast successfully!`);
+      } catch (error) {
+        toast.error(error.message || "Failed to send order to Steadfast.");
+      }
+      setCourierData({});
       form.reset();
       setProducts(await fetchProducts());
       setCustomers(await fetchCustomers());
@@ -347,7 +354,7 @@ export default function ProfileForm() {
                           await sendParcelTrackingMessage(
                             customer.mobileNumber,
                             shippingMethod,
-                            trackingLink
+                            trackingLink,
                           );
                         if (success) {
                           toast.success(message);
@@ -491,7 +498,7 @@ export default function ProfileForm() {
               value={""}
               onValueChange={(value) => {
                 const selectedProduct = products.find(
-                  (product) => product._id === value
+                  (product) => product._id === value,
                 );
                 if (selectedProduct) {
                   productFieldArray.append({
@@ -827,7 +834,7 @@ export default function ProfileForm() {
                         const form = e.target.form;
                         const index = Array.prototype.indexOf.call(
                           form,
-                          e.target
+                          e.target,
                         );
                         const next = form.elements[index + 1];
                         if (next) {
