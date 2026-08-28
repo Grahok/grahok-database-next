@@ -45,6 +45,7 @@ import useDebounce from "@/hooks/use-debounce";
 import fetchCustomers from "@/features/customers/actions/fetchCustomers";
 import useEnterNavigation from "@/hooks/use-enter-navigation";
 import sendOrderToSteadfast from "@/features/entries/customer/add/actions/sendOrderToSteadfast";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const customerSchema = z.object({
   _id: z.string().optional(),
@@ -104,7 +105,11 @@ export default function ProfileForm() {
 
   // Form setup
   const form = useForm({
-    resolver: zodResolver(customerEntrySchema),
+    resolver: zodResolver(
+      customerEntrySchema.extend({
+        sendToSteadfast: z.boolean().default(true),
+      }),
+    ),
     defaultValues: {
       invoiceNumber: "",
       cnNumber: "",
@@ -122,6 +127,7 @@ export default function ProfileForm() {
       overallDiscount: "",
       note: "",
       message: "",
+      sendToSteadfast: true,
     },
   });
 
@@ -249,11 +255,13 @@ export default function ProfileForm() {
     const { success, createdCustomerEntry } = await createCustomerEntry(values);
     if (success) {
       toast.success("Customer entry created successfully!");
-      try {
-        await sendOrderToSteadfast(createdCustomerEntry);
-        toast.success(`Order sent to Steadfast successfully!`);
-      } catch (error) {
-        toast.error(error.message || "Failed to send order to Steadfast.");
+      if (values.sendToSteadfast) {
+        try {
+          await sendOrderToSteadfast(createdCustomerEntry);
+          toast.success(`Order sent to Steadfast successfully!`);
+        } catch (error) {
+          toast.error(error.message || "Failed to send order to Steadfast.");
+        }
       }
       setCourierData({});
       form.reset();
@@ -850,6 +858,23 @@ export default function ProfileForm() {
             )}
           />
         </section>
+        <FormField
+          control={form.control}
+          name="sendToSteadfast"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-center border rounded-md p-4 gap-x-2 max-w-fit">
+              <FormControl>
+                <Checkbox
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                  {...field}
+                />
+              </FormControl>
+              <FormLabel>Send to Steadfast</FormLabel>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <Button type="submit" className="focus-visible:ring-ring/100">
           Add Entry
         </Button>
