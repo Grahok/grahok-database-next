@@ -133,8 +133,8 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#eee",
   },
-  col1: { width: "50%" },
-  col2: { width: "15%", textAlign: "center" },
+  col1: { width: "60%" },
+  col2: { width: "5%", textAlign: "center" },
   col3: { width: "17.5%", textAlign: "right" },
   col4: { width: "17.5%", textAlign: "right" },
   col5: { width: "17.5%", textAlign: "right" },
@@ -241,13 +241,15 @@ function EntryPDFContent({ entry, isCustomerCopy }) {
           <View style={styles.copySection}>
             <Text>{isCustomerCopy ? "Customer Copy" : "Office Copy"}</Text>
           </View>
-          <Text
-            style={{
-              fontSize: 16,
-            }}
-          >
-            {entry.invoiceNumber}
-          </Text>
+          {entry.cnNumber && (
+            <Text
+              style={{
+                fontSize: 16,
+              }}
+            >
+              {entry.cnNumber}
+            </Text>
+          )}
         </View>
       </View>
 
@@ -275,34 +277,51 @@ function EntryPDFContent({ entry, isCustomerCopy }) {
         </View>
         {entry.customer && (
           <>
-            <View style={styles.row}>
+            <View
+              style={{
+                flexDirection: "row",
+                gap: 3,
+                paddingVertical: 3,
+              }}
+            >
               <Text style={styles.label}>Name:</Text>
               <Text style={styles.value}>{entry.customer.name}</Text>
             </View>
-            <View style={styles.row}>
+            <View
+              style={{
+                flexDirection: "row",
+                gap: 3,
+                paddingVertical: 3,
+              }}
+            >
               <Text style={styles.label}>Phone:</Text>
               <Text style={styles.value}>{entry.customer.mobileNumber}</Text>
             </View>
-            <View style={styles.row}>
+            <View
+              style={{
+                flexDirection: "row",
+                gap: 3,
+                paddingVertical: 3,
+              }}
+            >
               <Text style={styles.label}>Address:</Text>
               <Text style={styles.value}>{entry.customer.address}</Text>
             </View>
           </>
         )}
-        <View style={styles.row}>
+        <View
+          style={{
+            flexDirection: "row",
+            gap: 3,
+            paddingVertical: 3,
+          }}
+        >
           <Text style={styles.label}>Shipping Method:</Text>
           <Text style={styles.value}>{entry.shippingMethod || "N/A"}</Text>
         </View>
-        {entry.cnNumber && (
-          <View style={styles.row}>
-            <Text style={styles.label}>CN Number:</Text>
-            <Text style={styles.value}>{entry.cnNumber}</Text>
-          </View>
-        )}
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Order Items</Text>
         <View style={styles.table}>
           <View style={styles.tableHeader}>
             <Text style={styles.col1}>Product</Text>
@@ -316,7 +335,7 @@ function EntryPDFContent({ entry, isCustomerCopy }) {
               <Text style={styles.col1}>
                 {item.product?.name || `Product ${index + 1}`}
               </Text>
-              <Text style={styles.col2}>{item.quantity}</Text>
+              <Text style={styles.col2}>{new Intl.NumberFormat("bn-BD").format(item.quantity)}</Text>
               <Text style={styles.col3}>{formatCurrency(item.sellPrice)}</Text>
               <Text style={styles.col4}>{formatCurrency(item.discount)}</Text>
               <Text style={styles.col5}>{formatCurrency(item.subtotal)}</Text>
