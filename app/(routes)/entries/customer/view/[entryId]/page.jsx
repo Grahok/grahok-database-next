@@ -8,7 +8,7 @@ import ProductSection from "@/features/entries/customer/view/components/ProductS
 import CustomerForm from "@/features/entries/customer/view/components/CustomerForm";
 import combineDateWithCurrentTime from "@/utils/combineDateWithCurrentTime";
 import React from "react";
-import { FaDownload, FaPencil } from "react-icons/fa6";
+import { FaPencil, FaPrint } from "react-icons/fa6";
 import inputDateFormat from "@/utils/inputDateFormat";
 import Toast from "@/components/Toast";
 import { Button } from "@/components/ui/button";
@@ -16,12 +16,6 @@ import sendParcelTrackingMessage from "@/features/entries/customer/add/actions/s
 import { MessageSquareIcon } from "lucide-react";
 import fetchCustomerEntry from "@/features/entries/customer/view/actions/fetchCustomerEntry";
 import EntryPDF from "@/features/entries/customer/view/components/EntryPDF";
-import dynamic from "next/dynamic";
-
-const PDFDownloadLink = dynamic(
-  () => import("@react-pdf/renderer").then((mod) => mod.PDFDownloadLink),
-  { ssr: false },
-);
 
 export default function EditEntry({ params }) {
   const { entryId } = React.use(params);
@@ -167,6 +161,25 @@ export default function EditEntry({ params }) {
     }
   };
 
+  const handlePrint = async () => {
+    try {
+      const { pdf } = await import("@react-pdf/renderer");
+      const blob = await pdf(<EntryPDF entry={entry} />).toBlob();
+      const url = URL.createObjectURL(blob);
+      const win = window.open(url, "_blank");
+      if (win) {
+        try {
+          win.focus();
+          win.print();
+        } catch {
+          // PDF already opened; user prints manually
+        }
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <main className="min-h-screen bg-gray-50 text-gray-800 flex flex-col gap-8">
       <header className="flex justify-between items-center gap-6">
@@ -180,14 +193,13 @@ export default function EditEntry({ params }) {
             <FaPencil />
           </button>
           {entry && (
-            <PDFDownloadLink
-              document={<EntryPDF entry={entry} />}
-              fileName={`invoice-${invoiceNumber}.pdf`}
+            <button
+              type="button"
+              onClick={handlePrint}
+              className="p-2 bg-green-600 text-white rounded-md cursor-pointer"
             >
-              <button className="p-2 bg-green-600 text-white rounded-md cursor-pointer">
-                <FaDownload />
-              </button>
-            </PDFDownloadLink>
+              <FaPrint />
+            </button>
           )}
         </div>
         <div className="flex flex-col gap-2">

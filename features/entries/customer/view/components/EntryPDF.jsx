@@ -24,65 +24,88 @@ Font.register({
 
 const styles = StyleSheet.create({
   page: {
-    padding: 40,
-    fontSize: 11,
+    padding: 15,
+    fontSize: 8.25,
     fontFamily: "SolaimanLipi",
+    flexDirection: "row",
+  },
+  half: {
+    flex: 1,
+    paddingHorizontal: 15,
+    flexDirection: "column",
+  },
+  divider: {
+    width: 0,
+    borderLeftWidth: 1,
+    borderLeftColor: "#333",
   },
   header: {
-    marginBottom: 20,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    gap: 3.75,
   },
   logoSection: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 16,
-    paddingBottom: 16,
-    borderBottomWidth: 2,
+    marginBottom: 12,
+    paddingBottom: 12,
+    borderBottomWidth: 1.5,
     borderBottomColor: "#333",
   },
   logo: {
-    width: 50,
-    height: 50,
-    marginRight: 12,
+    width: 37.5,
+    height: 37.5,
+    marginRight: 9,
   },
   brandName: {
-    fontSize: 22,
+    fontSize: 16.5,
     fontWeight: "bold",
   },
   contactSection: {
-    marginTop: 4,
+    marginTop: 3,
   },
   contactRow: {
     flexDirection: "row",
-    marginTop: 2,
+    marginTop: 1.5,
   },
   contactLabel: {
-    fontSize: 9,
+    fontSize: 6.75,
     color: "#666",
   },
   contactValue: {
-    fontSize: 9,
+    fontSize: 6.75,
     color: "#333",
   },
+  copySection: {
+    paddingHorizontal: 6,
+    paddingVertical: 3,
+    borderWidth: 1,
+    borderTopColor: "#333",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
   title: {
-    fontSize: 24,
+    fontSize: 18,
     fontWeight: "bold",
-    marginBottom: 4,
+    marginBottom: 3,
   },
   subtitle: {
-    fontSize: 12,
+    fontSize: 9,
     color: "#666",
   },
   section: {
-    marginBottom: 16,
+    marginBottom: 12,
   },
   sectionTitle: {
-    fontSize: 14,
+    fontSize: 10.5,
     fontWeight: "bold",
   },
   row: {
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingVertical: 4,
+    paddingVertical: 3,
   },
   label: {
     color: "#666",
@@ -94,19 +117,19 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   table: {
-    marginTop: 8,
-    marginBottom: 16,
+    marginTop: 6,
+    marginBottom: 12,
   },
   tableHeader: {
     flexDirection: "row",
     backgroundColor: "#f5f5f5",
-    padding: 8,
+    padding: 6,
     borderBottomWidth: 1,
     borderBottomColor: "#ddd",
   },
   tableRow: {
     flexDirection: "row",
-    padding: 8,
+    padding: 6,
     borderBottomWidth: 1,
     borderBottomColor: "#eee",
   },
@@ -117,27 +140,27 @@ const styles = StyleSheet.create({
   col5: { width: "17.5%", textAlign: "right" },
   headerText: {
     fontWeight: "bold",
-    fontSize: 10,
+    fontSize: 7.5,
   },
   totalSection: {
-    marginTop: 8,
-    paddingTop: 8,
-    borderTopWidth: 2,
+    marginTop: 6,
+    paddingTop: 6,
+    borderTopWidth: 1.5,
     borderTopColor: "#333",
   },
   statusBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 4,
+    paddingHorizontal: 6,
+    paddingVertical: 3,
+    borderRadius: 3,
     alignSelf: "flex-start",
   },
   statusText: {
-    fontSize: 10,
+    fontSize: 7.5,
     fontWeight: "bold",
   },
   twoColumns: {
     flexDirection: "row",
-    gap: 20,
+    gap: 15,
   },
   column: {
     flex: 1,
@@ -178,148 +201,170 @@ export default function EntryPDF({ entry }) {
     return null;
   }
 
+  return (
+    <Document>
+      <Page size="A4" orientation="landscape" style={styles.page}>
+        <EntryPDFContent entry={entry} isCustomerCopy={true} />
+        <View style={styles.divider} />
+        <EntryPDFContent entry={entry} isCustomerCopy={false} />
+      </Page>
+    </Document>
+  );
+}
+
+function EntryPDFContent({ entry, isCustomerCopy }) {
   const status = statusConfig[entry.orderStatus] || {
     bg: "#f3f4f6",
     color: "#374151",
   };
 
   return (
-    <Document>
-      <Page size="A4" style={styles.page}>
-        <View style={styles.header}>
-          <View style={styles.logoSection}>
-            <Image src="/logo.png" style={styles.logo} />
-            <View>
-              <Text style={styles.brandName}>{SITE_NAME}</Text>
-              <View style={styles.contactSection}>
-                <View style={styles.contactRow}>
-                  <Text style={styles.contactLabel}>Mobile: </Text>
-                  <Text style={styles.contactValue}>{CONTACT_MOBILE}</Text>
-                </View>
-                <View style={styles.contactRow}>
-                  <Text style={styles.contactLabel}>Address: </Text>
-                  <Text style={styles.contactValue}>{CONTACT_ADDRESS}</Text>
-                </View>
+    <View style={styles.half}>
+      <View style={styles.header}>
+        <View style={styles.logoSection}>
+          <Image src="/logo.png" style={styles.logo} />
+          <View>
+            <Text style={styles.brandName}>{SITE_NAME}</Text>
+            <View style={styles.contactSection}>
+              <View style={styles.contactRow}>
+                <Text style={styles.contactLabel}>Mobile: </Text>
+                <Text style={styles.contactValue}>{CONTACT_MOBILE}</Text>
+              </View>
+              <View style={styles.contactRow}>
+                <Text style={styles.contactLabel}>Address: </Text>
+                <Text style={styles.contactValue}>{CONTACT_ADDRESS}</Text>
               </View>
             </View>
           </View>
         </View>
-
-        <View style={styles.section}>
-          <View
+        <View>
+          <View style={styles.copySection}>
+            <Text>{isCustomerCopy ? "Customer Copy" : "Office Copy"}</Text>
+          </View>
+          <Text
             style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "flex-start",
-              marginTop: 16,
-              marginBottom: 8,
-              paddingBottom: 4,
-              borderBottomWidth: 1,
-              borderBottomColor: "#ddd",
+              fontSize: 16,
             }}
           >
-            <Text style={styles.sectionTitle}>
-              Customer & Delivery Information
-            </Text>
-            <View style={[styles.statusBadge, { backgroundColor: status.bg }]}>
-              <Text style={[styles.statusText, { color: status.color }]}>
-                {entry.orderStatus.charAt(0).toUpperCase() +
-                  entry.orderStatus.slice(1)}
-              </Text>
-            </View>
-          </View>
-          {entry.customer && (
-            <>
-              <View style={styles.row}>
-                <Text style={styles.label}>Name:</Text>
-                <Text style={styles.value}>{entry.customer.name}</Text>
-              </View>
-              <View style={styles.row}>
-                <Text style={styles.label}>Phone:</Text>
-                <Text style={styles.value}>{entry.customer.mobileNumber}</Text>
-              </View>
-              <View style={styles.row}>
-                <Text style={styles.label}>Address:</Text>
-                <Text style={styles.value}>{entry.customer.address}</Text>
-              </View>
-            </>
-          )}
-          <View style={styles.row}>
-            <Text style={styles.label}>Shipping Method:</Text>
-            <Text style={styles.value}>{entry.shippingMethod || "N/A"}</Text>
-          </View>
-          {entry.cnNumber && (
-            <View style={styles.row}>
-              <Text style={styles.label}>CN Number:</Text>
-              <Text style={styles.value}>{entry.cnNumber}</Text>
-            </View>
-          )}
+            {entry.invoiceNumber}
+          </Text>
         </View>
+      </View>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Order Items</Text>
-          <View style={styles.table}>
-            <View style={styles.tableHeader}>
-              <Text style={styles.col1}>Product</Text>
-              <Text style={[styles.col2, styles.headerText]}>Qty</Text>
-              <Text style={[styles.col3, styles.headerText]}>Price</Text>
-              <Text style={[styles.col4, styles.headerText]}>Discount</Text>
-              <Text style={[styles.col5, styles.headerText]}>Total</Text>
-            </View>
-            {entry.products.map((item, index) => (
-              <View key={index} style={styles.tableRow}>
-                <Text style={styles.col1}>
-                  {item.product?.name || `Product ${index + 1}`}
-                </Text>
-                <Text style={styles.col2}>{item.quantity}</Text>
-                <Text style={styles.col3}>
-                  {formatCurrency(item.sellPrice)}
-                </Text>
-                <Text style={styles.col4}>{formatCurrency(item.discount)}</Text>
-                <Text style={styles.col5}>{formatCurrency(item.subtotal)}</Text>
-              </View>
-            ))}
+      <View style={styles.section}>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "flex-start",
+            marginTop: 8,
+            marginBottom: 8,
+            borderBottomWidth: 1,
+            borderBottomColor: "#ddd",
+          }}
+        >
+          <Text style={styles.sectionTitle}>
+            Customer & Delivery Information
+          </Text>
+          <View style={[styles.statusBadge, { backgroundColor: status.bg }]}>
+            <Text style={[styles.statusText, { color: status.color }]}>
+              {entry.orderStatus.charAt(0).toUpperCase() +
+                entry.orderStatus.slice(1)}
+            </Text>
           </View>
         </View>
-
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Payment Summary</Text>
-          <View style={styles.row}>
-            <Text style={styles.label}>Subtotal</Text>
-            <Text style={styles.value}>{formatCurrency(entry.subtotal)}</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>Shipping Charge</Text>
-            <Text style={styles.value}>
-              {entry.shippingCustomer > 0
-                ? formatCurrency(entry.shippingCustomer)
-                : "Free"}
-            </Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>Total Discount</Text>
-            <Text style={styles.value}>
-              {formatCurrency(entry.totalDiscount)}
-            </Text>
-          </View>
-          {entry.courierTax > 0 && (
+        {entry.customer && (
+          <>
             <View style={styles.row}>
-              <Text style={styles.label}>Courier Tax</Text>
-              <Text style={styles.value}>
-                {formatCurrency(entry.courierTax)}
-              </Text>
+              <Text style={styles.label}>Name:</Text>
+              <Text style={styles.value}>{entry.customer.name}</Text>
             </View>
-          )}
-          <View style={[styles.row, styles.totalSection]}>
-            <Text style={styles.bold}>Total</Text>
-            <Text style={styles.bold}>
-              {formatCurrency(
-                entry.subtotal + entry.shippingCustomer - entry.overallDiscount,
-              )}
-            </Text>
-          </View>
+            <View style={styles.row}>
+              <Text style={styles.label}>Phone:</Text>
+              <Text style={styles.value}>{entry.customer.mobileNumber}</Text>
+            </View>
+            <View style={styles.row}>
+              <Text style={styles.label}>Address:</Text>
+              <Text style={styles.value}>{entry.customer.address}</Text>
+            </View>
+          </>
+        )}
+        <View style={styles.row}>
+          <Text style={styles.label}>Shipping Method:</Text>
+          <Text style={styles.value}>{entry.shippingMethod || "N/A"}</Text>
         </View>
-      </Page>
-    </Document>
+        {entry.cnNumber && (
+          <View style={styles.row}>
+            <Text style={styles.label}>CN Number:</Text>
+            <Text style={styles.value}>{entry.cnNumber}</Text>
+          </View>
+        )}
+      </View>
+
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Order Items</Text>
+        <View style={styles.table}>
+          <View style={styles.tableHeader}>
+            <Text style={styles.col1}>Product</Text>
+            <Text style={[styles.col2, styles.headerText]}>Qty</Text>
+            <Text style={[styles.col3, styles.headerText]}>Price</Text>
+            <Text style={[styles.col4, styles.headerText]}>Discount</Text>
+            <Text style={[styles.col5, styles.headerText]}>Total</Text>
+          </View>
+          {entry.products.map((item, index) => (
+            <View key={index} style={styles.tableRow}>
+              <Text style={styles.col1}>
+                {item.product?.name || `Product ${index + 1}`}
+              </Text>
+              <Text style={styles.col2}>{item.quantity}</Text>
+              <Text style={styles.col3}>{formatCurrency(item.sellPrice)}</Text>
+              <Text style={styles.col4}>{formatCurrency(item.discount)}</Text>
+              <Text style={styles.col5}>{formatCurrency(item.subtotal)}</Text>
+            </View>
+          ))}
+        </View>
+        <View style={styles.row}>
+          <Text style={styles.label}>Subtotal</Text>
+          <Text style={styles.value}>{formatCurrency(entry.subtotal)}</Text>
+        </View>
+        <View style={styles.row}>
+          <Text style={styles.label}>Shipping Charge</Text>
+          <Text style={styles.value}>
+            {entry.shippingCustomer > 0
+              ? formatCurrency(entry.shippingCustomer)
+              : "Free"}
+          </Text>
+        </View>
+        <View style={styles.row}>
+          <Text style={styles.label}>Total Discount</Text>
+          <Text style={styles.value}>
+            {formatCurrency(entry.totalDiscount)}
+          </Text>
+        </View>
+        {entry.courierTax > 0 && (
+          <View style={styles.row}>
+            <Text style={styles.label}>Courier Tax</Text>
+            <Text style={styles.value}>{formatCurrency(entry.courierTax)}</Text>
+          </View>
+        )}
+        <View style={[styles.row, styles.totalSection]}>
+          <Text style={styles.bold}>Total</Text>
+          <Text style={styles.bold}>
+            {formatCurrency(
+              entry.subtotal + entry.shippingCustomer - entry.overallDiscount,
+            )}
+          </Text>
+        </View>
+      </View>
+      <View
+        style={{
+          marginTop: "auto",
+          flexDirection: "row",
+          justifyContent: "flex-end",
+        }}
+      >
+        <Text>Signature</Text>
+      </View>
+    </View>
   );
 }
