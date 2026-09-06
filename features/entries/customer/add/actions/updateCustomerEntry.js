@@ -12,6 +12,7 @@ export default async function updateCustomerEntry(customerEntryId, updateData) {
       updateData,
       { new: true },
     );
+    await updatedCustomerEntry.populate("customer products.product");
     return {
       success: true,
       updatedCustomerEntry: mongooseDocumentToPlainObject(updatedCustomerEntry),
