@@ -1,13 +1,38 @@
-import baseUrl from "@/constants/baseUrl";
-import { FaBullseye, FaDollarSign, FaEye, FaHashtag, FaMobile, FaPencil, FaTrash, FaUser } from "react-icons/fa6";
+"use client";
 
-export default async function AllVendorEntries() {
-  const response = await fetch(`${baseUrl}/api/entries/vendor`, {
-    method: "GET",
-    headers: { "Content-type": "application/json" },
-    cache: "no-store",
-  });
-  const { entries } = await response.json();
+import { LoaderPinwheel } from "lucide-react";
+import { useEffect, useState } from "react";
+import {
+  FaBullseye,
+  FaDollarSign,
+  FaEye,
+  FaHashtag,
+  FaMobile,
+  FaPencil,
+  FaTrash,
+  FaUser,
+} from "react-icons/fa6";
+
+export default function AllVendorEntries() {
+  const [entries, setEntries] = useState([]);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    (async () => {
+      try {
+        const response = await fetch(`/api/entries/vendor`, {
+          method: "GET",
+          headers: { "Content-type": "application/json" },
+          cache: "no-store",
+        });
+        const { entries } = await response.json();
+        setEntries(entries);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
 
   const totalDiscount = entries.reduce((acc, entry) => {
     return acc + entry.totalDiscount;
@@ -70,16 +95,23 @@ export default async function AllVendorEntries() {
           </tr>
         </thead>
         <tbody>
-          {/* {loading && (
+          {loading && (
             <tr>
-              <td colSpan={7}>Loading...</td>
+              <td colSpan={7} className="bg-gray-50">
+                <div className="flex justify-center">
+                  <LoaderPinwheel
+                    className="animate-spin text-blue-400"
+                    size={100}
+                  />
+                </div>
+              </td>
             </tr>
           )}
           {!loading && !entries.length && (
             <tr>
               <td colSpan={7}>No Entries Found</td>
             </tr>
-          )} */}
+          )}
           {entries.map((entry, index) => (
             <tr key={entry._id} className="hover:bg-gray-100">
               <td>{index + 1}</td>
@@ -105,11 +137,11 @@ export default async function AllVendorEntries() {
                   </button>
                 </div>
               </td>
-              <td>{entry.vendor.name}</td>
-              <td>{entry.vendor.mobileNumber}</td>
-              <td>{entry.totalPurchasePrice}</td>
-              <td>{entry.totalQuantity}</td>
-              <td>{entry.totalDiscount}</td>
+              <td>{entry?.vendor?.name || "Vendor Not Found"}</td>
+              <td>{entry?.vendor?.mobileNumber || "Vendor Not Found"}</td>
+              <td>{entry?.totalPurchasePrice}</td>
+              <td>{entry?.totalQuantity}</td>
+              <td>{entry?.totalDiscount}</td>
             </tr>
           ))}
           <tr>

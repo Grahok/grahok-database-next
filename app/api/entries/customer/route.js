@@ -4,16 +4,33 @@ import CustomerEntry from "@/models/CustomerEntry";
 import Customer from "@/models/Customer";
 import Product from "@/models/Product";
 
+const DEFAULT_ITEMS_PER_PAGE = 20;
+const MAX_ITEMS_PER_PAGE = 500;
+
+function getPositiveInteger(value, fallback) {
+  const number = parseInt(value, 10);
+  return Number.isFinite(number) && number > 0 ? number : fallback;
+}
+
+function getItemsPerPage(value) {
+  const itemsPerPage = getPositiveInteger(value, DEFAULT_ITEMS_PER_PAGE);
+  return Math.min(itemsPerPage, MAX_ITEMS_PER_PAGE);
+}
+
+function escapeRegex(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 export async function GET(req) {
   try {
     await connectToDatabase();
     const url = new URL(req.url);
     const fromDate = url.searchParams.get("fromDate");
     const toDate = url.searchParams.get("toDate");
-    const search = url.searchParams.get("search");
+    const search = url.searchParams.get("search")?.trim();
     const orderStatus = url.searchParams.get("orderStatus");
-    const page = parseInt(url.searchParams.get("page")) || 1;
-    const itemsPerPage = parseInt(url.searchParams.get("itemsPerPage")) || 0;
+    const requestedPage = getPositiveInteger(url.searchParams.get("page"), 1);
+    const itemsPerPage = getItemsPerPage(url.searchParams.get("itemsPerPage"));
 
     const startUTC = new UTCDate(`${fromDate}T00:00:00`);
     const endUTC = new UTCDate(`${toDate}T23:59:59.999`);
@@ -27,12 +44,17 @@ export async function GET(req) {
       };
     }
     if (search) {
+      const searchRegex = escapeRegex(search);
+
       const matchedCustomers = await Customer.find({
         $or: [
-          { name: { $regex: search, $options: "i" } },
-          { mobileNumber: { $regex: search, $options: "i" } },
+          { name: { $regex: searchRegex, $options: "i" } },
+          { mobileNumber: { $regex: searchRegex, $options: "i" } },
+          { address: { $regex: searchRegex, $options: "i" } },
         ],
-      }).select("_id");
+      })
+        .select("_id")
+        .lean();
 
       const customerIds = matchedCustomers.map((c) => c._id);
 
@@ -45,21 +67,25 @@ export async function GET(req) {
 
     // Count total entries matching the query
     const totalEntries = await CustomerEntry.countDocuments(query);
-    const totalPages = Math.ceil(totalEntries / itemsPerPage) || 1;
+    const totalPages = Math.max(1, Math.ceil(totalEntries / itemsPerPage));
+    const page = Math.min(requestedPage, totalPages);
 
     // Fetch paginated entries
     const entries = await CustomerEntry.find(query)
-      .populate("customer", "name mobileNumber")
+      .populate("customer", "name mobileNumber address")
       .populate("products.product", "name")
       .sort({ orderDate: -1 })
       .skip((page - 1) * itemsPerPage)
-      .limit(itemsPerPage);
+      .limit(itemsPerPage)
+      .lean();
 
     return new Response(
       JSON.stringify({
         message: "Fetching Entries Successful",
         entries: entries,
         pagination: {
+          page,
+          itemsPerPage,
           totalEntries,
           totalPages,
         },

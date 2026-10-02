@@ -2,8 +2,9 @@
 
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { getVendor, updateVendor } from "./actions";
 import Toast from "@/components/Toast";
+import fetchVendor from "@/features/vendors/actions/fetchVendor";
+import updateVendor from "@/features/vendors/actions/updateVendor";
 
 export default function EditVendor({ params }) {
   const router = useRouter();
@@ -12,18 +13,13 @@ export default function EditVendor({ params }) {
   const [toast, setToast] = useState({ show: false, message: "" });
   useEffect(() => {
     (async () => {
-      const response = await getVendor(vendorId);
+      const response = await fetchVendor(vendorId);
       try {
         const { vendor } = await response.json();
         setVendor(vendor);
       } catch (error) {
         console.error("Error fetching Vendor", error);
         setError("Error fetching vendor");
-      }
-      {
-        /* finally {
-        setLoading(false);
-      } */
       }
     })();
   }, []);

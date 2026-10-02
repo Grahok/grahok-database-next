@@ -1,43 +1,71 @@
-// @/components/ConfirmDialog.jsx
 "use client";
 
-import { useRef, useImperativeHandle, forwardRef } from "react";
+import { useRouter } from "next/navigation";
+import { Button } from "./ui/button";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "./ui/dialog";
+import { cn } from "@/lib/utils";
 
-const ConfirmDialog = forwardRef(
-  ({ onConfirm, message = "Are you sure?" }, ref) => {
-    const dialogRef = useRef();
-
-    useImperativeHandle(ref, () => ({
-      open: () => dialogRef.current.showModal(),
-      close: () => dialogRef.current.close(),
-    }));
-
-    return (
-      <dialog
-        ref={dialogRef}
-        className="rounded-md p-4 shadow-lg w-full max-w-sm border border-gray-300 m-auto backdrop:bg-gray-950/20"
-      >
-        <p className="mb-4">{message}</p>
-        <div className="flex justify-end gap-2">
-          <button
-            className="bg-gray-300 px-3 py-1 rounded cursor-pointer"
-            onClick={() => dialogRef.current.close()}
-          >
-            Cancel
-          </button>
-          <button
-            className="bg-red-600 text-white px-3 py-1 rounded cursor-pointer"
-            onClick={() => {
-              onConfirm();
-              dialogRef.current.close();
-            }}
-          >
-            Delete
-          </button>
-        </div>
-      </dialog>
-    );
-  }
-);
-
-export default ConfirmDialog;
+export default function ConfirmDialog({
+  onConfirm,
+  message,
+  label = "Confirm",
+  children,
+  className,
+  variant = "destructive",
+  ...props
+}) {
+  const router = useRouter();
+  return (
+    <Dialog {...props}>
+      <DialogTrigger asChild>
+        <Button
+          className={cn("size-7 cursor-pointer", className)}
+          size="icon"
+          variant={variant}
+        >
+          {children}
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Are you sure?</DialogTitle>
+          {message && <DialogDescription>{message}</DialogDescription>}
+        </DialogHeader>
+        <DialogFooter>
+          <DialogClose asChild>
+            <Button
+              type="button"
+              variant="secondary"
+              className="cursor-pointer"
+            >
+              Cancel
+            </Button>
+          </DialogClose>
+          <DialogClose asChild>
+            <Button
+              type="button"
+              aria-label={label || "Confirm action"}
+              onClick={() => {
+                onConfirm();
+                router.refresh();
+              }}
+              variant={variant}
+              autoFocus
+            >
+              {label}
+            </Button>
+          </DialogClose>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}

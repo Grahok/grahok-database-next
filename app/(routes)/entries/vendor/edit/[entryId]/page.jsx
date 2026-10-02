@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Toast from "@/app/(routes)/entries/customer/add/components/Toast";
+import Toast from "@/components/Toast";
 
 export default function EditEntry({ params }) {
   const router = useRouter();
@@ -29,7 +29,7 @@ export default function EditEntry({ params }) {
         if (!res.ok) throw new Error("Failed to fetch entry data.");
         const data = await res.json();
         setEntry(data);
-      } catch (error) {
+      } catch (_) {
         setToast({ show: true, message: "Error loading entry data." });
       }
     };
@@ -59,9 +59,9 @@ export default function EditEntry({ params }) {
           ...prev,
           show: false,
         }));
-        router.push("/entries/all");
+        router.back();
       }, 2000);
-    } catch (err) {
+    } catch (_) {
       setToast({ show: true, message: "Error updating entry." });
     }
   };

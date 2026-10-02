@@ -11,10 +11,11 @@ import {
 import formatDate from "@/utils/formatDate";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import ConfirmDialog from "@/components/ConfirmDialog";
-import getExpenses from "@/features/expenses/actions/getExpenses";
+import getExpenses from "@/features/expenses/actions/fetchExpenses";
 import deleteExpense from "@/features/expenses/actions/deleteExpense";
 import Toast from "@/components/Toast";
 import EXPENSE_CATEGORIES from "@/constants/expenseCategories";
+import { LoaderPinwheel } from "lucide-react";
 
 export default function AllExpenses() {
   const router = useRouter();
@@ -209,7 +210,14 @@ export default function AllExpenses() {
           <tbody>
             {loading && (
               <tr>
-                <td colSpan={7}>Loading...</td>
+                <td colSpan={7} className="bg-gray-50">
+                  <div className="flex justify-center">
+                    <LoaderPinwheel
+                      className="animate-spin text-blue-400"
+                      size={100}
+                    />
+                  </div>
+                </td>
               </tr>
             )}
             {!loading && !expenses.length && (
@@ -330,12 +338,6 @@ export default function AllExpenses() {
           </button>
         </div>
       </div>
-
-      <ConfirmDialog
-        ref={confirmDialogRef}
-        onConfirm={handleDelete}
-        message="Are you sure you want to delete this expense?"
-      />
       <Toast
         show={toast.show}
         message={toast.message}

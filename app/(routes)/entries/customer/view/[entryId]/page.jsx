@@ -3,21 +3,26 @@
 import { ORDER_STATUSES } from "@/constants/orderStatuses";
 
 import { useEffect, useState } from "react";
-import Toast from "@/app/(routes)/entries/customer/view/[entryId]/components/Toast";
-import SummarySection from "@/app/(routes)/entries/customer/view/[entryId]/components/SummarySection";
-import ProductSection from "@/app/(routes)/entries/customer/view/[entryId]/components/ProductSection";
-import CustomerForm from "@/app/(routes)/entries/customer/view/[entryId]/components/CustomerForm";
+import SummarySection from "@/features/entries/customer/view/components/SummarySection";
+import ProductSection from "@/features/entries/customer/view/components/ProductSection";
+import CustomerForm from "@/features/entries/customer/view/components/CustomerForm";
 import combineDateWithCurrentTime from "@/utils/combineDateWithCurrentTime";
 import React from "react";
-import { getCustomerEntry } from "./actions/getCustomerEntry";
-import { FaPencil } from "react-icons/fa6";
+import { FaPencil, FaPrint } from "react-icons/fa6";
 import inputDateFormat from "@/utils/inputDateFormat";
+import Toast from "@/components/Toast";
+import { Button } from "@/components/ui/button";
+import sendParcelTrackingMessage from "@/features/entries/customer/add/actions/sendParcelTrackingMessage";
+import { MessageSquareIcon } from "lucide-react";
+import fetchCustomerEntry from "@/features/entries/customer/view/actions/fetchCustomerEntry";
+import EntryPDF from "@/features/entries/customer/view/components/EntryPDF";
 
 export default function EditEntry({ params }) {
   const { entryId } = React.use(params);
   const [isEditable, setIsEditable] = useState(false);
   const [invoiceNumber, setInvoiceNumber] = useState(0);
   const [cnNumber, setCnNumber] = useState("");
+  const [trackingLink, setTrackingLink] = useState("");
   const [entry, setEntry] = useState();
   const [orderStatus, setOrderStatus] = useState("Pending");
   const [loading, setLoading] = useState(false);
@@ -27,8 +32,7 @@ export default function EditEntry({ params }) {
   useEffect(() => {
     (async () => {
       try {
-        const response = await getCustomerEntry(entryId);
-        const { entry } = await response.json();
+        const entry = await fetchCustomerEntry(entryId);
 
         setEntry({
           ...entry,
@@ -40,6 +44,7 @@ export default function EditEntry({ params }) {
         });
         setInvoiceNumber(entry.invoiceNumber);
         setCnNumber(entry.cnNumber);
+        setTrackingLink(entry.message);
         setOrderStatus(entry.orderStatus);
         setShippingCustomer(entry.shippingCustomer);
         setShippingMerchant(entry.shippingMerchant);
@@ -57,11 +62,11 @@ export default function EditEntry({ params }) {
 
   const subtotal = selectedProducts.reduce(
     (sum, row) => sum + row.quantity * row.sellPrice - row.discount,
-    0
+    0,
   );
   const totalPurchasePrice = selectedProducts.reduce(
     (sum, row) => sum + row.quantity * row.purchasePrice,
-    0
+    0,
   );
   const [shippingCustomer, setShippingCustomer] = useState(0);
   const paidByCustomer = subtotal + shippingCustomer - overallDiscount;
@@ -83,10 +88,10 @@ export default function EditEntry({ params }) {
 
     try {
       const totalQuantity = Number(
-        selectedProducts.reduce((sum, p) => sum + p.quantity, 0)
+        selectedProducts.reduce((sum, p) => sum + p.quantity, 0),
       );
       const totalSellPrice = Number(
-        selectedProducts.reduce((sum, p) => sum + p.sellPrice * p.quantity, 0)
+        selectedProducts.reduce((sum, p) => sum + p.sellPrice * p.quantity, 0),
       );
       const totalDiscount =
         Number(selectedProducts.reduce((sum, p) => sum + p.discount, 0)) +
@@ -156,6 +161,25 @@ export default function EditEntry({ params }) {
     }
   };
 
+  const handlePrint = async () => {
+    try {
+      const { pdf } = await import("@react-pdf/renderer");
+      const blob = await pdf(<EntryPDF entry={entry} />).toBlob();
+      const url = URL.createObjectURL(blob);
+      const win = window.open(url, "_blank");
+      if (win) {
+        try {
+          win.focus();
+          win.print();
+        } catch {
+          // PDF already opened; user prints manually
+        }
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <main className="min-h-screen bg-gray-50 text-gray-800 flex flex-col gap-8">
       <header className="flex justify-between items-center gap-6">
@@ -168,6 +192,15 @@ export default function EditEntry({ params }) {
           >
             <FaPencil />
           </button>
+          {entry && (
+            <button
+              type="button"
+              onClick={handlePrint}
+              className="p-2 bg-green-600 text-white rounded-md cursor-pointer"
+            >
+              <FaPrint />
+            </button>
+          )}
         </div>
         <div className="flex flex-col gap-2">
           <div className="flex gap-2">
@@ -196,16 +229,58 @@ export default function EditEntry({ params }) {
             </select>
           </div>
           {["Shipped", "Delivered"].includes(orderStatus) && (
-            <input
-              type="text"
-              name="cnNumber"
-              id="cnNumber"
-              placeholder="CN Number"
-              className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none disabled:bg-gray-100 disabled:cursor-not-allowed"
-              value={cnNumber}
-              onChange={(e) => setCnNumber(e.target.value)}
-              disabled={!isEditable}
-            />
+            <>
+              <input
+                type="text"
+                name="cnNumber"
+                id="cnNumber"
+                placeholder="CN Number"
+                className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none disabled:bg-gray-100 disabled:cursor-not-allowed"
+                value={cnNumber || ""}
+                onChange={(e) => setCnNumber(e.target.value)}
+                disabled={!isEditable}
+              />
+              <div className="flex items-center gap-2">
+                <input
+                  type="text"
+                  name="trackingLink"
+                  id="trackingLink"
+                  placeholder="Tracking Link"
+                  className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none grow"
+                  value={trackingLink}
+                  onChange={(e) => setTrackingLink(e.target.value)}
+                />
+                <Button
+                  className="flex items-center"
+                  onClick={async () => {
+                    const { success, message } =
+                      await sendParcelTrackingMessage(
+                        entry.customer.mobileNumber,
+                        shippingMethod,
+                        trackingLink,
+                        entryId,
+                      );
+                    setToast((prev) => ({
+                      ...prev,
+                      show: true,
+                      message: message,
+                      type: success == 1 ? "success" : "error",
+                    }));
+
+                    setTimeout(() => {
+                      setToast((prev) => ({
+                        ...prev,
+                        show: false,
+                      }));
+                    }, 1500);
+                  }}
+                >
+                  <MessageSquareIcon />
+                  Send
+                </Button>
+              </div>
+              {entry.message && "SMS Sent Before"}
+            </>
           )}
         </div>
       </header>
@@ -263,6 +338,7 @@ export default function EditEntry({ params }) {
       <Toast
         show={toast.show}
         message={toast.message}
+        type={toast.type}
         onClose={() =>
           setToast((prev) => ({
             ...prev,

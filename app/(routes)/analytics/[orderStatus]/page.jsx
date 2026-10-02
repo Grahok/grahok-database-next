@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FaEye,
   FaMagnifyingGlass,
@@ -13,12 +13,14 @@ import {
   LuChevronsLeft,
   LuChevronsRight,
 } from "react-icons/lu";
-import { fetchEntries, deleteEntry } from "./actions";
-import ConfirmDialog from "@/app/(routes)/entries/customer/all/components/ConfirmDialog";
+import ConfirmDialog from "@/components/ConfirmDialog";
 import formatDate from "@/utils/formatDate";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import firstDateOfCurrentMonth from "@/utils/firstDateOfCurrentMonth";
 import inputDateFormat from "@/utils/inputDateFormat";
+import fetchCustomerEntries from "@/features/entries/customer/actions/fetchCustomerEntries";
+import deleteCustomerEntry from "@/features/entries/customer/actions/deleteCustomerEntry";
+import { LoaderPinwheel } from "lucide-react";
 
 export default function AllCustomerEntries({ params }) {
   const { orderStatus } = React.use(params);
@@ -28,9 +30,7 @@ export default function AllCustomerEntries({ params }) {
   const [totalEntries, setTotalEntries] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [selectedEntryId, setSelectedEntryId] = useState("");
   const [search, setSearch] = useState("");
-  const confirmDialogRef = useRef();
   const searchParams = useSearchParams();
   const fromDateParam =
     searchParams.get("fromDate") ||
@@ -41,7 +41,6 @@ export default function AllCustomerEntries({ params }) {
   const itemsPerPageParam = Number(searchParams.get("itemsPerPage")) || 20;
   const [itemsPerPage, setItemsPerPage] = useState(itemsPerPageParam);
   const [isSpinning, setIsSpinning] = useState(false);
-  // const query = searchParams.toString() || `orderStatus=${orderStatusParam}&itemsPerPage=${itemsPerPage}`;
   const queryObj = new URLSearchParams({
     fromDate: fromDateParam,
     toDate: toDateParam,
@@ -55,8 +54,7 @@ export default function AllCustomerEntries({ params }) {
     (async () => {
       setLoading(true);
       try {
-        console.log(queryParams);
-        const response = await fetchEntries(queryParams);
+        const response = await fetchCustomerEntries(queryParams);
         const { entries, pagination } = await response.json();
         setEntries(entries);
         const { totalEntries, totalPages } = pagination;
@@ -70,17 +68,10 @@ export default function AllCustomerEntries({ params }) {
     })();
   }, [searchParams]);
 
-  function openConfirmDialog(entryId) {
-    setSelectedEntryId(entryId);
-    confirmDialogRef.current.open();
-  }
-
-  async function handleDelete() {
+  async function handleDelete(entryId) {
     try {
-      await deleteEntry(selectedEntryId);
-      setEntries((prev) =>
-        prev.filter((entry) => entry._id !== selectedEntryId)
-      );
+      await deleteCustomerEntry(entryId);
+      setEntries((prev) => prev.filter((entry) => entry._id !== entryId));
       console.log("Entry deleted successfully");
     } catch (error) {
       console.error("Error deleting entry:", error);
@@ -238,13 +229,20 @@ export default function AllCustomerEntries({ params }) {
               <th>Courier Tax</th>
               <th>Total Profit</th>
               <th>Order Status</th>
-              <th>CN Number</th>
+              <th>SMS Sent</th>
             </tr>
           </thead>
           <tbody>
             {loading && (
               <tr>
-                <td colSpan={17}>Loading...</td>
+                <td colSpan={17} className="bg-gray-50">
+                  <div className="flex justify-center">
+                    <LoaderPinwheel
+                      className="animate-spin text-blue-400"
+                      size={100}
+                    />
+                  </div>
+                </td>
               </tr>
             )}
             {!loading && !entries.length && (
@@ -263,12 +261,14 @@ export default function AllCustomerEntries({ params }) {
                     >
                       <FaEye size={12} />
                     </a>
-                    <button
+                    <ConfirmDialog
                       className="p-1.5 bg-red-600 text-white rounded-md cursor-pointer"
-                      onClick={() => openConfirmDialog(entry._id)}
+                      onConfirm={() => handleDelete(entry._id)}
+                      message="Are you sure you want to delete this entry?"
+                      label="Delete"
                     >
                       <FaTrash size={12} />
-                    </button>
+                    </ConfirmDialog>
                   </div>
                 </td>
                 <td>{formatDate(entry.orderDate)}</td>
@@ -285,7 +285,7 @@ export default function AllCustomerEntries({ params }) {
                 <td>{entry.courierTax}</td>
                 <td>{entry.netProfit}</td>
                 <td>{entry.orderStatus}</td>
-                <td>{entry.cnNumber || "N/A"}</td>
+                <td>{entry.smsSent ? "YES" : "NO"}</td>
               </tr>
             ))}
             <tr>
@@ -310,7 +310,7 @@ export default function AllCustomerEntries({ params }) {
       </div>
       <div className="flex justify-between">
         <strong>{`Showing ${Math.min(
-          totalEntries - ((pageParam - 1) * itemsPerPage),
+          totalEntries - (pageParam - 1) * itemsPerPage,
           itemsPerPageParam
         )} items of ${totalEntries || "Loading..."}`}</strong>
         <div className="flex gap-2 leading-none">
@@ -383,12 +383,6 @@ export default function AllCustomerEntries({ params }) {
           </button>
         </div>
       </div>
-
-      <ConfirmDialog
-        ref={confirmDialogRef}
-        onConfirm={handleDelete}
-        message="Are you sure you want to delete this entry?"
-      />
     </section>
   );
 }

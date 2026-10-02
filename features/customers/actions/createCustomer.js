@@ -1,9 +1,18 @@
-export default async function createCustomer(customerData) {
-  const response = await fetch("/api/customers", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(customerData),
-  });
+"use server";
 
-  return response;
+import { connectToDatabase } from "@/lib/mongoose";
+import Customer from "@/models/Customer";
+import mongooseDocumentToPlainObject from "@/utils/mongooseDocumentToPlainObject";
+
+export default async function createCustomer(customerData) {
+  try {
+    await connectToDatabase();
+    const createdCustomer = await Customer.create(customerData);
+    return {
+      success: true,
+      createdCustomer: mongooseDocumentToPlainObject(createdCustomer),
+    };
+  } catch (_) {
+    return { success: false, createdCustomer: null };
+  }
 }

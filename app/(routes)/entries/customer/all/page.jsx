@@ -1,12 +1,27 @@
-"use client";
+export const dynamic = "force-dynamic";
 
-import { Suspense } from "react";
-import AllCustomerEntries from "./components/AllCustomerEntries";
+import { fetchPaginatedCustomerEntries } from "@/features/entries/customer/actions/fetchCustomerEntries";
+import { DataTable } from "./data-table";
 
-export default function AllCustomerEntriesWrapper() {
+function getSearchParam(searchParams, key) {
+  const value = searchParams?.[key];
+  return Array.isArray(value) ? value[0] : value;
+}
+
+export default async function AllCustomers({ searchParams }) {
+  const params = await searchParams;
+  const { entries, pagination, filters } = await fetchPaginatedCustomerEntries({
+    page: getSearchParam(params, "page"),
+    itemsPerPage: getSearchParam(params, "itemsPerPage"),
+    search: getSearchParam(params, "search"),
+    fromDate: getSearchParam(params, "fromDate"),
+    toDate: getSearchParam(params, "toDate"),
+    orderStatus: getSearchParam(params, "orderStatus"),
+  });
+
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <AllCustomerEntries />
-    </Suspense>
+    <div className="container mx-auto py-10">
+      <DataTable data={entries} pagination={pagination} filters={filters} />
+    </div>
   );
 }

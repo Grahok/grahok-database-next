@@ -1,131 +1,122 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
-import { getProduct, updateProduct } from "./actions";
-import Toast from "@/components/Toast";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
-export default function EditProduct({ params }) {
-  const router = useRouter();
-  const { productId } = React.use(params);
-  const [product, setProduct] = useState();
-  const [toast, showtoast] = useState({ show: false, message: "" });
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { use, useEffect } from "react";
+import fetchProduct from "@/features/products/actions/fetchProduct";
+import updateProduct from "@/features/products/actions/updateProduct";
+import { toast } from "sonner";
+
+const formSchema = z.object({
+  name: z.string().min(1),
+  purchasePrice: z.coerce.number().nonnegative(),
+  sellPrice: z.coerce.number().nonnegative(),
+  inStock: z.coerce.number().nonnegative(),
+});
+
+export default function EditProductForm({ params }) {
+  const { productId } = use(params);
+
+  const form = useForm({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "Loading...",
+      purchasePrice: 0,
+      sellPrice: 0,
+      inStock: 0,
+    },
+  });
+
   useEffect(() => {
     (async () => {
-      const response = await getProduct(productId);
-      try {
-        const { product } = await response.json();
-        setProduct(product);
-      } catch (error) {
-        console.error("Error fetching Product", error);
-        setError("Error fetching product");
-      }
-      {
-        /* finally {
-        setLoading(false);
-      } */
-      }
+      const product = await fetchProduct(productId);
+      form.reset({
+        name: product?.name ?? "",
+        purchasePrice: product?.purchasePrice ?? 0,
+        sellPrice: product?.sellPrice ?? 0,
+        inStock: product?.inStock ?? 0,
+      });
     })();
   }, []);
 
-  async function handleSubmit(e) {
-    e.preventDefault();
-    const formdata = new FormData(e.target);
-    const productData = Object.fromEntries(formdata);
-    try {
-      const response = await updateProduct(productId, productData);
-      if (response.ok) {
-        // router.push("/products/all");
-        router.back();
-      }
-    } catch (error) {
-      console.log("Error Updating Product", error);
+  async function onSubmit(values) {
+    const { success } = await updateProduct(productId, values);
+    if (success) {
+      toast.success("Product updated successfully");
+    } else {
+      toast.error("Failed to update product");
     }
   }
-
   return (
-    <form
-      onSubmit={handleSubmit}
-      method="post"
-      className="bg-white p-6 rounded-lg shadow space-y-6"
-      aria-labelledby="product-section-title"
-    >
-      <h2 id="product-section-title" className="text-2xl font-semibold">
-        Edit Product
-      </h2>
-
-      <div className="flex flex-col gap-1">
-        <label htmlFor="name" className="text-sm">
-          Product Name
-        </label>
-        <input
-          type="text"
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <h1 className="text-3xl font-bold">Edit Product</h1>
+        <FormField
+          control={form.control}
           name="name"
-          id="name"
-          className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none"
-          defaultValue={product?.name}
-          required
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Product Name</FormLabel>
+              <FormControl>
+                <Input type="text" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-      </div>
-
-      <div className="flex flex-col gap-1">
-        <label htmlFor="purchasePrice" className="text-sm">
-          Purchase Price
-        </label>
-        <input
-          type="number"
+        <FormField
+          control={form.control}
           name="purchasePrice"
-          id="purchasePrice"
-          className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none"
-          defaultValue={product?.purchasePrice}
-          required
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Purchase Price</FormLabel>
+              <FormControl>
+                <Input type="number" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-      </div>
-
-      <div className="flex flex-col gap-1">
-        <label htmlFor="sellPrice" className="text-sm">
-          Sell Price
-        </label>
-        <input
-          type="number"
+        <FormField
+          control={form.control}
           name="sellPrice"
-          id="sellPrice"
-          className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none"
-          defaultValue={product?.sellPrice}
-          required
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Sell Price</FormLabel>
+              <FormControl>
+                <Input type="number" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-      </div>
-
-      <div className="flex flex-col gap-1">
-        <label htmlFor="inStock" className="text-sm">
-          In Stock
-        </label>
-        <input
-          type="number"
+        <FormField
+          control={form.control}
           name="inStock"
-          id="inStock"
-          className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none"
-          defaultValue={product?.inStock}
-          required
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>In Stock</FormLabel>
+              <FormControl>
+                <Input type="number" step={0.25} {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-      </div>
-
-      <button
-        type="submit"
-        className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition cursor-pointer disabled:opacity-50"
-      >
-        Update Product
-      </button>
-      <Toast
-        show={toast.show}
-        message={toast.message}
-        onClose={() =>
-          setToast((prev) => ({
-            ...prev,
-            show: false,
-          }))
-        }
-      />
-    </form>
+        <Button type="submit">Submit</Button>
+      </form>
+    </Form>
   );
 }

@@ -37,6 +37,7 @@ export const vendorEntrySchema = new mongoose.Schema(
       default: "Pathao",
     },
     otherCost: Number,
+    note: String,
     courierTax: Number,
 
     // Calculated fields (write-once at submission)
