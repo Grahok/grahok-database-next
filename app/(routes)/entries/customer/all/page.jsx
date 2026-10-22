@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import { fetchPaginatedCustomerEntries } from "@/features/entries/customer/actions/fetchCustomerEntries";
+import inputDateFormat from "@/utils/inputDateFormat";
 import { DataTable } from "./data-table";
 
 function getSearchParam(searchParams, key) {
@@ -9,13 +10,21 @@ function getSearchParam(searchParams, key) {
 }
 
 export default async function AllCustomers({ searchParams }) {
-  const params = await searchParams;
+  const params = (await searchParams) || {};
+  const today = inputDateFormat(new Date());
+
+  const fromDateParam = getSearchParam(params, "fromDate");
+  const toDateParam = getSearchParam(params, "toDate");
+
+  const fromDate = fromDateParam !== undefined ? fromDateParam : today;
+  const toDate = toDateParam !== undefined ? toDateParam : today;
+
   const { entries, pagination, filters } = await fetchPaginatedCustomerEntries({
     page: getSearchParam(params, "page"),
     itemsPerPage: getSearchParam(params, "itemsPerPage"),
     search: getSearchParam(params, "search"),
-    fromDate: getSearchParam(params, "fromDate"),
-    toDate: getSearchParam(params, "toDate"),
+    fromDate,
+    toDate,
     orderStatus: getSearchParam(params, "orderStatus"),
     entrySource: getSearchParam(params, "entrySource"),
   });

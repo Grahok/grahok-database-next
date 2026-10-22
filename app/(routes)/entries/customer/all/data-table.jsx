@@ -119,8 +119,17 @@ export function DataTable({ data = [], pagination, filters }) {
     const nextSearchParams = new URLSearchParams(searchParams.toString());
 
     Object.entries(updates).forEach(([key, value]) => {
-      if (value === undefined || value === null || value === "") {
+      if (value === undefined || value === null) {
         nextSearchParams.delete(key);
+        return;
+      }
+
+      if (value === "") {
+        if (key === "fromDate" || key === "toDate") {
+          nextSearchParams.set(key, "");
+        } else {
+          nextSearchParams.delete(key);
+        }
         return;
       }
 
