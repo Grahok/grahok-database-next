@@ -21,7 +21,7 @@ export default async function AllCustomers({ searchParams }) {
   });
 
   return (
-    <div className="container mx-auto py-10">
+    <div className="w-full max-w-full mx-auto py-2 sm:py-4">
       <DataTable data={entries} pagination={pagination} filters={filters} />
     </div>
   );
